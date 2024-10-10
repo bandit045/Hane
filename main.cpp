@@ -19,17 +19,22 @@ const unsigned int height = 800;
 GLfloat vertices[] =
 {
 //  |      CORDINATES       |           COLOR         |
-	-0.5f,  0.0f , 0.5f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,   // Lower left corner 0
-	 0.5f, -0.5f , 0.0f,         0.0f,  1.0f,  0.0f,        1.0f, 0.0f,   // Lower right corner 1
-	 0.5f,  0.5f , 0.0f,         0.0f,  0.0f,  1.0f,        1.0f, 1.0f,   // Upper right corner 2
-	-0.5f,  0.5f , 0.0f,         1.0f,  1.0f,  0.0f,        0.0f, 1.0f    // Upper left corner 3
+	-0.5f,  0.0f,  0.5f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,  // 0 red
+	 0.0f,  1.0f,  0.0f,         0.0f,  1.0f,  0.0f,        0.5f, 1.0f,  // 1 green
+	-0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  1.0f,        1.0f, 0.0f,  // 2 blue
+	 0.5f,  0.0f,  0.5f,         1.0f,  1.0f,  1.0f,        1.0f, 0.0f,  // 3 white quad
+	 0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  0.0f,        0.0f, 0.0f   // 4 black quad
 };
 
 // Indices for verteces order
 GLuint indices[] =
 {
-	0, 1, 3, // Left triangle
-	1, 2, 3  // Right triangle
+	0, 3, 1,
+	0, 1, 2,
+	2, 4, 1,
+	4, 1, 3,
+	0, 2, 3,
+	2, 4, 3
 };
 
 
@@ -96,21 +101,34 @@ int main()
 	Texture popCat("pop_cat.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	popCat.texUnit(shaderProgram, "tex0", 0);
 
+	float rotation = 0.0f;
+	double prevTime = glfwGetTime();
+
+	glEnable(GL_DEPTH_TEST);
+
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
 		// Specify the color of the background
 		glClearColor(0.8f, 0.1f, 0.7f, 1.0f);
 		// Clean the back buffer and assign the new color to it
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Tell OpenGL which Shader Program we want to use 
 		shaderProgram.Activate();
+
+		double crntTime = glfwGetTime();
+		if (crntTime - prevTime >= 1 / 60)
+		{
+			rotation += 1.0f;
+			prevTime = crntTime;
+		}
 
 		glm::mat4 model = glm::mat4(1.0f);
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 proj = glm::mat4(1.0f);
 
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.0f));
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
 		proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f);
 
 		int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
