@@ -12,8 +12,8 @@
 #include "VAO.h"
 #include "EBO.h"
 
-const unsigned int width = 800;
-const unsigned int height = 800;
+const unsigned int width = 900;
+const unsigned int height = 900;
 
 // Verteces cordinates
 GLfloat vertices[] =
