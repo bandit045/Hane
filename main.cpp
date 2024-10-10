@@ -19,7 +19,7 @@ const unsigned int height = 800;
 GLfloat vertices[] =
 {
 //  |      CORDINATES       |           COLOR         |
-	-0.5f, -0.5f , 0.0f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,   // Lower left corner 0
+	-0.5f,  0.0f , 0.5f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,   // Lower left corner 0
 	 0.5f, -0.5f , 0.0f,         0.0f,  1.0f,  0.0f,        1.0f, 0.0f,   // Lower right corner 1
 	 0.5f,  0.5f , 0.0f,         0.0f,  0.0f,  1.0f,        1.0f, 1.0f,   // Upper right corner 2
 	-0.5f,  0.5f , 0.0f,         1.0f,  1.0f,  0.0f,        0.0f, 1.0f    // Upper left corner 3
@@ -127,7 +127,7 @@ int main()
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 		// Draw the triangle using the GL_TRIANGLES primitive
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, sizeof(indices)/sizeof(int), GL_UNSIGNED_INT, 0);
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
