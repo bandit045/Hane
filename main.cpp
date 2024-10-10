@@ -20,9 +20,9 @@ GLfloat vertices[] =
 {
 //  |      CORDINATES       |           COLOR         |
 	-0.5f,  0.0f,  0.5f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,  // 0 red
-	 0.0f,  1.0f,  0.0f,         0.0f,  1.0f,  0.0f,        0.5f, 1.0f,  // 1 green
-	-0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  1.0f,        1.0f, 0.0f,  // 2 blue
-	 0.5f,  0.0f,  0.5f,         1.0f,  1.0f,  1.0f,        1.0f, 0.0f,  // 3 white quad
+	 0.0f,  1.0f,  0.0f,         0.0f,  1.0f,  0.0f,        2.5f, 5.0f,  // 1 green
+	-0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  1.0f,        5.0f, 0.0f,  // 2 blue
+	 0.5f,  0.0f,  0.5f,         1.0f,  1.0f,  1.0f,        5.0f, 0.0f,  // 3 white quad
 	 0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  0.0f,        0.0f, 0.0f   // 4 black quad
 };
 
@@ -33,8 +33,8 @@ GLuint indices[] =
 	0, 1, 2,
 	2, 4, 1,
 	4, 1, 3,
+	4, 3, 2,
 	0, 2, 3,
-	2, 4, 3
 };
 
 
@@ -109,6 +109,8 @@ int main()
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		// Specify the color of the background
 		glClearColor(0.8f, 0.1f, 0.7f, 1.0f);
 		// Clean the back buffer and assign the new color to it
@@ -119,7 +121,7 @@ int main()
 		double crntTime = glfwGetTime();
 		if (crntTime - prevTime >= 1 / 60)
 		{
-			rotation += 1.0f;
+			rotation += 0.5f;
 			prevTime = crntTime;
 		}
 
@@ -127,8 +129,8 @@ int main()
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 proj = glm::mat4(1.0f);
 
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+		model = glm::rotate(model, glm::radians(rotation), glm::vec3(1.0f, 1.0f, 1.0f));
+		view = glm::translate(view, glm::vec3(0.0f, -0.3f, -2.0f));
 		proj = glm::perspective(glm::radians(45.0f), (float)(width / height), 0.1f, 100.0f);
 
 		int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
