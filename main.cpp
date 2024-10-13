@@ -18,7 +18,7 @@ const unsigned int height = 900;
 // Verteces cordinates
 GLfloat vertices[] =
 {
-//  |      CORDINATES       |           COLOR         |
+//  |      CORDINATES           |           COLOR          |   TEX-CORD    |
 	-0.5f,  0.0f,  0.5f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,  // 0 red
 	 0.0f,  1.0f,  0.0f,         0.0f,  1.0f,  0.0f,        2.5f, 5.0f,  // 1 green
 	-0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  1.0f,        5.0f, 0.0f,  // 2 blue
