@@ -19,6 +19,9 @@
     <Filter Include="Resource Files\Textures">
       <UniqueIdentifier>{2f75b228-55c5-46fc-8513-53cea2d509e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\LightingSource">
+      <UniqueIdentifier>{3549f33c-0bb3-4fd1-88a8-c0b8b4742780}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -55,6 +58,12 @@
     </None>
     <None Include="default.vert">
       <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="lightingSourceShader.vert">
+      <Filter>Resource Files\Shaders\LightingSource</Filter>
+    </None>
+    <None Include="lightingSourceShader.frag">
+      <Filter>Resource Files\Shaders\LightingSource</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -14,21 +14,30 @@
 class Camera
 {
 public:
+	// Stores the main vectors of the camera
 	glm::vec3 Position;
 	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::mat4 cameraMatrix = glm::mat4(1.0f);
 
+	// Preventing the camera from jumpping around when first clicking left click
 	bool firstClick = true;
 
+	// Stores width and height of window
 	int width;
 	int height;
 
 	float speed = 0.1f;
 	float sensitivity = 100.0f;
 
+	// Camera constructor to set up variables and initialization
 	Camera(int width, int height, glm::vec3 position);
 
-	void Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shader, const char* uniform);
+	// Updates the camera matrix to the Vertex Shader
+	void updateMatrix(float FOVdeg, float nearPlane, float farPlane, bool model);
+	// Exports the camera matrix to a shader
+	void Matrix(Shader& shader, const char* uniform);
+	// Handles camera inputs
 	void Inputs(GLFWwindow* window);
 };
 #endif
