@@ -7,7 +7,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	Position = position;
 }
 
-void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane, bool model)
+void Camera::updateCameraMatrix(float FOVdeg, float nearPlane, float farPlane)
 {
 	// Initializes matrices since otherwise they will be the null matrix
 	glm::mat4 view = glm::mat4(1.0f);
@@ -17,25 +17,40 @@ void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane, bool mo
 	view = glm::lookAt(Position, Position + Orientation, Up);
 	// Adds perspective to the scene
 	projection = glm::perspective(glm::radians(FOVdeg), (float)(width / height), nearPlane, farPlane);
-	if (model == true)
-	{
-		glm::mat4 model = glm::mat4(1.0f);
 
-		model = glm::scale(model, glm::vec3(0.2f));
-		model = glm::translate(model, glm::vec3(3.0f, 2.0f, 0.0f));
-		// Sets new camera matrix
-		cameraMatrix = projection * view * model;
-	}
-	else
-	{
-		cameraMatrix = projection * view;
-	}
+	cameraMatrix = projection * view;
 }
 
-void Camera::Matrix(Shader& shader, const char* uniform)
+void Camera::sendMatrixToShader(Shader& shader, const char* uniform)
 {
 	// Exports camera matrix
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+}
+
+// Works only in centre 0,0,0
+void Camera::scaleObjectWithModelMatrix(glm::vec3 factorToScale)
+{
+	glm::mat4 model = glm::mat4(1.0f);
+
+	// Step 1: Translate the object to the origin (reverse translation)
+	model = glm::translate(model, -glm::vec3(0.0f));
+
+	// Step 2: Apply the scaling (scale only the size)
+	model = glm::scale(model, factorToScale);
+
+	// Step 3: Translate the object back to its original position
+	model = glm::translate(model, glm::vec3(0.0f));
+
+	cameraMatrix = cameraMatrix * model;
+}
+
+void Camera::translateObjectWithModelMatrih(glm::vec3 newPosition)
+{
+	glm::mat4 model = glm::mat4(1.0f);
+
+	model = glm::translate(model, newPosition);
+
+	cameraMatrix = cameraMatrix * model;
 }
 
 void Camera::Inputs(GLFWwindow* window)

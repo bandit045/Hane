@@ -70,6 +70,17 @@ void Shader::Delete()
 	glDeleteProgram(ID);
 }
 
+void Shader::sendVec3ToShader(const char* varName, glm::vec3 vec3)
+{
+	glUniform3f(glGetUniformLocation(ID, varName), vec3.x, vec3.y, vec3.z);
+}
+
+void Shader::sendVec3ToShader(const char* varName, float x, float y, float z)
+{
+	glUniform3f(glGetUniformLocation(ID, varName), x, y, z);
+}
+
+// This metod is private
 void Shader::compileErrors(unsigned int shader, const char* type)
 {
 	GLint hasCompiled;

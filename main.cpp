@@ -20,7 +20,7 @@ const unsigned int height = 900;
 // Verteces cordinates for triangle
 GLfloat vertices_triangle[] =
 {
-//  |      CORDINATES           |           COLOR          |   TEX-CORD    |
+//  |      CORDINATES         |           COLOR          |   TEX-CORD    |
 	-0.5f,  0.0f,  0.5f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,  // 0 red
 	 0.0f,  1.0f,  0.0f,         0.0f,  1.0f,  0.0f,        2.5f, 5.0f,  // 1 green
 	-0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  1.0f,        5.0f, 0.0f,  // 2 blue
@@ -42,55 +42,59 @@ GLuint indices_triangle[] =
  // Vertices for Light source  
 GLfloat vertices_lightSource[] =
 {
-		// Prednja strana (z = 2.5)
-		-0.5f + 2.0f, -0.5f + 2.0f,  0.5f + 2.0f,
-		 0.5f + 2.0f, -0.5f + 2.0f,  0.5f + 2.0f,
-		 0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
-		 0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
-		-0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
-		-0.5f + 2.0f, -0.5f + 2.0f,  0.5f + 2.0f,
+		// Prednja strana
+		-0.5f, -0.5f,  0.5f,
+		 0.5f, -0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
 
-		// Zadnja strana (z = 1.5)
-		-0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
-		 0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
-		 0.5f + 2.0f,  0.5f + 2.0f, -0.5f + 2.0f,
-		 0.5f + 2.0f,  0.5f + 2.0f, -0.5f + 2.0f,
-		-0.5f + 2.0f,  0.5f + 2.0f, -0.5f + 2.0f,
-		-0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
+		// Zadnja strana
+		-0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f,  0.5f, -0.5f,
+		 0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 
-		// Leva strana (x = 1.5)
-		-0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
-		-0.5f + 2.0f,  0.5f + 2.0f, -0.5f + 2.0f,
-		-0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
-		-0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
-		-0.5f + 2.0f, -0.5f + 2.0f,  0.5f + 2.0f,
-		-0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
+		// Leva strana
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
 
-		// Desna strana (x = 2.5)
-		 0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
-		 0.5f + 2.0f,  0.5f + 2.0f, -0.5f + 2.0f,
-		 0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
-		 0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
-		 0.5f + 2.0f, -0.5f + 2.0f,  0.5f + 2.0f,
-		 0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
+		// Desna strana
+		 0.5f,  0.5f,  0.5f,
+		 0.5f,  0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
 
-		 // Donja strana (y = 1.5)
-		 -0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
-		  0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
-		  0.5f + 2.0f, -0.5f + 2.0f,  0.5f + 2.0f,
-		  0.5f + 2.0f, -0.5f + 2.0f,  0.5f + 2.0f,
-		 -0.5f + 2.0f, -0.5f + 2.0f,  0.5f + 2.0f,
-		 -0.5f + 2.0f, -0.5f + 2.0f, -0.5f + 2.0f,
+		 // Donja strana
+		 -0.5f, -0.5f, -0.5f,
+		  0.5f, -0.5f, -0.5f,
+		  0.5f, -0.5f,  0.5f,
+		  0.5f, -0.5f,  0.5f,
+		 -0.5f, -0.5f,  0.5f,
+		 -0.5f, -0.5f, -0.5f,
 
-		 // Gornja strana (y = 2.5)
-		 -0.5f + 2.0f,  0.5f + 2.0f, -0.5f + 2.0f,
-		  0.5f + 2.0f,  0.5f + 2.0f, -0.5f + 2.0f,
-		  0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
-		  0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
-		 -0.5f + 2.0f,  0.5f + 2.0f,  0.5f + 2.0f,
-		 -0.5f + 2.0f,  0.5f + 2.0f, -0.5f + 2.0f
+		 // Gornja strana
+		 -0.5f,  0.5f, -0.5f,
+		  0.5f,  0.5f, -0.5f,
+		  0.5f,  0.5f,  0.5f,
+		  0.5f,  0.5f,  0.5f,
+		 -0.5f,  0.5f,  0.5f,
+		 -0.5f,  0.5f, -0.5f
 };
 
+glm::vec3 lightColor(1.0f, 0.0f, 0.0f);
+glm::vec3 positionOfLightSource(7.0f, 10.0f, 1.0f);
+
+glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
 
 int main()
 {
@@ -127,7 +131,7 @@ int main()
 	glViewport(0,0, width, height);
 
 	// Generates Shader object using shaders defualt.vert and default.frag
-	Shader shaderProgram("default.vert", "default.frag");
+	Shader shaderProgramForObjects("default.vert", "default.frag");
 	Shader lightSourceShader("lightingSourceShader.vert", "lightingSourceShader.frag");
 
 	// Generates Vertex Array Object and binds it
@@ -162,7 +166,7 @@ int main()
 
 	// Textures
 	Texture popCat("pop_cat.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	popCat.texUnit(shaderProgram, "tex0", 0);
+	popCat.texUnit(shaderProgramForObjects, "tex0", 0);
 	
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
@@ -175,37 +179,46 @@ int main()
 		// Setting rendering mode to line
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Specify the color of the background
-		glClearColor(0.8f, 0.1f, 0.7f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		// Clean the back buffer and assign the new color to it
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Handling input to move camera
 		camera.Inputs(window);
-		// Tell OpenGL which Shader Program we want to use 
-		shaderProgram.Activate();
-		
-		camera.updateMatrix(45.0f, 0.1f, 100.0f, false);
-		camera.Matrix(shaderProgram, "camMatrix");
-				
-		// Binding texture so its appear at render
-		popCat.Bind();
-		// Bind the VAO so OpenGL knows to use it
-		TRIANGLE_SHAPE_VAO.Bind();
-		// Draw the pyramid using the GL_TRIANGLES primitive
-		glDrawElements(GL_TRIANGLES, sizeof(indices_triangle)/sizeof(int), GL_UNSIGNED_INT, 0);
+		{
+			// Tell OpenGL which Shader Program we want to use 
+			shaderProgramForObjects.Activate();
 
-		// Activating shader that is used only for lightSource
-		lightSourceShader.Activate();
+			camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
+			camera.sendMatrixToShader(shaderProgramForObjects, "camMatrix");
+			shaderProgramForObjects.sendVec3ToShader("lightColor", lightColor);
+			shaderProgramForObjects.sendVec3ToShader("objectColor", objectColor);
 
-		// Passing camMatrix in uniform to lightSourceCube in projection matrix
-		camera.updateMatrix(45.0f, 0.1f, 100.0f, true);
-		camera.Matrix(lightSourceShader, "camMatrix");
+			// Binding texture so its appear at render
+			popCat.Bind();
+			// Bind the VAO so OpenGL knows to use it
+			TRIANGLE_SHAPE_VAO.Bind();
+			// Draw the pyramid using the GL_TRIANGLES primitive
+			glDrawElements(GL_TRIANGLES, sizeof(indices_triangle) / sizeof(int), GL_UNSIGNED_INT, 0);
+		}
+		{
+			// Activating shader that is used only for lightSource
+			lightSourceShader.Activate();
 
-		// Binding light source vao in order to draws it
-		LIGHT_SOURCE_VAO.Bind();
+			// Passing camMatrix in uniform to lightSourceCube in shader for projection matrix
+			camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
+			camera.scaleObjectWithModelMatrix(glm::vec3(0.2f));
+			camera.translateObjectWithModelMatrih(positionOfLightSource);
+			camera.sendMatrixToShader(lightSourceShader, "camMatrix");
 
-		// Draw light source cube using DrawArrays no-index(EBO)
-		glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices_lightSource)/sizeof(float));
+			// We setting up which is the color of lightSource cube
+			lightSourceShader.sendVec3ToShader("lightColor", lightColor);
 
+			// Binding light source vao in order to draws it
+			LIGHT_SOURCE_VAO.Bind();
+
+			// Draw light source cube using DrawArrays no-index(EBO)
+			glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices_lightSource) / sizeof(float));
+		}
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
@@ -219,7 +232,7 @@ int main()
 	LIGHT_SOURCE_VAO.Delete();
 	LIGHT_SOURCE_VBO.Delete();
 	popCat.Delete();
-	shaderProgram.Delete();
+	shaderProgramForObjects.Delete();
 	lightSourceShader.Delete();
 	// Delete window before ending the program
 	glfwDestroyWindow(window);
