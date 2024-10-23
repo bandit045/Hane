@@ -19,6 +19,7 @@ public:
 	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 cameraMatrix = glm::mat4(1.0f);
+	glm::mat4 modelMatrix = glm::mat4(1.0f);
 
 	// Preventing the camera from jumpping around when first clicking left click
 	bool firstClick = true;
@@ -43,5 +44,8 @@ public:
 	void translateObjectWithModelMatrih(glm::vec3 newPosition);
 	// Handles camera inputs
 	void Inputs(GLFWwindow* window);
+
+	// Getters
+	glm::mat4 getModelMatrix();
 };
 #endif

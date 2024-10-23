@@ -23,7 +23,7 @@ void Camera::updateCameraMatrix(float FOVdeg, float nearPlane, float farPlane)
 
 void Camera::sendMatrixToShader(Shader& shader, const char* uniform)
 {
-	// Exports camera matrix
+	// Exports camera matrix to shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
@@ -41,6 +41,8 @@ void Camera::scaleObjectWithModelMatrix(glm::vec3 factorToScale)
 	// Step 3: Translate the object back to its original position
 	model = glm::translate(model, glm::vec3(0.0f));
 
+	Camera::modelMatrix = model;
+
 	cameraMatrix = cameraMatrix * model;
 }
 
@@ -50,7 +52,15 @@ void Camera::translateObjectWithModelMatrih(glm::vec3 newPosition)
 
 	model = glm::translate(model, newPosition);
 
+	Camera::modelMatrix = model;
+
 	cameraMatrix = cameraMatrix * model;
+}
+
+// Getters
+glm::mat4 Camera::getModelMatrix()
+{
+	return Camera::modelMatrix;
 }
 
 void Camera::Inputs(GLFWwindow* window)

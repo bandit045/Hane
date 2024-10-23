@@ -7,7 +7,9 @@
 #include<sstream>
 #include<iostream>
 #include<cerrno>
+
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 std::string get_file_contents(const char* filename);
 
@@ -26,6 +28,7 @@ class Shader
 		// Update vec3 matrix to shader
 		void sendVec3ToShader(const char* varName, glm::vec3 vec3);
 		void sendVec3ToShader(const char* varName, float x, float y, float z);
+		void sendMat4x4ToShader(const char* varName, glm::mat4 matrix);
 	private:
 		void compileErrors(unsigned int shader, const char* type);
 };
