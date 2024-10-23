@@ -20,12 +20,12 @@ const unsigned int height = 900;
 // Verteces cordinates for triangle
 GLfloat vertices_triangle[] =
 {
-//  |      CORDINATES         |           COLOR          |   TEX-CORD    |
-	-0.5f,  0.0f,  0.5f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,  // 0 red
-	 0.0f,  1.0f,  0.0f,         0.0f,  1.0f,  0.0f,        2.5f, 5.0f,  // 1 green
-	-0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  1.0f,        5.0f, 0.0f,  // 2 blue
-	 0.5f,  0.0f,  0.5f,         1.0f,  1.0f,  1.0f,        5.0f, 0.0f,  // 3 white quad
-	 0.5f,  0.0f, -0.5f,         0.0f,  0.0f,  0.0f,        0.0f, 0.0f   // 4 black quad
+//  |      CORDINATES         |           COLOR          |   TEX-CORD      |     NORMALS     |
+	-1.0f,  0.0f,  1.0f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,                              // 0 red v4
+	 0.0f,  2.0f,  0.0f,         0.0f,  1.0f,  0.0f,        2.5f, 5.0f,  /*   0.0f, 1.0f, 0.0f,  */  // 1 green  // APEX VERTICE
+	-1.0f,  0.0f, -1.0f,         0.0f,  0.0f,  1.0f,        5.0f, 0.0f,                              // 2 blue v1
+	 1.0f,  0.0f,  1.0f,         1.0f,  1.0f,  1.0f,        5.0f, 0.0f,                              // 3 white v3
+	 1.0f,  0.0f, -1.0f,         0.0f,  0.0f,  0.0f,        0.0f, 0.0f                               // 4 black v2
 };
 
 // Indices for verteces order
@@ -91,7 +91,7 @@ GLfloat vertices_lightSource[] =
 		 -0.5f,  0.5f, -0.5f
 };
 
-glm::vec3 lightColor(1.0f, 0.0f, 0.0f);
+glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 glm::vec3 positionOfLightSource(7.0f, 10.0f, 1.0f);
 
 glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
@@ -171,7 +171,7 @@ int main()
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(width, height, glm::vec3(0.0f, 2.0f, 5.0f));
 
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
@@ -219,6 +219,51 @@ int main()
 			// Draw light source cube using DrawArrays no-index(EBO)
 			glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices_lightSource) / sizeof(float));
 		}
+
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+		{
+			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			{
+				if (lightColor.x <= 1.0f)
+				{
+					lightColor.x += 0.01f;
+				}
+			}
+			else
+			{
+				lightColor.x -= 0.01f;
+			}
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+		{
+			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			{
+				if (lightColor.y <= 1.0f)
+				{
+					lightColor.y += 0.01f;
+				}
+			}
+			else
+			{
+				lightColor.y -= 0.01f;
+			}
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+		{
+			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			{
+				if (lightColor.z <= 1.0f) {
+					lightColor.z += 0.01f;
+				}
+			}
+			else
+			{
+				lightColor.z -= 0.01f;
+			}
+		}
+
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
 		// Take care of all GLFW events
