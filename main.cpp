@@ -33,39 +33,39 @@ GLfloat vertices_cube[] = {
 
 	// Front face (z = 1.0)
 	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Top-right
-	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Top-left
+	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-right
+	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  0.0f,  0.0f,  1.0f,  // Top-right
+	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  0.0f,  0.0f,  1.0f,  // Top-left
 
 	// Back face (z = -1.0)
 	-1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f, -1.0f,  // Bottom-left
-	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f, -1.0f,  // Bottom-right
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f, -1.0f,  // Top-right
-	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f, -1.0f,  // Top-left
+	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  0.0f,  0.0f, -1.0f,  // Bottom-right
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  0.0f,  0.0f, -1.0f,  // Top-right
+	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  0.0f,  0.0f, -1.0f,  // Top-left
 
 	// Left face (x = -1.0)
 	-1.0f, -1.0f, -1.0f, 1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,  // Bottom-left
-	-1.0f, -1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,  // Bottom-right
-	-1.0f,  1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,  // Top-right
-	-1.0f,  1.0f, -1.0f, 1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,  // Top-left
+	-1.0f, -1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  -1.0f,  0.0f,  0.0f,  // Bottom-right
+	-1.0f,  1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  -1.0f,  0.0f,  0.0f,  // Top-right
+	-1.0f,  1.0f, -1.0f, 1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  -1.0f,  0.0f,  0.0f,  // Top-left
 
 	// Right face (x = 1.0)
 	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Top-right
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Top-left
+	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
+	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  1.0f,  0.0f,  0.0f,  // Top-right
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  1.0f,  0.0f,  0.0f,  // Top-left
 
 	// Top face (y = 1.0)
-	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Top-left
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Top-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-right
+	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,  0.0f,  1.0f,  0.0f,  // Top-left
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,  0.0f,  1.0f,  0.0f,  // Top-right
+	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-right
 	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-left
 
 	// Bottom face (y = -1.0)
 	-1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f, -1.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f, -1.0f,  0.0f,  // Bottom-right
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f, -1.0f,  0.0f,  // Top-right
-	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f, -1.0f,  0.0f   // Top-left
+	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  0.0f, -1.0f,  0.0f,  // Bottom-right
+	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  0.0f, -1.0f,  0.0f,  // Top-right
+	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  0.0f, -1.0f,  0.0f   // Top-left
 };
 
 GLuint indices_cube[] = {
@@ -154,7 +154,7 @@ GLfloat vertices_lightSource[] =
 glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 glm::vec3 positionOfLightSource(7.0f, 10.0f, 4.0f);
 
-glm::vec3 objectColor(1.0f, 0.0f, 0.0f);
+glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
 
 int main()
 {
@@ -247,7 +247,7 @@ int main()
 	// Textures
 	Texture popCat("pop_cat.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	popCat.texUnit(shaderProgramForObjects, "tex0", 0);
-	
+
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
 
@@ -296,6 +296,8 @@ int main()
 			shaderProgramForObjects.sendVec3ToShader("lightPos", positionOfLightSource);
 			//shaderProgramForObjects.sendMat4x4ToShader("model", camera.getModelMatrix());
 
+			// Binding texture so its appear at render
+			popCat.Bind();
 			// Bind the VAO so OpenGL knows to use it
 			CUBE_SHAPE_VAO.Bind();
 
@@ -308,7 +310,7 @@ int main()
 
 			// Passing camMatrix in uniform to lightSourceCube in shader for projection matrix
 			//camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
-			camera.scaleObjectWithModelMatrix(glm::vec3(0.2f));
+			//camera.scaleObjectWithModelMatrix(glm::vec3(0.2f));
 			camera.translateObjectWithModelMatrih(positionOfLightSource);
 			camera.sendMatrixToShader(lightSourceShader, "camMatrix");
 

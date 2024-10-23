@@ -12,6 +12,7 @@ void Camera::updateCameraMatrix(float FOVdeg, float nearPlane, float farPlane)
 	// Initializes matrices since otherwise they will be the null matrix
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
+	glm::mat4 model = glm::mat4(1.0f);
 
 	// Makes camera look in the right direction from the right side
 	view = glm::lookAt(Position, Position + Orientation, Up);
@@ -41,7 +42,7 @@ void Camera::scaleObjectWithModelMatrix(glm::vec3 factorToScale)
 	// Step 3: Translate the object back to its original position
 	model = glm::translate(model, glm::vec3(0.0f));
 
-	Camera::modelMatrix = model;
+	//Camera::modelMatrix = model;
 
 	cameraMatrix = cameraMatrix * model;
 }
@@ -52,7 +53,7 @@ void Camera::translateObjectWithModelMatrih(glm::vec3 newPosition)
 
 	model = glm::translate(model, newPosition);
 
-	Camera::modelMatrix = model;
+	//Camera::modelMatrix = model;
 
 	cameraMatrix = cameraMatrix * model;
 }
