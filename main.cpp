@@ -103,56 +103,56 @@ GLuint indices_triangle[] =
 GLfloat vertices_lightSource[] =
 {
 		// Prednja strana
-		-0.5f, -0.5f,  0.5f,
-		 0.5f, -0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f, -0.5f,  0.5f,
+		-0.1f, -0.1f,  0.1f,
+		 0.1f, -0.1f,  0.1f,
+		 0.1f,  0.1f,  0.1f,
+		 0.1f,  0.1f,  0.1f,
+		-0.1f,  0.1f,  0.1f,
+		-0.1f, -0.1f,  0.1f,
 
 		// Zadnja strana
-		-0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f,  0.5f, -0.5f,
-		 0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
+		-0.1f, -0.1f, -0.1f,
+		 0.1f, -0.1f, -0.1f,
+		 0.1f,  0.1f, -0.1f,
+		 0.1f,  0.1f, -0.1f,
+		-0.1f,  0.1f, -0.1f,
+		-0.1f, -0.1f, -0.1f,
 
 		// Leva strana
-		-0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
+		-0.1f,  0.1f,  0.1f,
+		-0.1f,  0.1f, -0.1f,
+		-0.1f, -0.1f, -0.1f,
+		-0.1f, -0.1f, -0.1f,
+		-0.1f, -0.1f,  0.1f,
+		-0.1f,  0.1f,  0.1f,
 
 		// Desna strana
-		 0.5f,  0.5f,  0.5f,
-		 0.5f,  0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
-		 0.5f, -0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
+		 0.1f,  0.1f,  0.1f,
+		 0.1f,  0.1f, -0.1f,
+		 0.1f, -0.1f, -0.1f,
+		 0.1f, -0.1f, -0.1f,
+		 0.1f, -0.1f,  0.1f,
+		 0.1f,  0.1f,  0.1f,
 
 		 // Donja strana
-		 -0.5f, -0.5f, -0.5f,
-		  0.5f, -0.5f, -0.5f,
-		  0.5f, -0.5f,  0.5f,
-		  0.5f, -0.5f,  0.5f,
-		 -0.5f, -0.5f,  0.5f,
-		 -0.5f, -0.5f, -0.5f,
+		 -0.1f, -0.1f, -0.1f,
+		  0.1f, -0.1f, -0.1f,
+		  0.1f, -0.1f,  0.1f,
+		  0.1f, -0.1f,  0.1f,
+		 -0.1f, -0.1f,  0.1f,
+		 -0.1f, -0.1f, -0.1f,
 
 		 // Gornja strana
-		 -0.5f,  0.5f, -0.5f,
-		  0.5f,  0.5f, -0.5f,
-		  0.5f,  0.5f,  0.5f,
-		  0.5f,  0.5f,  0.5f,
-		 -0.5f,  0.5f,  0.5f,
-		 -0.5f,  0.5f, -0.5f
+		 -0.1f,  0.1f, -0.1f,
+		  0.1f,  0.1f, -0.1f,
+		  0.1f,  0.1f,  0.1f,
+		  0.1f,  0.1f,  0.1f,
+		 -0.1f,  0.1f,  0.1f,
+		 -0.1f,  0.1f, -0.1f
 };
 
 glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-glm::vec3 positionOfLightSource(7.0f, 10.0f, 4.0f);
+glm::vec3 positionOfLightSource(1.0f, 1.0f, 1.0f);
 
 glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
 
@@ -310,7 +310,6 @@ int main()
 
 			// Passing camMatrix in uniform to lightSourceCube in shader for projection matrix
 			//camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
-			//camera.scaleObjectWithModelMatrix(glm::vec3(0.2f));
 			camera.translateObjectWithModelMatrih(positionOfLightSource);
 			camera.sendMatrixToShader(lightSourceShader, "camMatrix");
 
