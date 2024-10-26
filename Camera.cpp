@@ -12,7 +12,6 @@ void Camera::updateCameraMatrix(float FOVdeg, float nearPlane, float farPlane)
 	// Initializes matrices since otherwise they will be the null matrix
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
-	glm::mat4 model = glm::mat4(1.0f);
 
 	// Makes camera look in the right direction from the right side
 	view = glm::lookAt(Position, Position + Orientation, Up);
@@ -22,7 +21,7 @@ void Camera::updateCameraMatrix(float FOVdeg, float nearPlane, float farPlane)
 	cameraMatrix = projection * view;
 }
 
-void Camera::sendMatrixToShader(Shader& shader, const char* uniform)
+void Camera::sendCamMatrixToShader(Shader& shader, const char* uniform)
 {
 	// Exports camera matrix to shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
@@ -42,29 +41,33 @@ void Camera::scaleObjectWithModelMatrix(glm::vec3 factorToScale)
 	// Step 3: Translate the object back to its original position
 	model = glm::translate(model, glm::vec3(0.0f));
 
-	//Camera::modelMatrix = model;
+	Camera::modelMatrix = model;
 
 	cameraMatrix = cameraMatrix * model;
 }
 
-void Camera::translateObjectWithModelMatrih(glm::vec3 newPosition)
+void Camera::translateObjectWithModelMatrih(glm::vec3 newPosition, glm::mat4 model)
 {
-	glm::mat4 model = glm::mat4(1.0f);
+	// Pravi lokalnu kopiju model matrice
+	glm::mat4 localModel = model;  
+	// Primeni translaciju
+	localModel = glm::translate(localModel, newPosition);  
 
-	model = glm::translate(model, newPosition);
-
-	//Camera::modelMatrix = model;
-
-	cameraMatrix = cameraMatrix * model;
+	// Kombinuj lokalnu model matricu sa kamerom samo za trenutni objekt
+	cameraMatrix = cameraMatrix * localModel;
 }
 
-// Getters
 glm::mat4 Camera::getModelMatrix()
 {
-	return Camera::modelMatrix;
+	return modelMatrix;
 }
 
-void Camera::Inputs(GLFWwindow* window)
+glm::mat4 Camera::getCameraMatrix()
+{
+	return Camera::cameraMatrix;
+}
+
+void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positionOfLightSource)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -132,5 +135,89 @@ void Camera::Inputs(GLFWwindow* window)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		firstClick = true;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+	{
+		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			if (lightColor.x <= 1.0f)
+			{
+				lightColor.x += 0.01f;
+			}
+		}
+		else
+		{
+			lightColor.x -= 0.01f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+	{
+		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			if (lightColor.y <= 1.0f)
+			{
+				lightColor.y += 0.01f;
+			}
+		}
+		else
+		{
+			lightColor.y -= 0.01f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+	{
+		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			if (lightColor.z <= 1.0f) {
+				lightColor.z += 0.01f;
+			}
+		}
+		else
+		{
+			lightColor.z -= 0.01f;
+		}
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			if (positionOfLightSource.y <= 100.0f)
+			{
+				positionOfLightSource.y += 0.01f;
+			}
+		}
+		else
+		{
+			positionOfLightSource.y -= 0.01f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	{
+		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			if (positionOfLightSource.x <= 100.0f)
+			{
+				positionOfLightSource.x += 0.01f;
+			}
+		}
+		else
+		{
+			positionOfLightSource.x -= 0.01f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		{
+			if (positionOfLightSource.z <= 100.0f) {
+				positionOfLightSource.z += 0.01f;
+			}
+		}
+		else
+		{
+			positionOfLightSource.z -= 0.01f;
+		}
 	}
 }

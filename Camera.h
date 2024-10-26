@@ -37,15 +37,16 @@ public:
 	// Updates the camera matrix to the Vertex Shader
 	void updateCameraMatrix(float FOVdeg, float nearPlane, float farPlane);
 	// Exports the camera matrix to a shader
-	void sendMatrixToShader(Shader& shader, const char* uniform);
+	void sendCamMatrixToShader(Shader& shader, const char* uniform);
 	// Scale object works only on 0,0,0
 	void scaleObjectWithModelMatrix(glm::vec3 factorToScale);
 	// Translate object
-	void translateObjectWithModelMatrih(glm::vec3 newPosition);
+	void translateObjectWithModelMatrih(glm::vec3 newPosition, glm::mat4 model);
 	// Handles camera inputs
-	void Inputs(GLFWwindow* window);
+	void Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positionOfLightSource);
 
 	// Getters
 	glm::mat4 getModelMatrix();
+	glm::mat4 getCameraMatrix();
 };
 #endif

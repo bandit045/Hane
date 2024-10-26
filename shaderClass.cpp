@@ -80,6 +80,11 @@ void Shader::sendVec3ToShader(const char* varName, float x, float y, float z)
 	glUniform3f(glGetUniformLocation(ID, varName), x, y, z);
 }
 
+void Shader::sendMatrix3x3fToShader(const char* varName, glm::mat3 matrix)
+{
+	glUniformMatrix3fv(glGetUniformLocation(ID, varName), 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
 void Shader::sendMat4x4ToShader(const char* varName, glm::mat4 matrix)
 {
 	glUniformMatrix4fv(glGetUniformLocation(ID, varName), 1, GL_FALSE, glm::value_ptr(matrix));

@@ -17,18 +17,45 @@
 const unsigned int width = 900;
 const unsigned int height = 900;
 
-// Verteces cordinates for triangle
-GLfloat vertices_triangle[] =
-{
-//  |      CORDINATES         |           COLOR          |   TEX-CORD     |       NORMALS      |
-	-1.0f,  0.0f,  1.0f,         1.0f,  0.0f,  0.0f,        0.0f, 0.0f,     0.0f, -1.0f, -1.0f,       // 0 red v4
-	 0.0f,  2.0f,  0.0f,         0.0f,  1.0f,  0.0f,        2.5f, 5.0f,     1.0f, -1.0f,  0.0f,       // 1 green  // APEX VERTICE
-	-1.0f,  0.0f, -1.0f,         0.0f,  0.0f,  1.0f,        5.0f, 0.0f,     0.0f, -1.0f,  1.0f,       // 2 blue v1
-	 1.0f,  0.0f,  1.0f,         1.0f,  1.0f,  1.0f,        5.0f, 0.0f,    -1.0f, -1.0f,  0.0f,       // 3 white v3
-	 1.0f,  0.0f, -1.0f,         0.0f,  0.0f,  0.0f,        0.0f, 0.0f,     0.0f, -1.0f,  0.0f,       // 4 black v2
+// Vertices coordinates
+GLfloat vertices_pyramide[] =
+{ //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
+	-0.5f, 0.0f,  0.5f,     1.00f, 0.00f, 0.00f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	-0.5f, 0.0f, -0.5f,     0.83f, 1.00f, 0.00f,	 0.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	 0.5f, 0.0f, -0.5f,     0.00f, 0.00f, 1.00f,	 5.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	 0.5f, 0.0f,  0.5f,     1.00f, 1.00f, 0.00f,	 5.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+
+	-0.5f, 0.0f,  0.5f,     0.83f, 1.70f, 0.00f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	-0.5f, 0.0f, -0.5f,     0.83f, 0.00f, 0.44f,	 5.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	 0.0f, 0.8f,  0.0f,     0.00f, 0.86f, 0.76f,	 2.5f, 5.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+
+	-0.5f, 0.0f, -0.5f,     0.83f, 1.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	 0.5f, 0.0f, -0.5f,     1.83f, 0.70f, 1.00f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	 0.0f, 0.8f,  0.0f,     0.00f, 0.00f, 0.00f,	 2.5f, 5.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+
+	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 1.00f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.5f, 0.0f,  0.5f,     1.00f, 0.00f, 0.44f,	 5.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.0f, 0.8f,  0.0f,     0.92f, 0.00f, 0.76f,	 2.5f, 5.0f,      0.8f, 0.5f,  0.0f, // Right side
+
+	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 1.00f,	 5.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+	-0.5f, 0.0f,  0.5f,     1.00f, 0.00f, 0.04f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+	 0.0f, 0.8f,  0.0f,     0.92f, 0.00f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f,  0.8f  // Facing side
 };
 
-GLfloat vertices_cube[] = {
+// Indices for vertices order
+GLuint indices_pyramide[] =
+{
+	0, 1, 2, // Bottom side
+	0, 2, 3, // Bottom side
+	4, 6, 5, // Left side
+	7, 9, 8, // Non-facing side
+	10, 12, 11, // Right side
+	13, 15, 14 // Facing side
+};
+
+// Vertices for cube
+GLfloat vertices_cube[] =
+{
 	// Positions          // Normals (x, y, z)
 
 	// Front face (z = 1.0)
@@ -68,7 +95,9 @@ GLfloat vertices_cube[] = {
 	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  0.0f, -1.0f,  0.0f   // Top-left
 };
 
-GLuint indices_cube[] = {
+// Indices for cube
+GLuint indices_cube[] =
+{
 	// Front face
 	0, 1, 2,  2, 3, 0,
 
@@ -88,73 +117,57 @@ GLuint indices_cube[] = {
 	20, 21, 22,  22, 23, 20
 };
 
-// Indices for verteces order
-GLuint indices_triangle[] =
-{
-	0, 3, 1,                        // Triangle 3
-	0, 1, 2,                        // Triangle 4
-	2, 4, 1,                        // Triangle 1
-	4, 1, 3,                        // Triangle 2
-	4, 3, 2,                        // Base triangle 1/2
-	0, 2, 3,					    // Base triangle 2/2
-};
-
  // Vertices for Light source  
 GLfloat vertices_lightSource[] =
 {
 		// Prednja strana
-		-0.1f, -0.1f,  0.1f,
-		 0.1f, -0.1f,  0.1f,
-		 0.1f,  0.1f,  0.1f,
-		 0.1f,  0.1f,  0.1f,
-		-0.1f,  0.1f,  0.1f,
-		-0.1f, -0.1f,  0.1f,
+		-0.01f, -0.01f,  0.01f,
+		 0.01f, -0.01f,  0.01f,
+		 0.01f,  0.01f,  0.01f,
+		 0.01f,  0.01f,  0.01f,
+		-0.01f,  0.01f,  0.01f,
+		-0.01f, -0.01f,  0.01f,
 
 		// Zadnja strana
-		-0.1f, -0.1f, -0.1f,
-		 0.1f, -0.1f, -0.1f,
-		 0.1f,  0.1f, -0.1f,
-		 0.1f,  0.1f, -0.1f,
-		-0.1f,  0.1f, -0.1f,
-		-0.1f, -0.1f, -0.1f,
+		-0.01f, -0.01f, -0.01f,
+		 0.01f, -0.01f, -0.01f,
+		 0.01f,  0.01f, -0.01f,
+		 0.01f,  0.01f, -0.01f,
+		-0.01f,  0.01f, -0.01f,
+		-0.01f, -0.01f, -0.01f,
 
 		// Leva strana
-		-0.1f,  0.1f,  0.1f,
-		-0.1f,  0.1f, -0.1f,
-		-0.1f, -0.1f, -0.1f,
-		-0.1f, -0.1f, -0.1f,
-		-0.1f, -0.1f,  0.1f,
-		-0.1f,  0.1f,  0.1f,
+		-0.01f,  0.01f,  0.01f,
+		-0.01f,  0.01f, -0.01f,
+		-0.01f, -0.01f, -0.01f,
+		-0.01f, -0.01f, -0.01f,
+		-0.01f, -0.01f,  0.01f,
+		-0.01f,  0.01f,  0.01f,
 
 		// Desna strana
-		 0.1f,  0.1f,  0.1f,
-		 0.1f,  0.1f, -0.1f,
-		 0.1f, -0.1f, -0.1f,
-		 0.1f, -0.1f, -0.1f,
-		 0.1f, -0.1f,  0.1f,
-		 0.1f,  0.1f,  0.1f,
+		 0.01f,  0.01f,  0.01f,
+		 0.01f,  0.01f, -0.01f,
+		 0.01f, -0.01f, -0.01f,
+		 0.01f, -0.01f, -0.01f,
+		 0.01f, -0.01f,  0.01f,
+		 0.01f,  0.01f,  0.01f,
 
 		 // Donja strana
-		 -0.1f, -0.1f, -0.1f,
-		  0.1f, -0.1f, -0.1f,
-		  0.1f, -0.1f,  0.1f,
-		  0.1f, -0.1f,  0.1f,
-		 -0.1f, -0.1f,  0.1f,
-		 -0.1f, -0.1f, -0.1f,
+		 -0.01f, -0.01f, -0.01f,
+		  0.01f, -0.01f, -0.01f,
+		  0.01f, -0.01f,  0.01f,
+		  0.01f, -0.01f,  0.01f,
+		 -0.01f, -0.01f,  0.01f,
+		 -0.01f, -0.01f, -0.01f,
 
 		 // Gornja strana
-		 -0.1f,  0.1f, -0.1f,
-		  0.1f,  0.1f, -0.1f,
-		  0.1f,  0.1f,  0.1f,
-		  0.1f,  0.1f,  0.1f,
-		 -0.1f,  0.1f,  0.1f,
-		 -0.1f,  0.1f, -0.1f
+		 -0.01f,  0.01f, -0.01f,
+		  0.01f,  0.01f, -0.01f,
+		  0.01f,  0.01f,  0.01f,
+		  0.01f,  0.01f,  0.01f,
+		 -0.01f,  0.01f,  0.01f,
+		 -0.01f,  0.01f, -0.01f
 };
-
-glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-glm::vec3 positionOfLightSource(1.0f, 1.0f, 1.0f);
-
-glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
 
 int main()
 {
@@ -199,9 +212,9 @@ int main()
 	TRIANGLE_SHAPE_VAO.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO TRIANGLE_SHAPE_VBO(vertices_triangle, sizeof(vertices_triangle));
+	VBO TRIANGLE_SHAPE_VBO(vertices_pyramide, sizeof(vertices_pyramide));
 	// Generates Element Buffer Object and links it to indices
-	EBO TRIANGLE_SHAPE_EBO(indices_triangle, sizeof(indices_triangle));
+	EBO TRIANGLE_SHAPE_EBO(indices_pyramide, sizeof(indices_pyramide));
 
 	// Links VBO attributes such as cordinates and colors to VAO
 	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
@@ -244,6 +257,29 @@ int main()
 	LIGHT_SOURCE_VAO.Unbind();
 	LIGHT_SOURCE_VBO.Unbind();
 
+	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+	glm::vec3 positionOfLightSource(1.0f, 1.0f, 1.0f);
+	glm::mat4 lightModel = glm::mat4(1.0f);
+	lightModel = glm::translate(lightModel, positionOfLightSource);
+
+	glm::vec3 pyramideColor(1.0f, 1.0f, 1.0f);
+	glm::vec3 pyramidPos = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::mat4 pyramidModel = glm::mat4(1.0f);
+	pyramidModel = glm::translate(pyramidModel, pyramidPos);
+
+	glm::vec3 cubeColor(1.0f, 1.0f, 1.0f);
+	glm::vec3 cubePos = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::mat4 cubeModel = glm::mat4(1.0f);
+	cubeModel = glm::translate(cubeModel, cubePos);
+
+	lightSourceShader.Activate();
+	glUniformMatrix4fv(glGetAttribLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+	glUniform3f(glGetUniformLocation(lightSourceShader.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
+	shaderProgramForObjects.Activate();
+	glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
+	glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b);
+	glUniformMatrix4fv(glGetAttribLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
+
 	// Textures
 	Texture popCat("pop_cat.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	popCat.texUnit(shaderProgramForObjects, "tex0", 0);
@@ -262,154 +298,79 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		// Clean the back buffer and assign the new color to it
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Handling input to move camera
-		camera.Inputs(window);
-		/*{
+
+		// Handling input to move camera, light positon ond light color
+		camera.Inputs(window, lightColor, positionOfLightSource);
+		// Updates and exports the camera matrix to the Vertex Shader
+		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
+
+		{
 			// Tell OpenGL which Shader Program we want to use 
 			shaderProgramForObjects.Activate();
 
-			camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
-			camera.sendMatrixToShader(shaderProgramForObjects, "camMatrix");
-			shaderProgramForObjects.sendVec3ToShader("lightColor", lightColor);
-			shaderProgramForObjects.sendVec3ToShader("objectColor", objectColor);
-			shaderProgramForObjects.sendVec3ToShader("lightPos", positionOfLightSource);
-			shaderProgramForObjects.sendMat4x4ToShader("model", camera.getModelMatrix());
+			// Exports the camera Position to the Fragment Shader for specular lighting
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+			// Export the camMatrix to the Vertex Shader of the pyramid
+			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
+
+			// Exprort light position for dynamic light
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
 
 			// Binding texture so its appear at render
 			popCat.Bind();
+
+			// Kreiraj lokalnu model matricu za piramidu
+			glm::mat4 pyramidModel = glm::mat4(1.0f); // Resetovana matrica
+			pyramidModel = glm::translate(pyramidModel, glm::vec3(2.0f, 1.0f, 1.0f));;  // Translacija piramide
+			shaderProgramForObjects.sendMat4x4ToShader("model", pyramidModel);  // Pošalji model matricu u shader
+
 			// Bind the VAO so OpenGL knows to use it
 			TRIANGLE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
-			glDrawElements(GL_TRIANGLES, sizeof(indices_triangle) / sizeof(int), GL_UNSIGNED_INT, 0);
-
+			glDrawElements(GL_TRIANGLES, sizeof(indices_pyramide) / sizeof(int), GL_UNSIGNED_INT, 0);
 			// Unbind texture
 			popCat.Unbind();
-		}*/
+		}
 		{
-			// Tell OpenGL which Shader Program we want to use
+			// Activating shader that is used only for objects
 			shaderProgramForObjects.Activate();
-
-			camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
-			camera.sendMatrixToShader(shaderProgramForObjects, "camMatrix");
-			shaderProgramForObjects.sendVec3ToShader("lightColor", lightColor);
-			shaderProgramForObjects.sendVec3ToShader("objectColor", objectColor);
-			shaderProgramForObjects.sendVec3ToShader("lightPos", positionOfLightSource);
-			//shaderProgramForObjects.sendMat4x4ToShader("model", camera.getModelMatrix());
+			// Export the camMatrix to the Vertex Shader of the cube
+			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			// Binding texture so its appear at render
 			popCat.Bind();
+
+			// Kreiraj lokalnu model matricu za kocku
+			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
+			cubeModel = glm::translate(cubeModel, glm::vec3(10.0f, 1.0f, 1.0f)); // Transplantacija kocke
+			shaderProgramForObjects.sendMat4x4ToShader("model", cubeModel);  // Pošalji model matricu u shader
+
 			// Bind the VAO so OpenGL knows to use it
 			CUBE_SHAPE_VAO.Bind();
-
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			glDrawElements(GL_TRIANGLES, sizeof(indices_cube) / sizeof(int), GL_UNSIGNED_INT, 0);
+			// Unbind texture
+			popCat.Unbind();
 		}
 		{
 			// Activating shader that is used only for lightSource
 			lightSourceShader.Activate();
 
+			// Kreiraj lokalnu model matricu za svetlosni izvor
+			glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
+			lightModel = glm::translate(lightModel, positionOfLightSource); // Translantacija svetla
+			lightSourceShader.sendMat4x4ToShader("model", lightModel);  // Pošalji model matricu u shader
+
 			// Passing camMatrix in uniform to lightSourceCube in shader for projection matrix
-			//camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
-			camera.translateObjectWithModelMatrih(positionOfLightSource);
-			camera.sendMatrixToShader(lightSourceShader, "camMatrix");
+			camera.sendCamMatrixToShader(lightSourceShader, "camMatrix");
 
 			// We setting up which is the color of lightSource cube
 			lightSourceShader.sendVec3ToShader("lightColor", lightColor);
 
 			// Binding light source vao in order to draws it
 			LIGHT_SOURCE_VAO.Bind();
-
 			// Draw light source cube using DrawArrays no-index(EBO)
 			glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices_lightSource) / sizeof(float));
-		}
-
-		// TODO apstract this down
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-		{
-			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			{
-				if (lightColor.x <= 1.0f)
-				{
-					lightColor.x += 0.01f;
-				}
-			}
-			else
-			{
-				lightColor.x -= 0.01f;
-			}
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		{
-			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			{
-				if (lightColor.y <= 1.0f)
-				{
-					lightColor.y += 0.01f;
-				}
-			}
-			else
-			{
-				lightColor.y -= 0.01f;
-			}
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-		{
-			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			{
-				if (lightColor.z <= 1.0f) {
-					lightColor.z += 0.01f;
-				}
-			}
-			else
-			{
-				lightColor.z -= 0.01f;
-			}
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-		{
-			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			{
-				if (positionOfLightSource.y <= 100.0f)
-				{
-					positionOfLightSource.y += 0.05f;
-				}
-			}
-			else
-			{
-				positionOfLightSource.y -= 0.05f;
-			}
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		{
-			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			{
-				if (positionOfLightSource.x <= 100.0f)
-				{
-					positionOfLightSource.x += 0.05f;
-				}
-			}
-			else
-			{
-				positionOfLightSource.x -= 0.05f;
-			}
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		{
-			if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			{
-				if (positionOfLightSource.z <= 100.0f) {
-					positionOfLightSource.z += 0.05f;
-				}
-			}
-			else
-			{
-				positionOfLightSource.z -= 0.05f;
-			}
 		}
 
 		// Swap the back buffer with the front buffer
