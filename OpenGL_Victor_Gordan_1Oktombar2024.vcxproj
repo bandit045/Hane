@@ -176,9 +176,14 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\skenons_logo.png" />
     <Image Include="..\..\..\pop_cat.png" />
+    <Image Include="awesomeface.png" />
+    <Image Include="chicken_image.png" />
+    <Image Include="container.jpg" />
     <Image Include="dj.png" />
+    <Image Include="logo_skenons.png" />
+    <Image Include="run.png" />
+    <Image Include="wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

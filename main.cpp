@@ -269,7 +269,7 @@ int main()
 	glm::mat4 pyramidModel = glm::mat4(1.0f);
 	pyramidModel = glm::translate(pyramidModel, pyramidPos);
 
-	glm::vec3 cubeColor(0.0f, 0.0f, 0.0f);
+	glm::vec3 cubeColor(1.0f, 1.0f, 1.0f);
 	glm::vec3 cubePos = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::mat4 cubeModel = glm::mat4(1.0f);
 	cubeModel = glm::translate(cubeModel, cubePos);
@@ -278,7 +278,6 @@ int main()
 	glUniformMatrix4fv(glGetAttribLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform3f(glGetUniformLocation(lightSourceShader.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
 	shaderProgramForObjects.Activate();
-	glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
 	glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b);
 	glUniformMatrix4fv(glGetAttribLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
 
@@ -287,7 +286,16 @@ int main()
 	popCat.texUnit(shaderProgramForObjects, "tex0", 0);
 
 	Texture DiJej("dj.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	DiJej.texUnit(shaderProgramForObjects, "tex1", 0);
+	DiJej.texUnit(shaderProgramForObjects, "tex0", 0);
+
+	Texture skenons("logo_skenons.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	skenons.texUnit(shaderProgramForObjects, "tex0", 0);
+
+	Texture chicken_image("chicken_image.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	chicken_image.texUnit(shaderProgramForObjects, "tex0", 0);
+
+	Texture run_image("run.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	run_image.texUnit(shaderProgramForObjects, "tex0", 0);
 
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
@@ -320,9 +328,11 @@ int main()
 
 			// Exprort light position for dynamic light
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b);
 
 			// Binding texture so its appear at render
-			popCat.Bind();
+			skenons.Bind();
 
 			// Kreiraj lokalnu model matricu za piramidu
 			glm::mat4 pyramidModel = glm::mat4(1.0f); // Resetovana matrica
@@ -334,13 +344,14 @@ int main()
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			glDrawElements(GL_TRIANGLES, sizeof(indices_pyramide) / sizeof(int), GL_UNSIGNED_INT, 0);
 			// Unbind texture
-			popCat.Unbind();
+			skenons.Unbind();
 		}
 		{
 			// Activating shader that is used only for objects
 			shaderProgramForObjects.Activate();
 			// Export the camMatrix to the Vertex Shader of the cube
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), cubeColor.r, cubeColor.g, cubeColor.b);
 
 			// Binding texture so its appear at render
 			DiJej.Bind();
@@ -391,6 +402,10 @@ int main()
 	LIGHT_SOURCE_VAO.Delete();
 	LIGHT_SOURCE_VBO.Delete();
 	popCat.Delete();
+	DiJej.Delete();
+	skenons.Delete();
+	run_image.Delete();
+	chicken_image.Delete();
 	shaderProgramForObjects.Delete();
 	lightSourceShader.Delete();
 	// Delete window before ending the program

@@ -90,10 +90,25 @@
     <Image Include="..\..\..\pop_cat.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="..\..\..\skenons_logo.png">
+    <Image Include="dj.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
-    <Image Include="dj.png">
+    <Image Include="chicken_image.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="logo_skenons.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="awesomeface.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="wall.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="container.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="run.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>
