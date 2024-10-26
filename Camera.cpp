@@ -16,7 +16,7 @@ void Camera::updateCameraMatrix(float FOVdeg, float nearPlane, float farPlane)
 	// Makes camera look in the right direction from the right side
 	view = glm::lookAt(Position, Position + Orientation, Up);
 	// Adds perspective to the scene
-	projection = glm::perspective(glm::radians(FOVdeg), (float)(width / height), nearPlane, farPlane);
+	projection = glm::perspective(glm::radians(FOVdeg), (float)width / (float)height, nearPlane, farPlane);
 
 	cameraMatrix = projection * view;
 }
@@ -28,22 +28,18 @@ void Camera::sendCamMatrixToShader(Shader& shader, const char* uniform)
 }
 
 // Works only in centre 0,0,0
-void Camera::scaleObjectWithModelMatrix(glm::vec3 factorToScale)
+void Camera::scaleObjectWithModelMatrix(glm::vec3 factorToScale, glm::vec3 curcurentPosition)
 {
 	glm::mat4 model = glm::mat4(1.0f);
 
 	// Step 1: Translate the object to the origin (reverse translation)
-	model = glm::translate(model, -glm::vec3(0.0f));
+	model = glm::translate(model, -curcurentPosition);
 
 	// Step 2: Apply the scaling (scale only the size)
 	model = glm::scale(model, factorToScale);
 
 	// Step 3: Translate the object back to its original position
-	model = glm::translate(model, glm::vec3(0.0f));
-
-	Camera::modelMatrix = model;
-
-	cameraMatrix = cameraMatrix * model;
+	model = glm::translate(model, curcurentPosition);
 }
 
 void Camera::translateObjectWithModelMatrih(glm::vec3 newPosition, glm::mat4 model)
@@ -118,7 +114,7 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
 		float rotx = sensitivity * (float)(mouseY - (height / 2)) / height;
-		float roty = sensitivity * (float)(mouseX - (height / 2)) / height;
+		float roty = sensitivity * (float)(mouseX - (width / 2)) / width;
 
 		glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotx), glm::normalize(glm::cross(Orientation, Up)));
 

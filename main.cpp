@@ -13,9 +13,11 @@
 #include "EBO.h"
 #include "Camera.h"
 
+const unsigned int width = 1920;
+const unsigned int height = 1080;
 
-const unsigned int width = 900;
-const unsigned int height = 900;
+float repeat_time_cube = 2.0f;
+float repeat_time_cube_top = 1.0f;
 
 // Vertices coordinates
 GLfloat vertices_pyramide[] =
@@ -60,39 +62,39 @@ GLfloat vertices_cube[] =
 
 	// Front face (z = 1.0)
 	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  0.0f,  0.0f,  1.0f,  // Top-right
-	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  0.0f,  0.0f,  1.0f,  // Top-left
+	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-right
+	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  0.0f,  0.0f,  1.0f,  // Top-right
+	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  0.0f,  0.0f,  1.0f,  // Top-left
 
 	// Back face (z = -1.0)
 	-1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f, -1.0f,  // Bottom-left
-	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  0.0f,  0.0f, -1.0f,  // Bottom-right
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  0.0f,  0.0f, -1.0f,  // Top-right
-	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  0.0f,  0.0f, -1.0f,  // Top-left
+	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  0.0f,  0.0f, -1.0f,  // Bottom-right
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  0.0f,  0.0f, -1.0f,  // Top-right
+	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  0.0f,  0.0f, -1.0f,  // Top-left
 
 	// Left face (x = -1.0)
 	-1.0f, -1.0f, -1.0f, 1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,  // Bottom-left
-	-1.0f, -1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  -1.0f,  0.0f,  0.0f,  // Bottom-right
-	-1.0f,  1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  -1.0f,  0.0f,  0.0f,  // Top-right
-	-1.0f,  1.0f, -1.0f, 1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  -1.0f,  0.0f,  0.0f,  // Top-left
+	-1.0f, -1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  -1.0f,  0.0f,  0.0f,  // Bottom-right
+	-1.0f,  1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  -1.0f,  0.0f,  0.0f,  // Top-right
+	-1.0f,  1.0f, -1.0f, 1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  -1.0f,  0.0f,  0.0f,  // Top-left
 
 	// Right face (x = 1.0)
 	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  1.0f,  0.0f,  0.0f,  // Top-right
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  1.0f,  0.0f,  0.0f,  // Top-left
+	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
+	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  1.0f,  0.0f,  0.0f,  // Top-right
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  1.0f,  0.0f,  0.0f,  // Top-left
 
 	// Top face (y = 1.0)
-	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,  0.0f,  1.0f,  0.0f,  // Top-left
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,  0.0f,  1.0f,  0.0f,  // Top-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-right
+	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube_top,  0.0f,  1.0f,  0.0f,  // Top-left
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube_top, 1.0f,  0.0f,  1.0f,  0.0f,  // Top-right
+	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube_top, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-right
 	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-left
 
 	// Bottom face (y = -1.0)
 	-1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f, -1.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 0.0f,  0.0f, -1.0f,  0.0f,  // Bottom-right
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  6.0f, 6.0f,  0.0f, -1.0f,  0.0f,  // Top-right
-	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 6.0f,  0.0f, -1.0f,  0.0f   // Top-left
+	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  0.0f, -1.0f,  0.0f,  // Bottom-right
+	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  0.0f, -1.0f,  0.0f,  // Top-right
+	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  0.0f, -1.0f,  0.0f   // Top-left
 };
 
 // Indices for cube
@@ -258,7 +260,7 @@ int main()
 	LIGHT_SOURCE_VBO.Unbind();
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-	glm::vec3 positionOfLightSource(1.0f, 1.0f, 1.0f);
+	glm::vec3 positionOfLightSource(1.0f, 3.0f, 1.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, positionOfLightSource);
 
@@ -267,7 +269,7 @@ int main()
 	glm::mat4 pyramidModel = glm::mat4(1.0f);
 	pyramidModel = glm::translate(pyramidModel, pyramidPos);
 
-	glm::vec3 cubeColor(1.0f, 1.0f, 1.0f);
+	glm::vec3 cubeColor(0.0f, 0.0f, 0.0f);
 	glm::vec3 cubePos = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::mat4 cubeModel = glm::mat4(1.0f);
 	cubeModel = glm::translate(cubeModel, cubePos);
@@ -283,6 +285,9 @@ int main()
 	// Textures
 	Texture popCat("pop_cat.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	popCat.texUnit(shaderProgramForObjects, "tex0", 0);
+
+	Texture DiJej("dj.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	DiJej.texUnit(shaderProgramForObjects, "tex1", 0);
 
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
@@ -338,11 +343,11 @@ int main()
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			// Binding texture so its appear at render
-			popCat.Bind();
+			DiJej.Bind();
 
 			// Kreiraj lokalnu model matricu za kocku
-			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
-			cubeModel = glm::translate(cubeModel, glm::vec3(10.0f, 1.0f, 1.0f)); // Transplantacija kocke
+			cubeModel = glm::mat4(1.0f);  // Resetovana matrica
+			cubeModel = glm::translate(cubeModel, glm::vec3(5.0f, 1.0f, 1.0f)); // Transplantacija kocke
 			shaderProgramForObjects.sendMat4x4ToShader("model", cubeModel);  // Pošalji model matricu u shader
 
 			// Bind the VAO so OpenGL knows to use it
@@ -350,7 +355,7 @@ int main()
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			glDrawElements(GL_TRIANGLES, sizeof(indices_cube) / sizeof(int), GL_UNSIGNED_INT, 0);
 			// Unbind texture
-			popCat.Unbind();
+			DiJej.Unbind();
 		}
 		{
 			// Activating shader that is used only for lightSource

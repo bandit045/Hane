@@ -39,7 +39,7 @@ public:
 	// Exports the camera matrix to a shader
 	void sendCamMatrixToShader(Shader& shader, const char* uniform);
 	// Scale object works only on 0,0,0
-	void scaleObjectWithModelMatrix(glm::vec3 factorToScale);
+	void scaleObjectWithModelMatrix(glm::vec3 factorToScale, glm::vec3 curcurentPosition);
 	// Translate object
 	void translateObjectWithModelMatrih(glm::vec3 newPosition, glm::mat4 model);
 	// Handles camera inputs

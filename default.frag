@@ -24,10 +24,10 @@ void main()
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
 	// specular lighting
-	float specularLight = 1.0f;
+	float specularLight = 64.0f;
 	vec3 viewDirection = normalize(camPos - crntPos);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
-	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 8);
+	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 256);
 	float specular = specAmount * specularLight;
 
     // Combine lighting components

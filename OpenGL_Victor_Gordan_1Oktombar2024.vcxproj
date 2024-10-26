@@ -178,6 +178,7 @@
   <ItemGroup>
     <Image Include="..\..\..\skenons_logo.png" />
     <Image Include="..\..\..\pop_cat.png" />
+    <Image Include="dj.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
