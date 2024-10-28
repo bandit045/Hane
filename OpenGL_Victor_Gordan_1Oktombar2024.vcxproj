@@ -184,6 +184,7 @@
     <Image Include="logo_skenons.png" />
     <Image Include="run.png" />
     <Image Include="wall.jpg" />
+    <Image Include="wood.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

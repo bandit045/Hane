@@ -63,7 +63,7 @@ glm::mat4 Camera::getCameraMatrix()
 	return Camera::cameraMatrix;
 }
 
-void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positionOfLightSource)
+void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positionOfLightSource, bool& blinn)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -215,5 +215,17 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 		{
 			positionOfLightSource.z -= 0.01f;
 		}
+	}
+
+	// Blinn-phong switch
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	{
+		blinn = false;
+	}
+
+	// Phong switch
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+	{
+		blinn = true;
 	}
 }

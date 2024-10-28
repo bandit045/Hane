@@ -247,6 +247,7 @@ int main()
 	CUBE_SHAPE_VBO.Unbind();
 	CUBE_SHAPE_EBO.Unbind();
 //----------------------------------------------------------------------------------------------------------------------------------------
+ 
 	// Generates Vertex Array Object and binds it
 	VAO LIGHT_SOURCE_VAO;
 	LIGHT_SOURCE_VAO.Bind();
@@ -258,6 +259,7 @@ int main()
 	// Unbind all to prevent accidentally modifying them
 	LIGHT_SOURCE_VAO.Unbind();
 	LIGHT_SOURCE_VBO.Unbind();
+//-------------------------------------------------------------------------------------------------------------------------
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 	glm::vec3 positionOfLightSource(1.0f, 3.0f, 1.0f);
@@ -269,16 +271,17 @@ int main()
 	glm::mat4 pyramidModel = glm::mat4(1.0f);
 	pyramidModel = glm::translate(pyramidModel, pyramidPos);
 
-	glm::vec3 cubeColor(1.0f, 1.0f, 1.0f);
-	glm::vec3 cubePos = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 cubeColor(0.761f, 0.533f, 0.29f);
+	glm::vec3 cubePos = glm::vec3(3.0f, 1.0f, 1.0f);
 	glm::mat4 cubeModel = glm::mat4(1.0f);
 	cubeModel = glm::translate(cubeModel, cubePos);
+
+	bool blinn = true;
 
 	lightSourceShader.Activate();
 	glUniformMatrix4fv(glGetAttribLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform3f(glGetUniformLocation(lightSourceShader.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
 	shaderProgramForObjects.Activate();
-	glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b);
 	glUniformMatrix4fv(glGetAttribLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
 
 	// Textures
@@ -291,15 +294,19 @@ int main()
 	Texture skenons("logo_skenons.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	skenons.texUnit(shaderProgramForObjects, "tex0", 0);
 
-	Texture chicken_image("chicken_image.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	chicken_image.texUnit(shaderProgramForObjects, "tex0", 0);
+	Texture chicken("chicken_image.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	chicken.texUnit(shaderProgramForObjects, "tex0", 0);
 
-	Texture run_image("run.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	run_image.texUnit(shaderProgramForObjects, "tex0", 0);
+	Texture run("run.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	run.texUnit(shaderProgramForObjects, "tex0", 0);
+
+	Texture wood("wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	wood.texUnit(shaderProgramForObjects, "tex0", 0);
 
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
 
+	// Makeing camera
 	Camera camera(width, height, glm::vec3(0.0f, 2.0f, 5.0f));
 
 	// Main while loop
@@ -313,7 +320,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handling input to move camera, light positon ond light color
-		camera.Inputs(window, lightColor, positionOfLightSource);
+		camera.Inputs(window, lightColor, positionOfLightSource, blinn);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
 
@@ -330,13 +337,14 @@ int main()
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn);
 
 			// Binding texture so its appear at render
 			skenons.Bind();
 
 			// Kreiraj lokalnu model matricu za piramidu
-			glm::mat4 pyramidModel = glm::mat4(1.0f); // Resetovana matrica
-			pyramidModel = glm::translate(pyramidModel, glm::vec3(2.0f, 1.0f, 1.0f));;  // Translacija piramide
+			pyramidModel = glm::mat4(1.0f); // Resetovana matrica
+			pyramidModel = glm::translate(pyramidModel, pyramidPos);;  // Translacija piramide
 			shaderProgramForObjects.sendMat4x4ToShader("model", pyramidModel);  // Pošalji model matricu u shader
 
 			// Bind the VAO so OpenGL knows to use it
@@ -346,42 +354,45 @@ int main()
 			// Unbind texture
 			skenons.Unbind();
 		}
-		{
+		{ // CUBE
+
 			// Activating shader that is used only for objects
 			shaderProgramForObjects.Activate();
 			// Export the camMatrix to the Vertex Shader of the cube
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), cubeColor.r, cubeColor.g, cubeColor.b);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn);
 
 			// Binding texture so its appear at render
-			DiJej.Bind();
+			wood.Bind();
 
 			// Kreiraj lokalnu model matricu za kocku
 			cubeModel = glm::mat4(1.0f);  // Resetovana matrica
-			cubeModel = glm::translate(cubeModel, glm::vec3(5.0f, 1.0f, 1.0f)); // Transplantacija kocke
-			shaderProgramForObjects.sendMat4x4ToShader("model", cubeModel);  // Pošalji model matricu u shader
+			cubeModel = glm::translate(cubeModel, cubePos); // Transplantacija kocke
+			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel)); // Pošalji model matricu u shader
 
 			// Bind the VAO so OpenGL knows to use it
 			CUBE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			glDrawElements(GL_TRIANGLES, sizeof(indices_cube) / sizeof(int), GL_UNSIGNED_INT, 0);
 			// Unbind texture
-			DiJej.Unbind();
+			wood.Unbind();
 		}
-		{
+		{ // LIGHT CUBE SOURCE
+
 			// Activating shader that is used only for lightSource
 			lightSourceShader.Activate();
 
 			// Kreiraj lokalnu model matricu za svetlosni izvor
-			glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
+			lightModel = glm::mat4(1.0f); // Resetovana matrica
 			lightModel = glm::translate(lightModel, positionOfLightSource); // Translantacija svetla
-			lightSourceShader.sendMat4x4ToShader("model", lightModel);  // Pošalji model matricu u shader
+			glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader
 
 			// Passing camMatrix in uniform to lightSourceCube in shader for projection matrix
 			camera.sendCamMatrixToShader(lightSourceShader, "camMatrix");
 
 			// We setting up which is the color of lightSource cube
-			lightSourceShader.sendVec3ToShader("lightColor", lightColor);
+			lightSourceShader.sendVec3fToShader("lightColor", lightColor);
 
 			// Binding light source vao in order to draws it
 			LIGHT_SOURCE_VAO.Bind();
@@ -399,13 +410,17 @@ int main()
 	TRIANGLE_SHAPE_VAO.Delete();
 	TRIANGLE_SHAPE_VBO.Delete();
 	TRIANGLE_SHAPE_EBO.Delete();
+	CUBE_SHAPE_VAO.Delete();
+	CUBE_SHAPE_VBO.Delete();
+	CUBE_SHAPE_EBO.Delete();
 	LIGHT_SOURCE_VAO.Delete();
 	LIGHT_SOURCE_VBO.Delete();
 	popCat.Delete();
 	DiJej.Delete();
 	skenons.Delete();
-	run_image.Delete();
-	chicken_image.Delete();
+	run.Delete();
+	chicken.Delete();
+	wood.Delete();
 	shaderProgramForObjects.Delete();
 	lightSourceShader.Delete();
 	// Delete window before ending the program
