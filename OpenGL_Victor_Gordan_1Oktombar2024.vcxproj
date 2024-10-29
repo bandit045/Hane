@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\imgui\backends;$(ProjectDir)\imgui\;C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\include;C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\imgui;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -154,6 +154,13 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="stb.cpp" />
@@ -164,6 +171,7 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="imgui.natstepfilter" />
     <None Include="lightingSourceShader.frag" />
     <None Include="lightingSourceShader.vert" />
   </ItemGroup>
@@ -182,9 +190,14 @@
     <Image Include="container.jpg" />
     <Image Include="dj.png" />
     <Image Include="logo_skenons.png" />
+    <Image Include="planks.png" />
+    <Image Include="planksSpec.png" />
     <Image Include="run.png" />
     <Image Include="wall.jpg" />
     <Image Include="wood.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="imgui.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

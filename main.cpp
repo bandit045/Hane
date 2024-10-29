@@ -6,6 +6,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+#include <stdio.h>
+
 #include "Texture.h"
 #include "shaderClass.h"
 #include "VBO.h"
@@ -17,7 +22,7 @@ const unsigned int width = 1920;
 const unsigned int height = 1080;
 
 float repeat_time_cube = 2.0f;
-float repeat_time_cube_top = 1.0f;
+float repeat_time_cube_top = 3.0f;
 
 // Vertices coordinates
 GLfloat vertices_pyramide[] =
@@ -86,7 +91,7 @@ GLfloat vertices_cube[] =
 
 	// Top face (y = 1.0)
 	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube_top,  0.0f,  1.0f,  0.0f,  // Top-left
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube_top, 1.0f,  0.0f,  1.0f,  0.0f,  // Top-right
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube_top, repeat_time_cube_top,  0.0f,  1.0f,  0.0f,  // Top-right
 	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube_top, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-right
 	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-left
 
@@ -183,6 +188,7 @@ int main()
 	// Tell GLFW we are using the CORE profile
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
 
 	// Create a GLFWwindow object of 800 by 800 pixels, naming it "Hello World!"
 	GLFWwindow* window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
@@ -200,7 +206,16 @@ int main()
 
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
+//-----------------------------------------------------------------------------------------------
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
 
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(window, true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+	ImGui_ImplOpenGL3_Init();
+//-----------------------------------------------------------------------------------------------
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
 	glViewport(0,0, width, height);
@@ -277,6 +292,7 @@ int main()
 	cubeModel = glm::translate(cubeModel, cubePos);
 
 	bool blinn = true;
+	bool specularMap_Switch = true;
 
 	lightSourceShader.Activate();
 	glUniformMatrix4fv(glGetAttribLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
@@ -285,23 +301,28 @@ int main()
 	glUniformMatrix4fv(glGetAttribLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
 
 	// Textures
-	Texture popCat("pop_cat.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture popCat("pop_cat.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	popCat.texUnit(shaderProgramForObjects, "tex0", 0);
 
-	Texture DiJej("dj.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture DiJej("dj.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	DiJej.texUnit(shaderProgramForObjects, "tex0", 0);
 
-	Texture skenons("logo_skenons.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture skenons("logo_skenons.png", 0, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	skenons.texUnit(shaderProgramForObjects, "tex0", 0);
 
-	Texture chicken("chicken_image.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture chicken("chicken_image.png", 0, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	chicken.texUnit(shaderProgramForObjects, "tex0", 0);
 
-	Texture run("run.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture run("run.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	run.texUnit(shaderProgramForObjects, "tex0", 0);
 
-	Texture wood("wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture wood("wood.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
 	wood.texUnit(shaderProgramForObjects, "tex0", 0);
+
+	Texture planks("planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+	planks.texUnit(shaderProgramForObjects, "tex0", 0);
+	Texture planksSpec("planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
+	planksSpec.texUnit(shaderProgramForObjects, "tex1", 1);
 
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
@@ -312,6 +333,29 @@ int main()
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		//ImGui::ShowDemoWindow(); // Show demo window! :)
+
+		{
+			ImGui::Begin("Hello, world!");
+
+			ImGui::Text("Trenutno ukljuceni efekti:");
+
+			ImGui::Checkbox("Blinn-Phong", &blinn);
+			ImGui::SameLine();
+			ImGui::Text("   P/O KEY");
+
+			ImGui::Checkbox("specularMap_Switch", &specularMap_Switch);
+			ImGui::SameLine();
+			ImGui::Text("   M/N KEY");
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+			ImGui::End();
+		}
+
 		// Setting rendering mode to line
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Specify the color of the background
@@ -320,11 +364,11 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handling input to move camera, light positon ond light color
-		camera.Inputs(window, lightColor, positionOfLightSource, blinn);
+		camera.Inputs(window, lightColor, positionOfLightSource, blinn, specularMap_Switch);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
 
-		{
+		{ //PYRAMIDE
 			// Tell OpenGL which Shader Program we want to use 
 			shaderProgramForObjects.Activate();
 
@@ -338,9 +382,11 @@ int main()
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b);
 			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "specularMap_Switch"), specularMap_Switch);
 
 			// Binding texture so its appear at render
-			skenons.Bind();
+			planks.Bind();
+			planksSpec.Bind();
 
 			// Kreiraj lokalnu model matricu za piramidu
 			pyramidModel = glm::mat4(1.0f); // Resetovana matrica
@@ -352,7 +398,8 @@ int main()
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			glDrawElements(GL_TRIANGLES, sizeof(indices_pyramide) / sizeof(int), GL_UNSIGNED_INT, 0);
 			// Unbind texture
-			skenons.Unbind();
+			planks.Unbind();
+			planksSpec.Unbind();
 		}
 		{ // CUBE
 
@@ -362,9 +409,12 @@ int main()
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), cubeColor.r, cubeColor.g, cubeColor.b);
 			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "specularMap_Switch"), specularMap_Switch);
 
 			// Binding texture so its appear at render
-			wood.Bind();
+			//planksSpec.Bind();
+			planks.Bind();
+			planksSpec.Bind();
 
 			// Kreiraj lokalnu model matricu za kocku
 			cubeModel = glm::mat4(1.0f);  // Resetovana matrica
@@ -376,7 +426,9 @@ int main()
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			glDrawElements(GL_TRIANGLES, sizeof(indices_cube) / sizeof(int), GL_UNSIGNED_INT, 0);
 			// Unbind texture
-			wood.Unbind();
+			//planksSpec.Unbind();
+			planks.Unbind();
+			planksSpec.Unbind();
 		}
 		{ // LIGHT CUBE SOURCE
 
@@ -399,6 +451,9 @@ int main()
 			// Draw light source cube using DrawArrays no-index(EBO)
 			glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices_lightSource) / sizeof(float));
 		}
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);
@@ -423,6 +478,11 @@ int main()
 	wood.Delete();
 	shaderProgramForObjects.Delete();
 	lightSourceShader.Delete();
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	// Delete window before ending the program
 	glfwDestroyWindow(window);
 	// Terminate GLFW before ending the program

@@ -22,6 +22,9 @@
     <Filter Include="Resource Files\Shaders\LightingSource">
       <UniqueIdentifier>{3549f33c-0bb3-4fd1-88a8-c0b8b4742780}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{e90f9d10-14e8-4c67-bfe3-f5cf1553d929}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -51,6 +54,27 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_demo.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_tables.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag">
@@ -64,6 +88,9 @@
     </None>
     <None Include="lightingSourceShader.frag">
       <Filter>Resource Files\Shaders\LightingSource</Filter>
+    </None>
+    <None Include="imgui.natstepfilter">
+      <Filter>GUI</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -114,5 +141,16 @@
     <Image Include="wood.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="planks.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="planksSpec.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="imgui.natvis">
+      <Filter>GUI</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

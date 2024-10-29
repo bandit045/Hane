@@ -63,7 +63,7 @@ glm::mat4 Camera::getCameraMatrix()
 	return Camera::cameraMatrix;
 }
 
-void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positionOfLightSource, bool& blinn)
+void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positionOfLightSource, bool& blinn, bool& specularMap_Switch)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -99,34 +99,38 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 		speed = 0.1f;
 	}
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
 	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-		if (firstClick)
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+			if (firstClick)
+			{
+				glfwSetCursorPos(window, (width / 2), (height / 2));
+				firstClick = false;
+			}
+
+			double mouseX;
+			double mouseY;
+			glfwGetCursorPos(window, &mouseX, &mouseY);
+
+			float rotx = sensitivity * (float)(mouseY - (height / 2)) / height;
+			float roty = sensitivity * (float)(mouseX - (width / 2)) / width;
+
+			glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotx), glm::normalize(glm::cross(Orientation, Up)));
+
+			if (!((glm::angle(newOrientation, Up) <= glm::radians(5.0f)) or (glm::angle(newOrientation, -Up) <= glm::radians(5.0f))));
+			{
+				Orientation = newOrientation;
+			}
+
+			Orientation = glm::rotate(Orientation, glm::radians(-roty), Up);
+
 			glfwSetCursorPos(window, (width / 2), (height / 2));
-			firstClick = false;
 		}
-
-		double mouseX;
-		double mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
-
-		float rotx = sensitivity * (float)(mouseY - (height / 2)) / height;
-		float roty = sensitivity * (float)(mouseX - (width / 2)) / width;
-
-		glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotx), glm::normalize(glm::cross(Orientation, Up)));
-
-		if (!((glm::angle(newOrientation, Up) <= glm::radians(5.0f)) or (glm::angle(newOrientation, -Up) <= glm::radians(5.0f))));
-		{
-			Orientation = newOrientation;
-		}
-
-		Orientation = glm::rotate(Orientation, glm::radians(-roty), Up);
-
-		glfwSetCursorPos(window, (width / 2), (height / 2));
 	}
+
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -227,5 +231,17 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
 	{
 		blinn = true;
+	}
+
+	// Specular Map switch
+	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+	{
+		specularMap_Switch = true;
+	}
+
+	// Specular Map switch
+	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+	{
+		specularMap_Switch = false;
 	}
 }
