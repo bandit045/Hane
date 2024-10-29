@@ -184,7 +184,6 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\pop_cat.png" />
     <Image Include="awesomeface.png" />
     <Image Include="chicken_image.png" />
     <Image Include="container.jpg" />
@@ -192,7 +191,10 @@
     <Image Include="logo_skenons.png" />
     <Image Include="planks.png" />
     <Image Include="planksSpec.png" />
+    <Image Include="pop_cat.png" />
     <Image Include="run.png" />
+    <Image Include="Textures\oak.png" />
+    <Image Include="Textures\oakSpec.png" />
     <Image Include="wall.jpg" />
     <Image Include="wood.png" />
   </ItemGroup>

@@ -86,10 +86,10 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 	{
 		Position += speed * Up;
 	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		Position += speed * -Up;
-	}
+	}*/
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
 		speed = 0.4f;
@@ -99,7 +99,7 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 		speed = 0.1f;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS)
 	{
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		{
@@ -141,41 +141,41 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 	{
 		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
-			if (lightColor.x <= 1.0f)
+			if (lightColor.r < 1.0f)
 			{
-				lightColor.x += 0.01f;
+				lightColor.r += 0.01f;
 			}
 		}
-		else
+		else if(lightColor.r > 0.01f)
 		{
-			lightColor.x -= 0.01f;
+			lightColor.r -= 0.01f;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
 	{
 		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
-			if (lightColor.y <= 1.0f)
+			if (lightColor.g < 1.0f)
 			{
-				lightColor.y += 0.01f;
+				lightColor.g += 0.01f;
 			}
 		}
-		else
+		else if(lightColor.g > 0.01f)
 		{
-			lightColor.y -= 0.01f;
+			lightColor.g -= 0.01f;
 		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
 	{
 		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		{
-			if (lightColor.z <= 1.0f) {
-				lightColor.z += 0.01f;
+			if (lightColor.b < 1.0f) {
+				lightColor.b += 0.01f;
 			}
 		}
-		else
+		else if (lightColor.b > 0.01f)
 		{
-			lightColor.z -= 0.01f;
+			lightColor.b -= 0.01f;
 		}
 	}
 

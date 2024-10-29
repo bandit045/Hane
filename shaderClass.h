@@ -23,6 +23,8 @@ class Shader
 
 		// Activates the Shader Program
 		void Activate();
+		// Deactivate the Shader Program
+		void Deactivate();
 		// Deletes the Shader Program
 		void Delete();
 		// Update vec3 matrix to shader

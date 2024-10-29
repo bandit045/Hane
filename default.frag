@@ -1,4 +1,22 @@
 #version 330 core
+
+struct Material{
+	vec3 objectColor;
+	float ambientStrenght;
+	float diffuseStrenght;
+	float specularStrength;
+	float shininessBlinnPhong;
+	float shininessPhong;
+
+	sampler2D tex0; //For base texture
+	sampler2D tex1; //For specular texture
+};
+
+struct Light{
+	vec3 lightColor;
+	vec3 lightPos;
+};
+
 out vec4 FragColor;
 
 in vec3 color;
@@ -6,12 +24,16 @@ in vec2 texCoord;
 in vec3 Normal;
 in vec3 crntPos;
 
-uniform sampler2D tex0; //for texture
-uniform sampler2D tex1; //for texture
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+
 uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 lightPos;
 uniform vec3 camPos;
+
+uniform Material material;
+uniform Light light;
 
 uniform bool blinnPhong_switch;
 uniform bool specularMap_Switch;
@@ -19,12 +41,13 @@ uniform bool specularMap_Switch;
 void main()
 {
 	// ambient lighting
-	float ambient = 0.2;
+	float ambientStrenght = 0.2;
 
 	// diffuse lighting
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(lightPos - crntPos);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
+	//float diffuse = diff * material.diffuseStrenght;
 
 	// specular lighting
 	float specularStrength = 0.5f;
@@ -51,11 +74,11 @@ void main()
 	if (specularMap_Switch)  // M key
 	{
 		// If tex1 is used as a specular map
-		FragColor = texture(tex0, texCoord) * ((diffuse + ambient) + vec4(texture(tex1, texCoord).r) * specular) * lightColorVec4 ;  // Ensure specular is multiplied correctly
+		FragColor = texture(tex0, texCoord) * ((diffuse + ambientStrenght) + vec4(texture(tex1, texCoord).r) * specular) * lightColorVec4 ;  // Ensure specular is multiplied correctly
 	}
 	else
 	{
-		FragColor = texture(tex0, texCoord) * ((ambient + diffuse + specular) * lightColorVec4);
+		FragColor = texture(tex0, texCoord) * ((ambientStrenght + diffuse + specular) * lightColorVec4);
 	}
 	
 	//FragColor = texture(tex0, texCoord);

@@ -277,7 +277,7 @@ int main()
 //-------------------------------------------------------------------------------------------------------------------------
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-	glm::vec3 positionOfLightSource(1.0f, 3.0f, 1.0f);
+	glm::vec3 positionOfLightSource(2.25f, 2.09f, 1.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, positionOfLightSource);
 
@@ -291,7 +291,7 @@ int main()
 	glm::mat4 cubeModel = glm::mat4(1.0f);
 	cubeModel = glm::translate(cubeModel, cubePos);
 
-	bool blinn = true;
+	bool blinn_switch = true;
 	bool specularMap_Switch = true;
 
 	lightSourceShader.Activate();
@@ -324,6 +324,11 @@ int main()
 	Texture planksSpec("planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
 	planksSpec.texUnit(shaderProgramForObjects, "tex1", 1);
 
+	Texture oak("Textures/oak.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
+	oak.texUnit(shaderProgramForObjects, "tex0", 0);
+	Texture oakSpec("Textures/oakSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
+	oakSpec.texUnit(shaderProgramForObjects, "tex1", 1);
+
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
 
@@ -340,17 +345,20 @@ int main()
 		//ImGui::ShowDemoWindow(); // Show demo window! :)
 
 		{
-			ImGui::Begin("Hello, world!");
+			ImGui::Begin("Statistika:");
 
 			ImGui::Text("Trenutno ukljuceni efekti:");
 
-			ImGui::Checkbox("Blinn-Phong", &blinn);
+			ImGui::Checkbox("Blinn-Phong", &blinn_switch);
 			ImGui::SameLine();
 			ImGui::Text("   P/O KEY");
 
 			ImGui::Checkbox("specularMap_Switch", &specularMap_Switch);
 			ImGui::SameLine();
 			ImGui::Text("   M/N KEY");
+
+			ImGui::Text("Position of the light source: %.2f, %.2f, %.2f", positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
+			ImGui::Text("Color of the light source: R: %.2ff, G: %.2ff, B: %.2ff", lightColor.r, lightColor.g, lightColor.b);
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 			ImGui::End();
@@ -364,7 +372,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handling input to move camera, light positon ond light color
-		camera.Inputs(window, lightColor, positionOfLightSource, blinn, specularMap_Switch);
+		camera.Inputs(window, lightColor, positionOfLightSource, blinn_switch, specularMap_Switch);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
 
@@ -372,7 +380,7 @@ int main()
 			// Tell OpenGL which Shader Program we want to use 
 			shaderProgramForObjects.Activate();
 
-			// Exports the camera Position to the Fragment Shader for specular lighting
+			// Exports the camera Position to the Fragment Shader for specular lighting calculation
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 			// Export the camMatrix to the Vertex Shader of the pyramid
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
@@ -381,7 +389,7 @@ int main()
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn_switch);
 			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "specularMap_Switch"), specularMap_Switch);
 
 			// Binding texture so its appear at render
@@ -397,22 +405,29 @@ int main()
 			TRIANGLE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			glDrawElements(GL_TRIANGLES, sizeof(indices_pyramide) / sizeof(int), GL_UNSIGNED_INT, 0);
-			// Unbind texture
+			// Unbind texture and VAO and deactivate shader program
 			planks.Unbind();
 			planksSpec.Unbind();
+			TRIANGLE_SHAPE_VAO.Unbind();
+			shaderProgramForObjects.Deactivate();
 		}
 		{ // CUBE
-
 			// Activating shader that is used only for objects
 			shaderProgramForObjects.Activate();
+
+			// Exports the camera Position to the Fragment Shader for specular lighting calculation
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 			// Export the camMatrix to the Vertex Shader of the cube
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
+
+			// Exprort light position for dynamic light
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), cubeColor.r, cubeColor.g, cubeColor.b);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn_switch);
 			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "specularMap_Switch"), specularMap_Switch);
 
 			// Binding texture so its appear at render
-			//planksSpec.Bind();
 			planks.Bind();
 			planksSpec.Bind();
 
@@ -425,13 +440,13 @@ int main()
 			CUBE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			glDrawElements(GL_TRIANGLES, sizeof(indices_cube) / sizeof(int), GL_UNSIGNED_INT, 0);
-			// Unbind texture
-			//planksSpec.Unbind();
+			// Unbind texture and VAO and deactivate shader program
 			planks.Unbind();
 			planksSpec.Unbind();
+			CUBE_SHAPE_VAO.Unbind();
+			shaderProgramForObjects.Deactivate();
 		}
 		{ // LIGHT CUBE SOURCE
-
 			// Activating shader that is used only for lightSource
 			lightSourceShader.Activate();
 
@@ -440,18 +455,22 @@ int main()
 			lightModel = glm::translate(lightModel, positionOfLightSource); // Translantacija svetla
 			glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader
 
-			// Passing camMatrix in uniform to lightSourceCube in shader for projection matrix
+			// Passing camMatrix uniform to lightSourceCube for projection matrix
 			camera.sendCamMatrixToShader(lightSourceShader, "camMatrix");
 
-			// We setting up which is the color of lightSource cube
+			// Sending color of light-cube to light shader so when we change color this change also
 			lightSourceShader.sendVec3fToShader("lightColor", lightColor);
 
 			// Binding light source vao in order to draws it
 			LIGHT_SOURCE_VAO.Bind();
 			// Draw light source cube using DrawArrays no-index(EBO)
 			glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices_lightSource) / sizeof(float));
+			// Unbind VAO that we just drawn and deactivate shader program
+			LIGHT_SOURCE_VAO.Unbind();
+			lightSourceShader.Deactivate();
 		}
 
+		// Render DEAR I am GUI
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -479,6 +498,7 @@ int main()
 	shaderProgramForObjects.Delete();
 	lightSourceShader.Delete();
 
+	// Clean after DEAR I am GUI
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
