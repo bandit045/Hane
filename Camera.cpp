@@ -86,10 +86,10 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 	{
 		Position += speed * Up;
 	}
-	/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		Position += speed * -Up;
-	}*/
+	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
 		speed = 0.4f;
@@ -99,7 +99,7 @@ void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positi
 		speed = 0.1f;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) != GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) != GLFW_PRESS)
 	{
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		{

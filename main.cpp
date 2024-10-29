@@ -22,7 +22,7 @@ const unsigned int width = 1920;
 const unsigned int height = 1080;
 
 float repeat_time_cube = 2.0f;
-float repeat_time_cube_top = 3.0f;
+float repeat_time_cube_top = 16.0f;
 
 // Vertices coordinates
 GLfloat vertices_pyramide[] =
@@ -278,56 +278,57 @@ int main()
 
 	glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 	glm::vec3 positionOfLightSource(2.25f, 2.09f, 1.0f);
-	glm::mat4 lightModel = glm::mat4(1.0f);
-	lightModel = glm::translate(lightModel, positionOfLightSource);
 
 	glm::vec3 pyramideColor(1.0f, 1.0f, 1.0f);
 	glm::vec3 pyramidPos = glm::vec3(1.0f, 1.0f, 1.0f);
-	glm::mat4 pyramidModel = glm::mat4(1.0f);
-	pyramidModel = glm::translate(pyramidModel, pyramidPos);
+	// Material PYRAMIDE
+	float pyramideAmbientStrenght = 0.2f;
+	float pyramideDiffuseStrenght = 2.0f;
+	float pyramideSpecularStrength = 0.5f;
+	float pyramideShininessBlinnPhong = 16.0f; // Maybe need to be int
+	float pyramideShininessPhong = 8.0f; // Maybe need to be int
 
-	glm::vec3 cubeColor(0.761f, 0.533f, 0.29f);
+	glm::vec3 cubeColor(1.0f, 1.0f, 1.0f);
 	glm::vec3 cubePos = glm::vec3(3.0f, 1.0f, 1.0f);
-	glm::mat4 cubeModel = glm::mat4(1.0f);
-	cubeModel = glm::translate(cubeModel, cubePos);
+	// Material CUBE
+	float cubeAmbientStrenght = 0.2f;
+	float cubeDiffuseStrenght = 2.0f;
+	float cubeSpecularStrength = 0.5f;
+	float cubeShininessBlinnPhong = 16.0f; // Maybe need to be int
+	float cubeShininessPhong = 8.0f; // Maybe need to be int
 
+	// For different state insade the fragment shader
 	bool blinn_switch = true;
 	bool specularMap_Switch = true;
 
-	lightSourceShader.Activate();
-	glUniformMatrix4fv(glGetAttribLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
-	glUniform3f(glGetUniformLocation(lightSourceShader.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
-	shaderProgramForObjects.Activate();
-	glUniformMatrix4fv(glGetAttribLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
-
 	// Textures
 	Texture popCat("pop_cat.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	popCat.texUnit(shaderProgramForObjects, "tex0", 0);
+	popCat.texUnit(shaderProgramForObjects, "textures.tex0", 0);
 
 	Texture DiJej("dj.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	DiJej.texUnit(shaderProgramForObjects, "tex0", 0);
+	DiJej.texUnit(shaderProgramForObjects, "textures.tex0", 0);
 
 	Texture skenons("logo_skenons.png", 0, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	skenons.texUnit(shaderProgramForObjects, "tex0", 0);
+	skenons.texUnit(shaderProgramForObjects, "textures.tex0", 0);
 
 	Texture chicken("chicken_image.png", 0, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	chicken.texUnit(shaderProgramForObjects, "tex0", 0);
+	chicken.texUnit(shaderProgramForObjects, "textures.tex0", 0);
 
 	Texture run("run.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	run.texUnit(shaderProgramForObjects, "tex0", 0);
+	run.texUnit(shaderProgramForObjects, "textures.tex0", 0);
 
 	Texture wood("wood.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
-	wood.texUnit(shaderProgramForObjects, "tex0", 0);
+	wood.texUnit(shaderProgramForObjects, "textures.tex0", 0);
 
 	Texture planks("planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	planks.texUnit(shaderProgramForObjects, "tex0", 0);
+	planks.texUnit(shaderProgramForObjects, "textures.tex0", 0);
 	Texture planksSpec("planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
-	planksSpec.texUnit(shaderProgramForObjects, "tex1", 1);
+	planksSpec.texUnit(shaderProgramForObjects, "textures.tex1", 1);
 
 	Texture oak("Textures/oak.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
-	oak.texUnit(shaderProgramForObjects, "tex0", 0);
+	oak.texUnit(shaderProgramForObjects, "textures.tex0", 0);
 	Texture oakSpec("Textures/oakSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
-	oakSpec.texUnit(shaderProgramForObjects, "tex1", 1);
+	oakSpec.texUnit(shaderProgramForObjects, "textures.tex1", 1);
 
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
@@ -363,6 +364,17 @@ int main()
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 			ImGui::End();
 		}
+		{
+			ImGui::Begin("CUBE");
+
+			ImGui::SliderFloat("CUBE Ambient Strenght:", &cubeAmbientStrenght, 0.0f, 4.0f);
+			ImGui::SliderFloat("CUBE Diffuse Strenght:", &cubeDiffuseStrenght, 0.0f, 64.0f);
+			ImGui::SliderFloat("CUBE Specular Strength:", &cubeSpecularStrength, 0.0f, 64.0f);
+			ImGui::SliderFloat("CUBE Shininess Blinn-Phong", &cubeShininessBlinnPhong, 0.0f, 256.0f);
+			ImGui::SliderFloat("CUBE Shininess Phong", &cubeShininessPhong, 0.0f, 256.0f);
+
+			ImGui::End();
+		}
 
 		// Setting rendering mode to line
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -386,18 +398,24 @@ int main()
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			// Exprort light position for dynamic light
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lightColor.r, lightColor.g, lightColor.b);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.blinnPhong_switch"), blinn_switch);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.specularMap_Switch"), specularMap_Switch);
+			// Export uniforms to shader for different material
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn_switch);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "specularMap_Switch"), specularMap_Switch);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), pyramideAmbientStrenght);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), pyramideDiffuseStrenght);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), pyramideSpecularStrength);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessBlinnPhong"), pyramideShininessBlinnPhong);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessPhong"), pyramideShininessPhong);
 
 			// Binding texture so its appear at render
 			planks.Bind();
 			planksSpec.Bind();
 
 			// Kreiraj lokalnu model matricu za piramidu
-			pyramidModel = glm::mat4(1.0f); // Resetovana matrica
+			glm::mat4 pyramidModel = glm::mat4(1.0f); // Resetovana matrica
 			pyramidModel = glm::translate(pyramidModel, pyramidPos);;  // Translacija piramide
 			shaderProgramForObjects.sendMat4x4ToShader("model", pyramidModel);  // Pošalji model matricu u shader
 
@@ -421,18 +439,24 @@ int main()
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			// Exprort light position for dynamic light
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "lightColor"), lightColor.r, lightColor.g, lightColor.b);
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lightColor.r, lightColor.g, lightColor.b);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.blinnPhong_switch"), blinn_switch);
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.specularMap_Switch"), specularMap_Switch);
+			// Export uniforms to shader for different material
 			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "objectColor"), cubeColor.r, cubeColor.g, cubeColor.b);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "blinnPhong_switch"), blinn_switch);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "specularMap_Switch"), specularMap_Switch);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), cubeAmbientStrenght);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), cubeDiffuseStrenght);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), cubeSpecularStrength);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessBlinnPhong"), cubeShininessBlinnPhong);
+			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessPhong"), cubeShininessPhong);
 
 			// Binding texture so its appear at render
 			planks.Bind();
 			planksSpec.Bind();
 
 			// Kreiraj lokalnu model matricu za kocku
-			cubeModel = glm::mat4(1.0f);  // Resetovana matrica
+			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
 			cubeModel = glm::translate(cubeModel, cubePos); // Transplantacija kocke
 			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel)); // Pošalji model matricu u shader
 
@@ -451,7 +475,7 @@ int main()
 			lightSourceShader.Activate();
 
 			// Kreiraj lokalnu model matricu za svetlosni izvor
-			lightModel = glm::mat4(1.0f); // Resetovana matrica
+			glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
 			lightModel = glm::translate(lightModel, positionOfLightSource); // Translantacija svetla
 			glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader
 
