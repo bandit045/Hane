@@ -8,9 +8,11 @@ out vec3 color;
 out vec2 texCoord;
 out vec3 Normal;
 out vec3 crntPos;
+out vec3 vertNormal;
 
 uniform mat4 camMatrix;
 uniform mat4 model;
+uniform vec3 camPos;
 
 void main()
 {
@@ -19,4 +21,7 @@ void main()
 	color = aColor;
 	texCoord = aTex;
 	Normal = aNormal;
+
+	vertNormal = normalize(crntPos- vec3(3.0f, 1.0f, 1.0f) + aNormal);
+
 }

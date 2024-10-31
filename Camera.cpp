@@ -63,7 +63,7 @@ glm::mat4 Camera::getCameraMatrix()
 	return Camera::cameraMatrix;
 }
 
-void Camera::Inputs(GLFWwindow* window, glm::vec3& lightColor, glm::vec3& positionOfLightSource, bool& blinn, bool& specularMap_Switch)
+void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positionOfLightSource, bool& blinn, bool& specularMap_Switch)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{

@@ -72,8 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\imgui\backends;$(ProjectDir)\imgui\;C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\Libraries\include;$(ProjectDir)\imgui;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -82,13 +82,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\include;C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\imgui;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\Libraries\include;$(ProjectDir)\imgui;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\Libraries\include;$(ProjectDir)\imgui;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

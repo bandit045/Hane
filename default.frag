@@ -1,7 +1,7 @@
 #version 330 core
 
 struct Material{
-	vec3 objectColor;
+	vec4 objectColor;
 	float ambientStrenght;
 	float diffuseStrenght;
 	float specularStrength;
@@ -13,8 +13,15 @@ struct Texture{
 	sampler2D tex1; //For specular efect
 };
 struct Light{
-	vec3 lightColor;
+	vec4 lightColor;
 	vec3 lightPos;
+	vec3 lightDirection;
+	
+	bool  isPointLightReducingOnDistance;
+	int exponentForPointLight;
+	float linearTerm_Kl; // For reducing light strenght becouse of distande of impact for point light
+	float quadraticTerm_Kq; // For reducing light strenght becouse of distande of impact for point light
+	float constantTerm_Kc; // For reducing light strenght becouse of distande of impact for point light
 };
 struct ControlsOfState{
 	bool blinnPhong_switch;
@@ -27,6 +34,7 @@ in vec3 color;
 in vec2 texCoord;
 in vec3 Normal;
 in vec3 crntPos;
+in vec3 vertNormal;
 
 uniform vec3 camPos;
 
@@ -35,50 +43,50 @@ uniform Light light;
 uniform ControlsOfState control;
 uniform Texture textures;
 
+float lightProportinalToDistance(bool isPointLightReducingOnDistance);
+
 void main()
-{
-	// ambient lighting
-	float ambientStrenght = material.ambientStrenght;
+{	
+	// Strenght of lighting components
+	float ambientStrenght  = material.ambientStrenght;
+	float diffuseStrenght  = material.diffuseStrenght;
+	float specularStrength = material.specularStrength;
 
 	// diffuse lighting
-	float diffuseStrenght =  material.diffuseStrenght;
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(light.lightPos - crntPos);
 	float diff = max(dot(normal, lightDirection), 0.0f);
 	float diffuse = diff * diffuseStrenght;
 
 	// specular lighting
-	float specularStrength = material.specularStrength;
-	float specular;
-	if(control.blinnPhong_switch) // P-O
-	{
-		vec3 viewDir    = normalize(camPos - crntPos);
-		vec3 halfwayDir = normalize(lightDirection + viewDir);
-		float specAmount = pow(max(dot(normal, halfwayDir), 0.0f), material.shininessBlinnPhong);
-		specular = specAmount * specularStrength;
+	float specAmount;
+	vec3 viewDirection = normalize(camPos - crntPos);
+	if(control.blinnPhong_switch){ // can be switched on P - O key
+		vec3 halfwayDir  = normalize(lightDirection + viewDirection);
+		specAmount       = pow(max(dot(normal, halfwayDir), 0.0f), material.shininessBlinnPhong);
 	}
-	else
-	{
-		vec3 viewDirection = normalize(camPos - crntPos);
+	else{
 		vec3 reflectionDirection = reflect(-lightDirection, normal);
-		float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessPhong);
-		specular = specAmount * specularStrength;
+		specAmount               = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessPhong);
 	}
+	float specular = specAmount * specularStrength;
 
-	// Assuming lightColor is vec3
-	vec4 lightColorVec4 = vec4(light.lightColor, 1.0);  // Convert lightColor to vec4
-
-	// Combine lighting components
-	if (control.specularMap_Switch)  // M-N key
-	{
-		// If tex1 is used as a specular map
-		FragColor = texture(textures.tex0, texCoord) * ((diffuse + ambientStrenght) + vec4(texture(textures.tex1, texCoord).r) * specular) * lightColorVec4 ;  // Ensure specular is multiplied correctly
+	// specural map control on/off
+	if (control.specularMap_Switch){ // can be switched on M - N key
+		FragColor = texture(textures.tex0, texCoord) * ((diffuse + ambientStrenght) + vec4(texture(textures.tex1, texCoord).r) * specular) * light.lightColor * lightProportinalToDistance(light.isPointLightReducingOnDistance);
 	}
-	else
-	{
-		FragColor = texture(textures.tex0, texCoord) * ((ambientStrenght + diffuse + specular) * lightColorVec4);
+	else{
+		FragColor = texture(textures.tex0, texCoord) * ((ambientStrenght + diffuse + specular) * light.lightColor) * lightProportinalToDistance(light.isPointLightReducingOnDistance);
 	}
-	
-	//FragColor = texture(tex0, texCoord);
-	//FragColor = vec4(ambient * objectColor * color, 1.0);
 }
+
+float lightProportinalToDistance(bool isPointLightReducingOnDistance)
+{
+	if(!isPointLightReducingOnDistance){return 1.0f;};
+	float constantTerm_Kc = light.constantTerm_Kc;
+	float linearTerm_Kl = light.linearTerm_Kl;
+	float quadraticTerm_Kq = light.quadraticTerm_Kq;
+
+	float distanceLightSourceToFragment = length(light.lightPos - crntPos);
+	return 1.0f / (constantTerm_Kc + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, light.exponentForPointLight));
+};
