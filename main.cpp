@@ -391,6 +391,8 @@ int main()
 			ImGui::End();
 		}
 		{
+#ifdef _DEBUG
+
 			ImGui::Begin("Light source");
 			if (ImGui::CollapsingHeader("Color and position of light source")) {
 
@@ -449,6 +451,7 @@ int main()
 				ImGui::SliderFloat("Shininess Phong: 8.0f", &globalShininessPhong, 0.0f, 256.0f); ImGui::Spacing();
 			}
 			ImGui::End();
+#endif // DEBUG
 		}
 
 		// Setting rendering mode to line

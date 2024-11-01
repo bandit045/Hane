@@ -28,6 +28,9 @@
     <Filter Include="Resource Files\Specular">
       <UniqueIdentifier>{0774b116-135d-4b8f-b840-019e8e067171}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\Object">
+      <UniqueIdentifier>{66ddd3a9-bef9-48bb-b851-865e4daad558}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="glad.c">
@@ -80,12 +83,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="default.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="default.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="lightingSourceShader.vert">
       <Filter>Resource Files\Shaders\LightingSource</Filter>
     </None>
@@ -94,6 +91,12 @@
     </None>
     <None Include="imgui.natstepfilter">
       <Filter>GUI</Filter>
+    </None>
+    <None Include="default.vert">
+      <Filter>Resource Files\Shaders\Object</Filter>
+    </None>
+    <None Include="default.frag">
+      <Filter>Resource Files\Shaders\Object</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
