@@ -43,7 +43,7 @@ public:
 	// Translate object
 	void translateObjectWithModelMatrih(glm::vec3 newPosition, glm::mat4 model);
 	// Handles camera inputs
-	void Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positionOfLightSource, bool& blinn, bool& specularMap_Switch);
+	void Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positionOfLightSource, bool& blinnPhong_switch, bool& phong_switch, bool& specularMap_Switch);
 
 	// Getters
 	glm::mat4 getModelMatrix();

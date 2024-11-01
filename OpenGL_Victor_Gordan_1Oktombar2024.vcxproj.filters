@@ -117,44 +117,44 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="dj.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="chicken_image.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="logo_skenons.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="awesomeface.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="wall.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="container.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="run.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="wood.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="planks.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="planksSpec.png">
-      <Filter>Resource Files\Specular</Filter>
-    </Image>
-    <Image Include="pop_cat.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="Textures\oakSpec.png">
-      <Filter>Resource Files\Specular</Filter>
-    </Image>
     <Image Include="Textures\oak.png">
       <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\planks.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\pop_cat.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\run.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\wall.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\wood.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\awesomeface.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\chicken_image.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\container.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\dj.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\logo_skenons.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\Specular\planksSpec.png">
+      <Filter>Resource Files\Specular</Filter>
+    </Image>
+    <Image Include="Textures\Specular\oakSpec.png">
+      <Filter>Resource Files\Specular</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

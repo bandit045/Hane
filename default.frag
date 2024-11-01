@@ -15,7 +15,7 @@ struct Texture{
 struct Light{
 	vec4 lightColor;
 	vec3 lightPos;
-	vec3 lightDirection;
+	vec3 direction;
 	
 	bool  isPointLightReducingOnDistance;
 	int exponentForPointLight;
@@ -24,8 +24,13 @@ struct Light{
 	float constantTerm_Kc; // For reducing light strenght becouse of distande of impact for point light
 };
 struct ControlsOfState{
+	bool phong_switch;
 	bool blinnPhong_switch;
+
 	bool specularMap_Switch;
+
+	bool isDirectionalLight;
+	bool isPointLight;
 };
 
 out vec4 FragColor;
@@ -44,6 +49,7 @@ uniform ControlsOfState control;
 uniform Texture textures;
 
 float lightProportinalToDistance(bool isPointLightReducingOnDistance);
+vec3 directionLightOrPointLight(bool pointLight, bool directionalLight);
 
 void main()
 {	
@@ -54,18 +60,19 @@ void main()
 
 	// diffuse lighting
 	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(light.lightPos - crntPos);
+	//vec3 lightDirection = normalize(light.lightPos - crntPos);
+	vec3 lightDirection = directionLightOrPointLight(control.isPointLight, control.isDirectionalLight);
 	float diff = max(dot(normal, lightDirection), 0.0f);
 	float diffuse = diff * diffuseStrenght;
 
 	// specular lighting
 	float specAmount;
 	vec3 viewDirection = normalize(camPos - crntPos);
-	if(control.blinnPhong_switch){ // can be switched on P - O key
+	if(control.blinnPhong_switch && !control.phong_switch){ // can be switched on P - O key
 		vec3 halfwayDir  = normalize(lightDirection + viewDirection);
 		specAmount       = pow(max(dot(normal, halfwayDir), 0.0f), material.shininessBlinnPhong);
 	}
-	else{
+	else if(!control.blinnPhong_switch && control.phong_switch){
 		vec3 reflectionDirection = reflect(-lightDirection, normal);
 		specAmount               = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessPhong);
 	}
@@ -89,4 +96,13 @@ float lightProportinalToDistance(bool isPointLightReducingOnDistance)
 
 	float distanceLightSourceToFragment = length(light.lightPos - crntPos);
 	return 1.0f / (constantTerm_Kc + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, light.exponentForPointLight));
+};
+
+vec3 directionLightOrPointLight(bool ispointLight, bool isdirectionalLight){
+	if(isdirectionalLight && !ispointLight){
+		return normalize(-light.direction);
+	}
+	else if(ispointLight && !isdirectionalLight){
+		return normalize(light.lightPos - crntPos);
+	};
 };

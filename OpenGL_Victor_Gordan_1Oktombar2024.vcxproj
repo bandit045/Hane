@@ -126,11 +126,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,6 +143,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,6 +153,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -184,19 +191,19 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="awesomeface.png" />
-    <Image Include="chicken_image.png" />
-    <Image Include="container.jpg" />
-    <Image Include="dj.png" />
-    <Image Include="logo_skenons.png" />
-    <Image Include="planks.png" />
-    <Image Include="planksSpec.png" />
-    <Image Include="pop_cat.png" />
-    <Image Include="run.png" />
+    <Image Include="Textures\awesomeface.png" />
+    <Image Include="Textures\chicken_image.png" />
+    <Image Include="Textures\container.jpg" />
+    <Image Include="Textures\dj.png" />
+    <Image Include="Textures\logo_skenons.png" />
     <Image Include="Textures\oak.png" />
-    <Image Include="Textures\oakSpec.png" />
-    <Image Include="wall.jpg" />
-    <Image Include="wood.png" />
+    <Image Include="Textures\planks.png" />
+    <Image Include="Textures\pop_cat.png" />
+    <Image Include="Textures\run.png" />
+    <Image Include="Textures\Specular\oakSpec.png" />
+    <Image Include="Textures\Specular\planksSpec.png" />
+    <Image Include="Textures\wall.jpg" />
+    <Image Include="Textures\wood.png" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="imgui.natvis" />

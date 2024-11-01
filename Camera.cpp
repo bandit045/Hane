@@ -63,7 +63,7 @@ glm::mat4 Camera::getCameraMatrix()
 	return Camera::cameraMatrix;
 }
 
-void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positionOfLightSource, bool& blinn, bool& specularMap_Switch)
+void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positionOfLightSource, bool& blinnPhong_switch, bool&phong_switch, bool& specularMap_Switch)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -86,10 +86,10 @@ void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positi
 	{
 		Position += speed * Up;
 	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		Position += speed * -Up;
-	}
+	}*/
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
 		speed = 0.4f;
@@ -120,7 +120,7 @@ void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positi
 
 			glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotx), glm::normalize(glm::cross(Orientation, Up)));
 
-			if (!((glm::angle(newOrientation, Up) <= glm::radians(5.0f)) or (glm::angle(newOrientation, -Up) <= glm::radians(5.0f))));
+			if (!((glm::angle(newOrientation, Up) <= glm::radians(5.0f)) or (glm::angle(newOrientation, -Up) <= glm::radians(5.0f))))
 			{
 				Orientation = newOrientation;
 			}
@@ -221,16 +221,18 @@ void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positi
 		}
 	}
 
-	// Blinn-phong switch
+	// Phong switch
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 	{
-		blinn = false;
+		blinnPhong_switch = false;
+		phong_switch = true;
 	}
 
-	// Phong switch
+	// Blinn-Phong switch
 	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
 	{
-		blinn = true;
+		blinnPhong_switch = true;
+		phong_switch = false;
 	}
 
 	// Specular Map switch
