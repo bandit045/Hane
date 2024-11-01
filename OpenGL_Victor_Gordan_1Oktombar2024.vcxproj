@@ -74,21 +74,33 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)\Libraries\include;$(ProjectDir)\imgui;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermidiates\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>OpenGLAPP_Debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Bandit\Desktop\ROOT_BASE\VISUAL_STUDIO_2019\OpenGL_Victor_Gordan_1Oktombar2024\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermidiates\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>OpenGLAPP_RELEASE</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)\Libraries\include;$(ProjectDir)\imgui;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermidiates\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>OpenGLAPP_Debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)\Libraries\include;$(ProjectDir)\imgui;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\intermidiates\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>OpenGLAPP_RELEASE</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

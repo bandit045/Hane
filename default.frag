@@ -9,28 +9,28 @@ struct Material{
 	float shininessPhong;
 };
 struct Texture{
-	sampler2D tex0; //For base texture
-	sampler2D tex1; //For specular efect
+	sampler2D baseTexture; //For base texture
+	sampler2D specularMap; //For specular efect
 };
 struct Light{
 	vec4 lightColor;
 	vec3 lightPos;
-	vec3 direction;
+	vec3 lightDirection;
 	
-	bool  isPointLightReducingOnDistance;
-	int exponentForPointLight;
+	float exponentForPointLight;
 	float linearTerm_Kl; // For reducing light strenght becouse of distande of impact for point light
 	float quadraticTerm_Kq; // For reducing light strenght becouse of distande of impact for point light
 	float constantTerm_Kc; // For reducing light strenght becouse of distande of impact for point light
 };
 struct ControlsOfState{
-	bool phong_switch;
-	bool blinnPhong_switch;
+	bool isPhong;
+	bool isBlinnPhong;
 
-	bool specularMap_Switch;
+	bool isSpecularMap;
 
 	bool isDirectionalLight;
 	bool isPointLight;
+	bool isPointLightReducingOnDistance;
 };
 
 out vec4 FragColor;
@@ -48,8 +48,10 @@ uniform Light light;
 uniform ControlsOfState control;
 uniform Texture textures;
 
+float specAmount(vec3 viewDirection, vec3 lightDirection, vec3 normal);
 float lightProportinalToDistance(bool isPointLightReducingOnDistance);
-vec3 directionLightOrPointLight(bool pointLight, bool directionalLight);
+vec3 directionLightOrPointLight();
+vec4 finalFragColor(float diffuse, float ambientStrenght, float specular);
 
 void main()
 {	
@@ -58,37 +60,22 @@ void main()
 	float diffuseStrenght  = material.diffuseStrenght;
 	float specularStrength = material.specularStrength;
 
-	// diffuse lighting
+	// Diffuse lighting
 	vec3 normal = normalize(Normal);
-	//vec3 lightDirection = normalize(light.lightPos - crntPos);
-	vec3 lightDirection = directionLightOrPointLight(control.isPointLight, control.isDirectionalLight);
+	vec3 lightDirection = directionLightOrPointLight();
 	float diff = max(dot(normal, lightDirection), 0.0f);
 	float diffuse = diff * diffuseStrenght;
 
-	// specular lighting
-	float specAmount;
+	// Specular lighting
 	vec3 viewDirection = normalize(camPos - crntPos);
-	if(control.blinnPhong_switch && !control.phong_switch){ // can be switched on P - O key
-		vec3 halfwayDir  = normalize(lightDirection + viewDirection);
-		specAmount       = pow(max(dot(normal, halfwayDir), 0.0f), material.shininessBlinnPhong);
-	}
-	else if(!control.blinnPhong_switch && control.phong_switch){
-		vec3 reflectionDirection = reflect(-lightDirection, normal);
-		specAmount               = pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessPhong);
-	}
+	float specAmount = specAmount(viewDirection, lightDirection, normal);
 	float specular = specAmount * specularStrength;
 
-	// specural map control on/off
-	if (control.specularMap_Switch){ // can be switched on M - N key
-		FragColor = texture(textures.tex0, texCoord) * ((diffuse + ambientStrenght) + vec4(texture(textures.tex1, texCoord).r) * specular) * light.lightColor * lightProportinalToDistance(light.isPointLightReducingOnDistance);
-	}
-	else{
-		FragColor = texture(textures.tex0, texCoord) * ((ambientStrenght + diffuse + specular) * light.lightColor) * lightProportinalToDistance(light.isPointLightReducingOnDistance);
-	}
+	// Calculating final result
+	FragColor = finalFragColor(diffuse, ambientStrenght, specular);
 }
 
-float lightProportinalToDistance(bool isPointLightReducingOnDistance)
-{
+float lightProportinalToDistance(bool isPointLightReducingOnDistance){
 	if(!isPointLightReducingOnDistance){return 1.0f;};
 	float constantTerm_Kc = light.constantTerm_Kc;
 	float linearTerm_Kl = light.linearTerm_Kl;
@@ -97,12 +84,30 @@ float lightProportinalToDistance(bool isPointLightReducingOnDistance)
 	float distanceLightSourceToFragment = length(light.lightPos - crntPos);
 	return 1.0f / (constantTerm_Kc + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, light.exponentForPointLight));
 };
-
-vec3 directionLightOrPointLight(bool ispointLight, bool isdirectionalLight){
-	if(isdirectionalLight && !ispointLight){
-		return normalize(-light.direction);
+vec3 directionLightOrPointLight(){
+	if(control.isDirectionalLight && !control.isPointLight){
+		return normalize(light.lightDirection);
 	}
-	else if(ispointLight && !isdirectionalLight){
+	else if(control.isPointLight && !control.isDirectionalLight){
 		return normalize(light.lightPos - crntPos);
 	};
+};
+vec4 finalFragColor(float diffuse, float ambientStrenght, float specular){
+	if (control.isSpecularMap){ // Can be switched on M - N key
+		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + texture(textures.specularMap, texCoord).r * specular) * light.lightColor * lightProportinalToDistance(control.isPointLightReducingOnDistance);
+	}
+	else{
+		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + specular) * light.lightColor * lightProportinalToDistance(control.isPointLightReducingOnDistance);
+	}
+}
+float specAmount(vec3 viewDirection, vec3 lightDirection, vec3 normal){
+	
+	if(control.isBlinnPhong && !control.isPhong){ // can be switched on P - O key
+		vec3 halfwayDir  = normalize(lightDirection + viewDirection);
+		return pow(max(dot(normal, halfwayDir), 0.0f), material.shininessBlinnPhong);
+	}
+	else if(!control.isBlinnPhong && control.isPhong){
+		vec3 reflectionDirection = reflect(-lightDirection, normal);
+		return pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessPhong);
+	}
 };

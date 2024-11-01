@@ -279,75 +279,65 @@ int main()
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 positionOfLightSource(2.25f, 2.09f, 1.0f);
 	glm::vec3 lightDirection(0.1f, 0.0f, 0.0f);
-	int exponentForPointLight = 2;
+	float exponentForPointLight = 2.0f;
 	float linearTerm_Kl = 0.7f;
 	float quadraticTerm_Kq = 1.8f;
 	float constantTerm_Kc = 1.0f;
 
-	glm::vec4 globalObjectColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 globalPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	// Material GLOBAL
+	glm::vec4 globalObjectColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 globalPos = glm::vec3(0.0f, 0.0f, 0.0f); // ?
 	float globalAmbientStrenght = 0.5f;
 	float globalDiffuseStrenght = 2.0f;
 	float globalSpecularStrength = 0.5f;
 	float globalShininessBlinnPhong = 16.0f;
 	float globalShininessPhong = 8.0f;
 
+	// Material CUBE
 	glm::vec4 cubeColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 cubePos = glm::vec3(3.0f, 1.0f, 1.0f);
-	// Material CUBE
-	float cubeAmbientStrenght = 0.5f;
-	float cubeDiffuseStrenght = 2.0f;
-	float cubeSpecularStrength = 0.5f;
-	float cubeShininessBlinnPhong = 16.0f;
-	float cubeShininessPhong = 8.0f;
 
+	// PYRAMIDE
 	glm::vec4 pyramideColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 pyramidPos = glm::vec3(1.0f, 1.0f, 1.0f);
-	// Material PYRAMIDE
-	float pyramideAmbientStrenght = 0.5f;
-	float pyramideDiffuseStrenght = 2.0f;
-	float pyramideSpecularStrength = 0.5f;
-	float pyramideShininessBlinnPhong = 16.0f; 
-	float pyramideShininessPhong = 8.0f;
 
 	// For different state insade the fragment shader
 	bool isPointLightReducingOnDistance = true;
-	bool phong_switch = false;
-	bool blinnPhong_switch = true;
-	bool specularMap_Switch = true;
+	bool isPhong = false;
+	bool isBlinnPhong = true;
+	bool isSpecularMap = true;
 
 	bool isDirectionalLight = false;
 	bool isPointLight = true;
 
 	// Textures
 	Texture popCat("Textures/pop_cat.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	popCat.texUnit(shaderProgramForObjects, "textures.tex0", 0);
+	popCat.texUnit(shaderProgramForObjects, "textures.baseTexture", 0);
 
 	Texture DiJej("Textures/dj.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	DiJej.texUnit(shaderProgramForObjects, "textures.tex0", 0);
+	DiJej.texUnit(shaderProgramForObjects, "textures.baseTexture", 0);
 
 	Texture skenons("Textures/logo_skenons.png", 0, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	skenons.texUnit(shaderProgramForObjects, "textures.tex0", 0);
+	skenons.texUnit(shaderProgramForObjects, "textures.baseTexture", 0);
 
 	Texture chicken("Textures/chicken_image.png", 0, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	chicken.texUnit(shaderProgramForObjects, "textures.tex0", 0);
+	chicken.texUnit(shaderProgramForObjects, "textures.baseTexture", 0);
 
 	Texture run("Textures/run.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	run.texUnit(shaderProgramForObjects, "textures.tex0", 0);
+	run.texUnit(shaderProgramForObjects, "textures.baseTexture", 0);
 
 	Texture wood("Textures/wood.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
-	wood.texUnit(shaderProgramForObjects, "textures.tex0", 0);
+	wood.texUnit(shaderProgramForObjects, "textures.baseTexture", 0);
 
 	Texture planks("Textures/planks.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	planks.texUnit(shaderProgramForObjects, "textures.tex0", 0);
+	planks.texUnit(shaderProgramForObjects, "textures.baseTexture", 0);
 	Texture planksSpec("Textures/Specular/planksSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
-	planksSpec.texUnit(shaderProgramForObjects, "textures.tex1", 1);
+	planksSpec.texUnit(shaderProgramForObjects, "textures.specularMap", 1);
 
 	Texture oak("Textures/oak.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
-	oak.texUnit(shaderProgramForObjects, "textures.tex0", 0);
+	oak.texUnit(shaderProgramForObjects, "textures.baseTexture", 0);
 	Texture oakSpec("Textures/Specular/oakSpec.png", GL_TEXTURE_2D, 1, GL_RED, GL_UNSIGNED_BYTE);
-	oakSpec.texUnit(shaderProgramForObjects, "textures.tex1", 1);
+	oakSpec.texUnit(shaderProgramForObjects, "textures.specularMap", 1);
 
 	// Enable the depth buffer
 	glEnable(GL_DEPTH_TEST);
@@ -372,8 +362,8 @@ int main()
 				if (isPointLight) {
 					isDirectionalLight = false;
 					isPointLightReducingOnDistance = true;
-					phong_switch = false;
-					blinnPhong_switch = true;
+					isPhong = false;
+					isBlinnPhong = true;
 					globalAmbientStrenght = 0.5f;
 				}
 			}
@@ -382,8 +372,8 @@ int main()
 				if (isDirectionalLight) {
 					isPointLight = false;
 					isPointLightReducingOnDistance = false;
-					phong_switch = true;
-					blinnPhong_switch = false;
+					isPhong = true;
+					isBlinnPhong = false;
 					globalAmbientStrenght = 0.2f;
 				}
 			}
@@ -391,7 +381,6 @@ int main()
 			ImGui::End();
 		}
 		{
-#ifdef _DEBUG
 
 			ImGui::Begin("Light source");
 			if (ImGui::CollapsingHeader("Color and position of light source")) {
@@ -400,7 +389,7 @@ int main()
 				ImGui::SliderFloat3("Color", &lightColor.x, 0.0f, 1.0f); 
 				ImGui::Separator();
 				ImGui::DragFloat3("Position for point light", &positionOfLightSource.x, 0.1f); 
-				ImGui::DragFloat3("Vector of direction light", &lightDirection.x, 0.1f); 
+				ImGui::SliderFloat3("Direction vector of light", &lightDirection.x, -0.5f, 0.5f); 
 
 				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
 				ImGui::Text("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff, A: %.2ff", lightColor.r, lightColor.g, lightColor.b, lightColor.a); 
@@ -414,7 +403,7 @@ int main()
 				ImGui::Checkbox("Is Point Light Reducing On Distance", &isPointLightReducingOnDistance);
 
 				ImGui::SeparatorText("Control of variables:"); ImGui::Spacing();
-				ImGui::Text("Exponent for distance:"); ImGui::SameLine(); ImGui::SliderInt("2", &exponentForPointLight, -64, 256);
+				ImGui::Text("Exponent for distance:"); ImGui::SameLine(); ImGui::SliderFloat("2", &exponentForPointLight, -64, 256);
 				ImGui::Text("Linear Term Kl:"); ImGui::SameLine(); ImGui::SliderFloat("0.7f", &linearTerm_Kl, -2.683f, 256.0f);
 				ImGui::Text("Quadratic Term Kq:"); ImGui::SameLine(); ImGui::SliderFloat("1.8f", &quadraticTerm_Kq, -64.0f, 64.0f);
 				ImGui::Text("Constant Term Kc:"); ImGui::SameLine(); ImGui::SliderFloat("1.0f", &constantTerm_Kc, 0.0f, 64.0f);
@@ -423,25 +412,25 @@ int main()
 				ImGui::BulletText("To reduce the intensity of point light over the distance");
 
 				ImGui::BulletText("More about it: ");
-				ImGui::SameLine(0, 0);
+				ImGui::SameLine(0, 4);
 				ImGui::TextLinkOpenURL("https://learnopengl.com/Lighting/Light-casters");
 			}
 			if (ImGui::CollapsingHeader("Model of light reflection")) {
 
 				ImGui::SeparatorText("State of specular reflection on/off"); ImGui::Spacing();
-				if (ImGui::Checkbox("Phong", &phong_switch)) {
-					if (phong_switch) {
-						blinnPhong_switch = false;
+				if (ImGui::Checkbox("Phong", &isPhong)) {
+					if (isPhong) {
+						isBlinnPhong = false;
 					}
 				}
 
-				if (ImGui::Checkbox("Blinn-Phong", &blinnPhong_switch)) {
-					if (blinnPhong_switch) {
-						phong_switch = false;
+				if (ImGui::Checkbox("Blinn-Phong", &isBlinnPhong)) {
+					if (isBlinnPhong) {
+						isPhong = false;
 					}
 				}
 				ImGui::Separator(); ImGui::Spacing();
-				ImGui::Checkbox("Specular Map", &specularMap_Switch);
+				ImGui::Checkbox("Specular Map", &isSpecularMap);
 
 				ImGui::SeparatorText("Control of variables:"); ImGui::Spacing();
 				ImGui::SliderFloat("Ambient Strenght: 0.5f", &globalAmbientStrenght, 0.0f, 4.0f); ImGui::Spacing();
@@ -451,7 +440,6 @@ int main()
 				ImGui::SliderFloat("Shininess Phong: 8.0f", &globalShininessPhong, 0.0f, 256.0f); ImGui::Spacing();
 			}
 			ImGui::End();
-#endif // DEBUG
 		}
 
 		// Setting rendering mode to line
@@ -462,9 +450,37 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handling input to move camera, light positon ond light color
-		camera.Inputs(window, lightColor, positionOfLightSource, blinnPhong_switch, phong_switch, specularMap_Switch);
+		camera.Inputs(window, lightColor, positionOfLightSource, isBlinnPhong, isPhong, isSpecularMap);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
+
+		// Tell OpenGL which Shader Program we want to use 
+		shaderProgramForObjects.Activate();
+
+		// Export state in shader in order to dynamicly change during runtime
+		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPhong"), isPhong);
+		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isBlinnPhong"), isBlinnPhong);
+		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isSpecularMap"), isSpecularMap);
+		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLight"), isPointLight);
+		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLightReducingOnDistance"), isPointLightReducingOnDistance);
+		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isDirectionalLight"), isDirectionalLight);
+		// Export for reducing point light in propotional to distance, a constant term Kc, a linear term Kl, and a quadratic term Kq // https://learnopengl.com/Lighting/Light-casters
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), exponentForPointLight);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), linearTerm_Kl);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.quadraticTerm_Kq"), quadraticTerm_Kq);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.constantTerm_Kc"), constantTerm_Kc);
+		// Exprort light position for dynamic light
+		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
+		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), lightDirection.x, lightDirection.y, lightDirection.z);
+		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lightColor.r, lightColor.g, lightColor.b, lightColor.a);
+		// Export uniforms to shader for different material and component strenght
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalAmbientStrenght);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalDiffuseStrenght);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalSpecularStrength);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessBlinnPhong"), globalShininessBlinnPhong);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessPhong"), globalShininessPhong);
+
+		shaderProgramForObjects.Deactivate();
 
 		{ //PYRAMIDE
 			// Tell OpenGL which Shader Program we want to use 
@@ -475,29 +491,8 @@ int main()
 			// Export the camMatrix to the Vertex Shader of the pyramid
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
-			// Export state in shader in order to dynamicly change during runtime
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.phong_switch"), phong_switch);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.blinnPhong_switch"), blinnPhong_switch);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.specularMap_Switch"), specularMap_Switch);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLight"), isPointLight);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isDirectionalLight"), isDirectionalLight);
-			// Exprort light position for dynamic light
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.direction"), lightDirection.x, lightDirection.y, lightDirection.z);
-			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lightColor.r, lightColor.g, lightColor.b, lightColor.a);
 			// Export uniforms to shader for different material
 			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), pyramideColor.r, pyramideColor.g, pyramideColor.b, pyramideColor.a);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalAmbientStrenght);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalDiffuseStrenght);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalSpecularStrength);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessBlinnPhong"), globalShininessBlinnPhong);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessPhong"), globalShininessPhong);
-			// Export for reducing point light in propotional to distance, a constant term Kc, a linear term Kl, and a quadratic term Kq // https://learnopengl.com/Lighting/Light-casters
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "light.isPointLightReducingOnDistance"), isPointLightReducingOnDistance);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), exponentForPointLight);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), linearTerm_Kl);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.quadraticTerm_Kq"), quadraticTerm_Kq);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.constantTerm_Kc"), constantTerm_Kc);
 
 			// Binding texture so its appear at render
 			planks.Bind();
@@ -527,29 +522,8 @@ int main()
 			// Export the camMatrix to the Vertex Shader of the cube
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
-			// Export state in shader in order to dynamicly change during runtime
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.phong_switch"), phong_switch);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.blinnPhong_switch"), blinnPhong_switch);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.specularMap_Switch"), specularMap_Switch);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLight"), isPointLight);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isDirectionalLight"), isDirectionalLight);
-			// Exprort light stats for dynamic light
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.direction"), lightDirection.x, lightDirection.y, lightDirection.z);
-			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lightColor.r, lightColor.g, lightColor.b, lightColor.a);
 			// Export uniforms to shader for different material and component strenght
 			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), cubeColor.r, cubeColor.g, cubeColor.b, cubeColor.a);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalAmbientStrenght);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalDiffuseStrenght);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalSpecularStrength);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessBlinnPhong"), globalShininessBlinnPhong);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessPhong"), globalShininessPhong);
-			// Export for reducing point light in propotional to distance, a constant term Kc, a linear term Kl, and a quadratic term Kq // https://learnopengl.com/Lighting/Light-casters
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "light.isPointLightReducingOnDistance"), isPointLightReducingOnDistance);
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), exponentForPointLight);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), linearTerm_Kl);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.quadraticTerm_Kq"), quadraticTerm_Kq);
-			glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.constantTerm_Kc"), constantTerm_Kc);
 
 			// Binding texture so its appear at render
 			planks.Bind();
