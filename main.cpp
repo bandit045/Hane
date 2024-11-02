@@ -282,7 +282,7 @@ int main()
 	float degreToRotateZ = 0.0f;
 
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 positionOfLightSource(0.0f, 0.0f, 0.0f);
+	glm::vec3 positionOfLightSource(2.31f, 2.1f, 0.43f);
 	glm::vec3 rotationOfLightSource(0.0f, 0.0f, 0.0f);
 	glm::vec3 lightDirection(0.0f, 0.1f, 0.0f);
 	float exponentForPointLight = 2.0f;
@@ -358,13 +358,13 @@ int main()
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
+		Object lamp(lightSourceShader, &rotationOfLightSource.x, &rotationOfLightSource.y, &rotationOfLightSource.z, &positionOfLightSource.x, &positionOfLightSource.y, &positionOfLightSource.z);
+
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		ImGui::ShowDemoWindow(); // Show demo window! :)
-
-		Object lamp(lightSourceShader);
 
 		{
 			ImGui::Begin("Performance:");
@@ -393,10 +393,6 @@ int main()
 			ImGui::Text("Position of camera: %.2f, %.2f, %.2f", camera.Position.x, camera.Position.y, camera.Position.z);
 			ImGui::Text("Orientation of camera: %.2f, %.2f, %.2f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 			ImGui::Text("Up of camera: %.2f, %.2f, %.2f", camera.Up.x, camera.Up.y, camera.Up.z);
-			
-			ImGui::SliderFloat("Rotation X light cube:", &degreToRotateX, 0.0f, 360.0f);
-			ImGui::SliderFloat("Rotation Y light cube:", &degreToRotateY, 0.0f, 360.0f);
-			ImGui::SliderFloat("Rotation Z light cube:", &degreToRotateZ, 0.0f, 360.0f);
 
 			ImGui::End();
 		}
@@ -410,12 +406,14 @@ int main()
 				ImGui::Separator();
 				ImGui::DragFloat3("Position for point light", &positionOfLightSource.x, 0.1f);
 				ImGui::SliderFloat3("Rotation vector of light", &rotationOfLightSource.x, 0.0f, 360.0f);
+				ImGui::Separator();
 				ImGui::SliderFloat3("Direction vector of light", &lightDirection.x, -0.5f, 0.5f); 
 
 				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
 				ImGui::Text("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff, A: %.2ff", lightColor.r, lightColor.g, lightColor.b, lightColor.a); 
 				ImGui::Separator();
-				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
+				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lamp.PositionX_, lamp.PositionY_, lamp.PositionZ_);
+				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lamp.getOritation(Object::Rotation::X), lamp.getOritation(Object::Rotation::Y), lamp.getOritation(Object::Rotation::Z));
 				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", lightDirection.x, lightDirection.y, lightDirection.z);
 			}
 			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -584,17 +582,23 @@ int main()
 			lightSourceShader.Activate();
 
 			if (isDirectionalLight && !isPointLight) {
-				// Kreiraj lokalnu model matricu za svetlosni izvor
+
+				lamp.setPosition(lightDirection);
+				lamp.setOrientationDegre(Object::Rotation::X, &rotationOfLightSource.x);
+				lamp.setOrientationDegre(Object::Rotation::Y, &rotationOfLightSource.y);
+				lamp.setOrientationDegre(Object::Rotation::Z, &rotationOfLightSource.z);
+
+				/*// Kreiraj lokalnu model matricu za svetlosni izvor
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
 				lightModel = glm::translate(lightModel, lightDirection); // Translantacija svetla
-				glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader
+				glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader*/
 			}
 			else if(!isDirectionalLight && isPointLight)
 			{
 				lamp.setPosition(positionOfLightSource);
-				lamp.setOrientationDegre(Rotation::X, rotationOfLightSource.x);
-				lamp.setOrientationDegre(Rotation::Y, rotationOfLightSource.y);
-				lamp.setOrientationDegre(Rotation::Z, rotationOfLightSource.z);
+				lamp.setOrientationDegre(Object::Rotation::X, &rotationOfLightSource.x);
+				lamp.setOrientationDegre(Object::Rotation::Y, &rotationOfLightSource.y);
+				lamp.setOrientationDegre(Object::Rotation::Z, &rotationOfLightSource.z);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvor
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
