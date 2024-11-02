@@ -53,14 +53,34 @@ void Camera::translateObjectWithModelMatrih(glm::vec3 newPosition, glm::mat4 mod
 	cameraMatrix = cameraMatrix * localModel;
 }
 
+void Camera::setOrientation(glm::vec3 newOrientation)
+{
+	Camera::Orientation = newOrientation;
+}
+
+void Camera::setPosition(glm::vec3 newPosition)
+{
+	Camera::Position = newPosition;
+}
+
 glm::mat4 Camera::getModelMatrix()
 {
-	return modelMatrix;
+	return Camera::modelMatrix;
 }
 
 glm::mat4 Camera::getCameraMatrix()
 {
 	return Camera::cameraMatrix;
+}
+
+glm::vec3 Camera::getPosition()
+{
+	return Camera::Position;
+}
+
+glm::vec3 Camera::getOrientation()
+{
+	return Camera::Orientation;
 }
 
 void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positionOfLightSource, bool& blinnPhong_switch, bool&phong_switch, bool& specularMap_Switch)

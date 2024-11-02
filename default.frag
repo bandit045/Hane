@@ -5,8 +5,7 @@ struct Material{
 	float ambientStrenght;
 	float diffuseStrenght;
 	float specularStrength;
-	float shininessBlinnPhong;
-	float shininessPhong;
+	float shininessStrenght;
 };
 struct Texture{
 	sampler2D baseTexture; //For base texture
@@ -104,10 +103,10 @@ float specAmount(vec3 viewDirection, vec3 lightDirection, vec3 normal){
 	
 	if(control.isBlinnPhong && !control.isPhong){ // can be switched on P - O key
 		vec3 halfwayDir  = normalize(lightDirection + viewDirection);
-		return pow(max(dot(normal, halfwayDir), 0.0f), material.shininessBlinnPhong);
+		return pow(max(dot(normal, halfwayDir), 0.0f), material.shininessStrenght);
 	}
 	else if(!control.isBlinnPhong && control.isPhong){
 		vec3 reflectionDirection = reflect(-lightDirection, normal);
-		return pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessPhong);
+		return pow(max(dot(viewDirection, reflectionDirection), 0.0f), material.shininessStrenght);
 	}
 };

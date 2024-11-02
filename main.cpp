@@ -278,7 +278,7 @@ int main()
 
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 positionOfLightSource(2.25f, 2.09f, 1.0f);
-	glm::vec3 lightDirection(0.1f, 0.0f, 0.0f);
+	glm::vec3 lightDirection(0.0f, 0.1f, 0.0f);
 	float exponentForPointLight = 2.0f;
 	float linearTerm_Kl = 0.7f;
 	float quadraticTerm_Kq = 1.8f;
@@ -287,11 +287,10 @@ int main()
 	// Material GLOBAL
 	glm::vec4 globalObjectColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 globalPos = glm::vec3(0.0f, 0.0f, 0.0f); // ?
-	float globalAmbientStrenght = 0.5f;
-	float globalDiffuseStrenght = 2.0f;
+	float globalAmbientStrenght = 0.6f;
+	float globalDiffuseStrenght = 1.9f;
 	float globalSpecularStrength = 0.5f;
-	float globalShininessBlinnPhong = 16.0f;
-	float globalShininessPhong = 8.0f;
+	float globalShininessStrenght = 16.0f;
 
 	// Material CUBE
 	glm::vec4 cubeColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -344,6 +343,8 @@ int main()
 
 	// Makeing camera
 	Camera camera(width, height, glm::vec3(0.0f, 2.0f, 5.0f));
+	camera.setPosition(glm::vec3(0.03f, 4.12f, 4.09));
+	camera.setOrientation(glm::vec3(0.39f, -0.53f, -0.74));
 
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
@@ -377,13 +378,17 @@ int main()
 					globalAmbientStrenght = 0.2f;
 				}
 			}
+
+			ImGui::Text("Position of camera: %.2f, %.2f, %.2f", camera.Position.x, camera.Position.y, camera.Position.z);
+			ImGui::Text("Orientation of camera: %.2f, %.2f, %.2f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
+			ImGui::Text("Up of camera: %.2f, %.2f, %.2f", camera.Up.x, camera.Up.y, camera.Up.z);
 			
 			ImGui::End();
 		}
 		{
 
 			ImGui::Begin("Light source");
-			if (ImGui::CollapsingHeader("Color and position of light source")) {
+			if (ImGui::CollapsingHeader("Color and position of light source", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 				ImGui::SeparatorText("Color for light source:"); ImGui::Spacing();
 				ImGui::SliderFloat3("Color", &lightColor.x, 0.0f, 1.0f); 
@@ -397,16 +402,23 @@ int main()
 				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", positionOfLightSource.x, positionOfLightSource.y, positionOfLightSource.z);
 				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", lightDirection.x, lightDirection.y, lightDirection.z);
 			}
-			if (ImGui::CollapsingHeader("Attenuation the light equation")) {
+			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 				ImGui::SeparatorText("State on/off:"); ImGui::Spacing();
 				ImGui::Checkbox("Is Point Light Reducing On Distance", &isPointLightReducingOnDistance);
 
-				ImGui::SeparatorText("Control of variables:"); ImGui::Spacing();
-				ImGui::Text("Exponent for distance:"); ImGui::SameLine(); ImGui::SliderFloat("2", &exponentForPointLight, -64, 256);
-				ImGui::Text("Linear Term Kl:"); ImGui::SameLine(); ImGui::SliderFloat("0.7f", &linearTerm_Kl, -2.683f, 256.0f);
-				ImGui::Text("Quadratic Term Kq:"); ImGui::SameLine(); ImGui::SliderFloat("1.8f", &quadraticTerm_Kq, -64.0f, 64.0f);
-				ImGui::Text("Constant Term Kc:"); ImGui::SameLine(); ImGui::SliderFloat("1.0f", &constantTerm_Kc, 0.0f, 64.0f);
+				ImGui::SeparatorText("Control of variables:");
+				ImGui::SliderFloat("Exponent for distance:", &exponentForPointLight, -64, 256); ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { exponentForPointLight = 2.0f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Linear Term Kl:", &linearTerm_Kl, -2.683f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.7f")) { linearTerm_Kl = 2.0f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Quadratic Term Kq:", &quadraticTerm_Kq, -64.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.8f")) { quadraticTerm_Kq = 1.8f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Constant Term Kc:", &constantTerm_Kc, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0f")) { constantTerm_Kc = 1.0f; }; ImGui::Spacing();
+
+				if (ImGui::Button("RESET EQUATION", ImVec2(120, 40))) {
+					exponentForPointLight = 2.0f;
+					linearTerm_Kl = 0.7f;
+					quadraticTerm_Kq = 1.8f;
+					constantTerm_Kc = 1.0f;
+				};
 
 				ImGui::SeparatorText("Bref explanation:"); ImGui::Spacing();
 				ImGui::BulletText("To reduce the intensity of point light over the distance");
@@ -415,7 +427,7 @@ int main()
 				ImGui::SameLine(0, 4);
 				ImGui::TextLinkOpenURL("https://learnopengl.com/Lighting/Light-casters");
 			}
-			if (ImGui::CollapsingHeader("Model of light reflection")) {
+			if (ImGui::CollapsingHeader("Model of light reflection", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 				ImGui::SeparatorText("State of specular reflection on/off"); ImGui::Spacing();
 				if (ImGui::Checkbox("Phong", &isPhong)) {
@@ -433,11 +445,19 @@ int main()
 				ImGui::Checkbox("Specular Map", &isSpecularMap);
 
 				ImGui::SeparatorText("Control of variables:"); ImGui::Spacing();
-				ImGui::SliderFloat("Ambient Strenght: 0.5f", &globalAmbientStrenght, 0.0f, 4.0f); ImGui::Spacing();
-				ImGui::SliderFloat("Diffuse Strenght: 2.0f", &globalDiffuseStrenght, 0.0f, 64.0f); ImGui::Spacing();
-				ImGui::SliderFloat("Specular Strength: 0.5f", &globalSpecularStrength, 0.0f, 64.0f); ImGui::Spacing();
-				ImGui::SliderFloat("Shininess Blinn-Phong: 16.0f", &globalShininessBlinnPhong, 0.0f, 256.0f); ImGui::Spacing();
-				ImGui::SliderFloat("Shininess Phong: 8.0f", &globalShininessPhong, 0.0f, 256.0f); ImGui::Spacing();
+				ImGui::SliderFloat("Ambient Strenght:", &globalAmbientStrenght, 0.0f, 32.0f); ImGui::SameLine(0, 0);if(ImGui::SmallButton("0.6f")){ globalAmbientStrenght = 0.6f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Diffuse Strenght:", &globalDiffuseStrenght, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.9f")) { globalDiffuseStrenght = 1.9f; };  ImGui::Spacing();
+				ImGui::SliderFloat("Specular Strength:", &globalSpecularStrength, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.5f")) { globalSpecularStrength = 0.5f; };  ImGui::Spacing();
+				ImGui::SliderFloat("Shininess Strength:", &globalShininessStrenght, 0.0f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("16.0f")) { globalShininessStrenght = 16.0f; };  ImGui::Spacing();
+
+				if (ImGui::Button("RESET STRENGHT", ImVec2(120, 40))) {
+					globalAmbientStrenght = 0.6f;
+					globalDiffuseStrenght = 1.9f;
+					globalSpecularStrength = 0.5f;
+					globalShininessStrenght = 16.0f;
+				};
+				//ImGui::ArrowButton("Up", ImGuiDir_Up);
+				ImGui::Separator();
 			}
 			ImGui::End();
 		}
@@ -477,8 +497,7 @@ int main()
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalAmbientStrenght);
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalDiffuseStrenght);
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalSpecularStrength);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessBlinnPhong"), globalShininessBlinnPhong);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessPhong"), globalShininessPhong);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessStrenght"), globalShininessStrenght);
 
 		shaderProgramForObjects.Deactivate();
 
