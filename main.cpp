@@ -17,6 +17,7 @@
 #include "VAO.h"
 #include "EBO.h"
 #include "Camera.h"
+#include "Object.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -276,8 +277,13 @@ int main()
 	LIGHT_SOURCE_VBO.Unbind();
 //-------------------------------------------------------------------------------------------------------------------------
 
+	float degreToRotateX = 0.0f;
+	float degreToRotateY = 0.0f;
+	float degreToRotateZ = 0.0f;
+
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 positionOfLightSource(2.25f, 2.09f, 1.0f);
+	glm::vec3 positionOfLightSource(0.0f, 0.0f, 0.0f);
+	glm::vec3 rotationOfLightSource(0.0f, 0.0f, 0.0f);
 	glm::vec3 lightDirection(0.0f, 0.1f, 0.0f);
 	float exponentForPointLight = 2.0f;
 	float linearTerm_Kl = 0.7f;
@@ -305,6 +311,9 @@ int main()
 	bool isPhong = false;
 	bool isBlinnPhong = true;
 	bool isSpecularMap = true;
+	bool isRotationX = false;
+	bool isRotationY = false;
+	bool isRotationZ = false;
 
 	bool isDirectionalLight = false;
 	bool isPointLight = true;
@@ -355,6 +364,8 @@ int main()
 		ImGui::NewFrame();
 		ImGui::ShowDemoWindow(); // Show demo window! :)
 
+		Object lamp(lightSourceShader);
+
 		{
 			ImGui::Begin("Performance:");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
@@ -383,6 +394,10 @@ int main()
 			ImGui::Text("Orientation of camera: %.2f, %.2f, %.2f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 			ImGui::Text("Up of camera: %.2f, %.2f, %.2f", camera.Up.x, camera.Up.y, camera.Up.z);
 			
+			ImGui::SliderFloat("Rotation X light cube:", &degreToRotateX, 0.0f, 360.0f);
+			ImGui::SliderFloat("Rotation Y light cube:", &degreToRotateY, 0.0f, 360.0f);
+			ImGui::SliderFloat("Rotation Z light cube:", &degreToRotateZ, 0.0f, 360.0f);
+
 			ImGui::End();
 		}
 		{
@@ -393,7 +408,8 @@ int main()
 				ImGui::SeparatorText("Color for light source:"); ImGui::Spacing();
 				ImGui::SliderFloat3("Color", &lightColor.x, 0.0f, 1.0f); 
 				ImGui::Separator();
-				ImGui::DragFloat3("Position for point light", &positionOfLightSource.x, 0.1f); 
+				ImGui::DragFloat3("Position for point light", &positionOfLightSource.x, 0.1f);
+				ImGui::SliderFloat3("Rotation vector of light", &rotationOfLightSource.x, 0.0f, 360.0f);
 				ImGui::SliderFloat3("Direction vector of light", &lightDirection.x, -0.5f, 0.5f); 
 
 				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
@@ -575,10 +591,15 @@ int main()
 			}
 			else if(!isDirectionalLight && isPointLight)
 			{
-				// Kreiraj lokalnu model matricu za svetlosni izvor
+				lamp.setPosition(positionOfLightSource);
+				lamp.setOrientationDegre(Rotation::X, rotationOfLightSource.x);
+				lamp.setOrientationDegre(Rotation::Y, rotationOfLightSource.y);
+				lamp.setOrientationDegre(Rotation::Z, rotationOfLightSource.z);
+
+				/*// Kreiraj lokalnu model matricu za svetlosni izvor
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
 				lightModel = glm::translate(lightModel, positionOfLightSource); // Translantacija svetla
-				glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader
+				glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader*/
 			}
 
 			// Passing camMatrix uniform to lightSourceCube for projection matrix
