@@ -128,53 +128,53 @@ GLuint indices_cube[] =
 // Vertices for Light source  
 GLfloat vertices_lightSource[] =
 {
-		// Prednja strana
-		-0.01f, -0.01f,  0.01f,
-		 0.01f, -0.01f,  0.01f,
-		 0.01f,  0.01f,  0.01f,
-		 0.01f,  0.01f,  0.01f,
-		-0.01f,  0.01f,  0.01f,
-		-0.01f, -0.01f,  0.01f,
+	// Prednja strana
+		-0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
+		 0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
+		 0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
+		 0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
+		-0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
+		-0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
 
 		// Zadnja strana
-		-0.01f, -0.01f, -0.01f,
-		 0.01f, -0.01f, -0.01f,
-		 0.01f,  0.01f, -0.01f,
-		 0.01f,  0.01f, -0.01f,
-		-0.01f,  0.01f, -0.01f,
-		-0.01f, -0.01f, -0.01f,
+		-0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
+		 0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
+		 0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
+		 0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
+		-0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
+		-0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
 
 		// Leva strana
-		-0.01f,  0.01f,  0.01f,
-		-0.01f,  0.01f, -0.01f,
-		-0.01f, -0.01f, -0.01f,
-		-0.01f, -0.01f, -0.01f,
-		-0.01f, -0.01f,  0.01f,
-		-0.01f,  0.01f,  0.01f,
+		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f,  0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f, -0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
 
 		// Desna strana
-		 0.01f,  0.01f,  0.01f,
-		 0.01f,  0.01f, -0.01f,
-		 0.01f, -0.01f, -0.01f,
-		 0.01f, -0.01f, -0.01f,
-		 0.01f, -0.01f,  0.01f,
-		 0.01f,  0.01f,  0.01f,
+		 0.01f,  0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
+		 0.01f,  0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
+		 0.01f, -0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
+		 0.01f, -0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
+		 0.01f, -0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
+		 0.01f,  0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
 
 		 // Donja strana
-		 -0.01f, -0.01f, -0.01f,
-		  0.01f, -0.01f, -0.01f,
-		  0.01f, -0.01f,  0.01f,
-		  0.01f, -0.01f,  0.01f,
-		 -0.01f, -0.01f,  0.01f,
-		 -0.01f, -0.01f, -0.01f,
+		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
+		  0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
+		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
+		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
+		 -0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
+		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
 
 		 // Gornja strana
-		 -0.01f,  0.01f, -0.01f,
-		  0.01f,  0.01f, -0.01f,
-		  0.01f,  0.01f,  0.01f,
-		  0.01f,  0.01f,  0.01f,
-		 -0.01f,  0.01f,  0.01f,
-		 -0.01f,  0.01f, -0.01f
+		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
+		  0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
+		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
+		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
+		 -0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
+		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f
 };
 
 int main()
@@ -271,7 +271,8 @@ int main()
 	VBO LIGHT_SOURCE_VBO(vertices_lightSource, sizeof(vertices_lightSource));
 
 	// Links VBO attributes such as cordinates to VAO
-	LIGHT_SOURCE_VAO.LinkAttrib(LIGHT_SOURCE_VBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+	LIGHT_SOURCE_VAO.LinkAttrib(LIGHT_SOURCE_VBO, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
+	LIGHT_SOURCE_VAO.LinkAttrib(LIGHT_SOURCE_VBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
 	// Unbind all to prevent accidentally modifying them
 	LIGHT_SOURCE_VAO.Unbind();
 	LIGHT_SOURCE_VBO.Unbind();
@@ -281,9 +282,11 @@ int main()
 	float degreToRotateY = 0.0f;
 	float degreToRotateZ = 0.0f;
 
+	glm::vec3 positionOfLightSource(2.03f, 2.05f, 0.52f);
+	glm::quat rotationOfLightSource(1.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec3 scaleOfLightSource(1.0f, 1.0f, 1.0f);
+
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 positionOfLightSource(2.31f, 2.1f, 0.43f);
-	glm::vec3 rotationOfLightSource(0.0f, 0.0f, 0.0f);
 	glm::vec3 lightDirection(0.0f, 0.1f, 0.0f);
 	float exponentForPointLight = 2.0f;
 	float linearTerm_Kl = 0.7f;
@@ -358,7 +361,7 @@ int main()
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
-		Object lamp(lightSourceShader, &rotationOfLightSource.x, &rotationOfLightSource.y, &rotationOfLightSource.z, &positionOfLightSource.x, &positionOfLightSource.y, &positionOfLightSource.z);
+		Object lamp(lightSourceShader, &rotationOfLightSource, &rotationOfLightSource.x, &rotationOfLightSource.y, &rotationOfLightSource.z, &positionOfLightSource.x, &positionOfLightSource.y, &positionOfLightSource.z);
 
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
@@ -405,7 +408,8 @@ int main()
 				ImGui::SliderFloat3("Color", &lightColor.x, 0.0f, 1.0f); 
 				ImGui::Separator();
 				ImGui::DragFloat3("Position for point light", &positionOfLightSource.x, 0.1f);
-				ImGui::SliderFloat3("Rotation vector of light", &rotationOfLightSource.x, 0.0f, 360.0f);
+				ImGui::DragFloat4("Rotation vector of light", &rotationOfLightSource.x, -360.0f, 360.0f);
+				ImGui::SliderFloat3("Scale factor of light", &scaleOfLightSource.x, 0.0f, 64.0f);
 				ImGui::Separator();
 				ImGui::SliderFloat3("Direction vector of light", &lightDirection.x, -0.5f, 0.5f); 
 
@@ -414,6 +418,7 @@ int main()
 				ImGui::Separator();
 				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lamp.PositionX_, lamp.PositionY_, lamp.PositionZ_);
 				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lamp.getOritation(Object::Rotation::X), lamp.getOritation(Object::Rotation::Y), lamp.getOritation(Object::Rotation::Z));
+				ImGui::TextWrapped("Quaternion to orbite light source: %.2f, %.2f, %.2f, %.2f", lamp.orientationQuat.w, lamp.orientationQuat.x, lamp.orientationQuat.y, lamp.orientationQuat.z);
 				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", lightDirection.x, lightDirection.y, lightDirection.z);
 			}
 			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -595,12 +600,12 @@ int main()
 			}
 			else if(!isDirectionalLight && isPointLight)
 			{
+				
+				lamp.rotateQuat(rotationOfLightSource.w, rotationOfLightSource.x, rotationOfLightSource.y, rotationOfLightSource.z);
 				lamp.setPosition(positionOfLightSource);
-				lamp.setOrientationDegre(Object::Rotation::X, &rotationOfLightSource.x);
-				lamp.setOrientationDegre(Object::Rotation::Y, &rotationOfLightSource.y);
-				lamp.setOrientationDegre(Object::Rotation::Z, &rotationOfLightSource.z);
+				lamp.scaleObject(scaleOfLightSource);
 
-				/*// Kreiraj lokalnu model matricu za svetlosni izvor
+				/*// Kreiraj lokalnu model matricu za svetlosni izvore
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
 				lightModel = glm::translate(lightModel, positionOfLightSource); // Translantacija svetla
 				glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader*/

@@ -87,7 +87,7 @@ void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positi
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		Position += speed * Orientation;
+		Position += speed * 0.5f * Orientation;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{

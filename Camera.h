@@ -28,8 +28,8 @@ public:
 	int width;
 	int height;
 
-	float speed = 0.1f;
-	float sensitivity = 100.0f;
+	float speed = 0.001f;
+	float sensitivity = 80.0f;
 
 	// Camera constructor to set up variables and initialization
 	Camera(int width, int height, glm::vec3 position);
