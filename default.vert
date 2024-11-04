@@ -11,8 +11,12 @@ out vec3 crntPos;
 out vec3 vertNormal;
 
 uniform mat4 camMatrix;
-uniform mat4 model;
 uniform vec3 camPos;
+
+uniform mat4 model;
+uniform mat4 modelPos;
+uniform mat4 modelScale;
+uniform mat4 modelRot;
 
 void main()
 {

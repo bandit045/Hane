@@ -283,7 +283,8 @@ int main()
 	float degreToRotateZ = 0.0f;
 
 	glm::vec3 positionOfLightSource(2.03f, 2.05f, 0.52f);
-	glm::quat rotationOfLightSource(1.0f, 0.0f, 0.0f, 0.0f);
+	glm::quat rotationOfLightSourceQuat(1.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec3 rotationOfLightSourceEuler(0.0f, 0.0f, 0.0f);
 	glm::vec3 scaleOfLightSource(1.0f, 1.0f, 1.0f);
 
 	glm::vec4 lightColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -303,11 +304,17 @@ int main()
 
 	// Material CUBE
 	glm::vec4 cubeColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 cubePos = glm::vec3(3.0f, 1.0f, 1.0f);
+	glm::vec3 cubePos(3.0f, 1.0f, 1.0f);
+	glm::vec3 cubeRotEuler(0.0f, 0.0f, 0.0f);
+	glm::quat cubeRotQuet(1.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec3 cubeScale(1.0f, 1.0f, 1.0f);
 
 	// PYRAMIDE
 	glm::vec4 pyramideColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 pyramidPos = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 pyramidPos(1.0f, 1.0f, 1.0f);
+	glm::quat pyramidRotQuat(1.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec3 pyramidRotEuler(0.0f, 0.0f, 0.0f);
+	glm::vec3 pyramidScale(1.0f, 1.0f, 1.0f);
 
 	// For different state insade the fragment shader
 	bool isPointLightReducingOnDistance = true;
@@ -361,7 +368,9 @@ int main()
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
-		Object lamp(lightSourceShader, &rotationOfLightSource, &rotationOfLightSource.x, &rotationOfLightSource.y, &rotationOfLightSource.z, &positionOfLightSource.x, &positionOfLightSource.y, &positionOfLightSource.z);
+		Object lamp(lightSourceShader, scaleOfLightSource, rotationOfLightSourceQuat, positionOfLightSource, rotationOfLightSourceEuler);
+/*		Object pyra(shaderProgramForObjects,pyramidScale, pyramidRotQuat, pyramidPos, pyramidRotEuler);
+		Object cube(shaderProgramForObjects, cubeScale, cubeRotQuet, cubePos, cubeRotEuler);*/
 
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
@@ -396,7 +405,7 @@ int main()
 			ImGui::Text("Position of camera: %.2f, %.2f, %.2f", camera.Position.x, camera.Position.y, camera.Position.z);
 			ImGui::Text("Orientation of camera: %.2f, %.2f, %.2f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 			ImGui::Text("Up of camera: %.2f, %.2f, %.2f", camera.Up.x, camera.Up.y, camera.Up.z);
-
+			ImGui::Text("Quat-stat: %.2f", lamp.m_orientationQuat.w);
 			ImGui::End();
 		}
 		{
@@ -408,7 +417,8 @@ int main()
 				ImGui::SliderFloat3("Color", &lightColor.x, 0.0f, 1.0f); 
 				ImGui::Separator();
 				ImGui::DragFloat3("Position for point light", &positionOfLightSource.x, 0.1f);
-				ImGui::DragFloat4("Rotation vector of light", &rotationOfLightSource.x, -360.0f, 360.0f);
+				ImGui::SliderFloat3("Rotation vector of point light", &rotationOfLightSourceEuler.x, -180.0f, 180.0f);
+				ImGui::DragFloat4("Quaternion orbit of lightource", &rotationOfLightSourceQuat.x, -180.0, 180.0f);
 				ImGui::SliderFloat3("Scale factor of light", &scaleOfLightSource.x, 0.0f, 64.0f);
 				ImGui::Separator();
 				ImGui::SliderFloat3("Direction vector of light", &lightDirection.x, -0.5f, 0.5f); 
@@ -416,9 +426,9 @@ int main()
 				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
 				ImGui::Text("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff, A: %.2ff", lightColor.r, lightColor.g, lightColor.b, lightColor.a); 
 				ImGui::Separator();
-				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lamp.PositionX_, lamp.PositionY_, lamp.PositionZ_);
-				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lamp.getOritation(Object::Rotation::X), lamp.getOritation(Object::Rotation::Y), lamp.getOritation(Object::Rotation::Z));
-				ImGui::TextWrapped("Quaternion to orbite light source: %.2f, %.2f, %.2f, %.2f", lamp.orientationQuat.w, lamp.orientationQuat.x, lamp.orientationQuat.y, lamp.orientationQuat.z);
+				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lamp.Position.x, lamp.Position.y, lamp.Position.z);
+				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lamp.getOritationEuler(Object::Rotation::X), lamp.getOritationEuler(Object::Rotation::Y), lamp.getOritationEuler(Object::Rotation::Z));
+				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lamp.m_orientationQuat.w, lamp.m_orientationQuat.x, lamp.m_orientationQuat.y, lamp.m_orientationQuat.z);
 				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", lightDirection.x, lightDirection.y, lightDirection.z);
 			}
 			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -567,6 +577,7 @@ int main()
 			planks.Bind();
 			planksSpec.Bind();
 
+
 			// Kreiraj lokalnu model matricu za kocku
 			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
 			cubeModel = glm::translate(cubeModel, cubePos); // Transplantacija kocke
@@ -588,10 +599,9 @@ int main()
 
 			if (isDirectionalLight && !isPointLight) {
 
-				lamp.setPosition(lightDirection);
-				lamp.setOrientationDegre(Object::Rotation::X, &rotationOfLightSource.x);
-				lamp.setOrientationDegre(Object::Rotation::Y, &rotationOfLightSource.y);
-				lamp.setOrientationDegre(Object::Rotation::Z, &rotationOfLightSource.z);
+				lamp.setPosition(positionOfLightSource);
+				lamp.setScale(scaleOfLightSource);
+				lamp.setRotateEuler(rotationOfLightSourceEuler);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvor
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
@@ -600,10 +610,9 @@ int main()
 			}
 			else if(!isDirectionalLight && isPointLight)
 			{
-				
-				lamp.rotateQuat(rotationOfLightSource.w, rotationOfLightSource.x, rotationOfLightSource.y, rotationOfLightSource.z);
 				lamp.setPosition(positionOfLightSource);
-				lamp.scaleObject(scaleOfLightSource);
+				lamp.setScale(scaleOfLightSource);
+				lamp.setRotateQuat(rotationOfLightSourceQuat);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvore
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica

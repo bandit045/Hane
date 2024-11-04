@@ -1,141 +1,98 @@
 #include "Object.h"
 
-Object::Object(Shader shaderWhichRenderObject, glm::quat *orientationQuat, float* degreToRotateX, float* degreToRotateY, float* degreToRotateZ, float* positionX, float* positionY, float* positionZ) /**/
+Object::Object(Shader shaderWhichRenderObject, glm::vec3 scaleFactor, glm::quat orientationQuat, glm::vec3 positionObject, glm::vec3 orientationEuler) /**/
 {
-	Object::OrientationX_ = *degreToRotateX;
-	Object::OrientationY_ = *degreToRotateY;
-	Object::OrientationZ_ = *degreToRotateZ;
+	// Positions
+	Object::Position = positionObject;
+	setPosition(positionObject);
 
-	Object::PositionX_ = *positionX;
-	Object::PositionY_ = *positionY;
-	Object::PositionZ_ = *positionZ;
+	// Orientation
+	Object::m_orientationEuler = orientationEuler;
+	Object::m_orientationQuat = orientationQuat;
+	setRotateEuler(orientationEuler);
 
-	Object::orientationQuat = *orientationQuat;
+	// Scale
+	Object::m_scale = scaleFactor;
+	setScale(scaleFactor);
 
+	// Storing shaders
 	shaderWhichRenderObject_ID = shaderWhichRenderObject.ID;
 }
+void Object::setScale(glm::vec3 scaleFactor)
+{
+	glm::mat4 matrixScale = glm::mat4(1.0f);
+	matrixScale = glm::scale(matrixScale, scaleFactor);
+
+	// We update our scaling factor to Object Class
+	Object::m_scale = scaleFactor;
+
+	// We update our modelScale inside Object Class
+	Object::modelScale = matrixScale;
+
+	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelScale"), 1, GL_FALSE, glm::value_ptr(Object::modelScale));
+};
 void Object::setPosition(glm::vec3 newPosition)
 {
-	glm::mat4 modelPos = glm::mat4(1.0f);
-	modelPos = glm::translate(modelPos, Object::Position + newPosition);
+	glm::mat4 matrixPos = glm::mat4(1.0f);
+	matrixPos = glm::translate(matrixPos, newPosition);
 
-	Object::modelPos = glm::mat4(1.0f);
-	Object::modelPos = modelPos;
-
-	// We setting up position insde Object class 
+	// We update our position insde Object class 
 	Object::Position = newPosition;
 
-	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelPos"), 1, GL_FALSE, glm::value_ptr(Object::modelPos));  // Pošalji model matricu u shader
+	// We update our modelPos inside Object Class
+	Object::modelPos = matrixPos;
+
+	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelPos"), 1, GL_FALSE, glm::value_ptr(Object::modelPos));
 };
-void Object::rotateObject(float axisX, float axisY, float axisZ)
+void Object::setRotateEuler(glm::vec3 rotationEuler)
 {
-	Object::OrientationX_ = axisX;
-	Object::OrientationY_ = axisY;
-	Object::OrientationZ_ = axisZ;
-
-	glm::mat4 matrixPos = glm::mat4(1.0f);
-	matrixPos = glm::translate(matrixPos, -Object::Position);
-
 	// Apply rotations around each axis (in the order X, Y, Z)
-	glm::mat3 rotationX = glm::rotate(glm::mat4(1.0f), glm::radians(axisX), glm::vec3(1.0f, 0.0f, 0.0f));
-	glm::mat3 rotationY = glm::rotate(glm::mat4(1.0f), glm::radians(axisY), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat3 rotationZ = glm::rotate(glm::mat4(1.0f), glm::radians(axisZ), glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat3 rotationX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationEuler.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat3 rotationY = glm::rotate(glm::mat4(1.0f), glm::radians(rotationEuler.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat3 rotationZ = glm::rotate(glm::mat4(1.0f), glm::radians(rotationEuler.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
-	matrixPos = glm::translate(matrixPos, Object::Position);
+	// We set our curent euar inside class
+	Object::m_orientationEuler = rotationEuler;
+
+	// We update our modelRotate inside Object Class
 	Object::modelRotate = Object::modelRotate * glm::mat4(rotationZ * rotationY * rotationX);
 
 	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(Object::modelRotate));
 };
-void Object::scaleObject(glm::vec3 scaleFactor)
+void Object::setRotateQuat(glm::quat orientationQuat) // This type of rotation solve gimbal lock
 {
-	Object::Scale = scaleFactor;
-
-	glm::mat4 matrixScale = glm::mat4(1.0f);
-	matrixScale = glm::scale(matrixScale, scaleFactor);
-
-	Object::modelScale = Object::modelScale * matrixScale;
-
-	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelScale"), 1, GL_FALSE, glm::value_ptr(Object::modelScale));
-};
-void Object::rotateQuat(float componentW, float pitchX, float yawY, float rollZ) // This type of rotation solve gimbal lock
-{
+	// We define axis for rotation
 	glm::vec3 axis(1.0f, 1.0f, 1.0f);
 	glm::quat quatRot_local_rotation;
 	glm::quat quatRot_total(1.0f, 0.0f, 0.0f, 0.0f);
 
- 	quatRot_local_rotation.w = cosf(componentW / 2);
-	quatRot_local_rotation.x = axis.x * sinf(glm::radians(pitchX) / 2);
-	quatRot_local_rotation.y = axis.y * sinf(glm::radians(yawY) / 2 );
-	quatRot_local_rotation.z = axis.z * sinf(glm::radians(rollZ) / 2);
+	// Black magic
+ 	quatRot_local_rotation.w = cosf(orientationQuat.w / 2);
+	quatRot_local_rotation.x = axis.x * sinf(glm::radians(orientationQuat.x) / 2);
+	quatRot_local_rotation.y = axis.y * sinf(glm::radians(orientationQuat.y) / 2 );
+	quatRot_local_rotation.z = axis.z * sinf(glm::radians(orientationQuat.z) / 2);
 
 	quatRot_local_rotation = glm::normalize(quatRot_local_rotation);
 
 	quatRot_total = quatRot_local_rotation * quatRot_total;
 	Object::modelRotate = glm::mat4_cast(quatRot_total);
+	
+	Object::m_orientationQuat = quatRot_local_rotation;
 
 	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(Object::modelRotate));
 };
-void Object::setOrientationDegre(Rotation axlToRotate, float *degreToRotate) // To redundad mayby delete
-{
-	glm::vec3 aroudTheAxle;
-	if (axlToRotate == Object::Rotation::X) {
-		aroudTheAxle = glm::vec3(1.0f, 0.0f, 0.0f);
-
-		glm::mat4 matrixRot = glm::mat4(1.0f);
-		glm::mat4 matrixPos = glm::mat4(1.0f);
-
-		matrixPos = glm::translate(modelPos, -Object::Position);
-		matrixRot = glm::rotate(matrixRot, glm::radians(*degreToRotate), aroudTheAxle);
-		matrixPos = glm::translate(modelPos, Object::Position);
-
-		Object::modelRotate = Object::modelRotate * matrixRot;
-		Object::OrientationX_ = *degreToRotate;
-
-		glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(Object::modelRotate));  // Pošalji model matricu u shader
-	}
-	else if (axlToRotate == Object::Rotation::Y){
-		aroudTheAxle = glm::vec3(0.0f, 1.0f, 0.0f);
-		
-		glm::mat4 matrixRot = glm::mat4(1.0f);
-		glm::mat4 matrixPos = glm::mat4(1.0f);
-
-		matrixPos = glm::translate(modelPos, -Object::Position);
-		matrixRot = glm::rotate(matrixRot, glm::radians(*degreToRotate), aroudTheAxle);
-		matrixPos = glm::translate(modelPos, Object::Position);
-
-		Object::modelRotate = Object::modelRotate * matrixRot;
-		OrientationY_ = *degreToRotate;
-
-		glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(Object::modelRotate));  // Pošalji model matricu u shader
-	}
-	else if (axlToRotate == Object::Rotation::Z) {
-		aroudTheAxle = glm::vec3(0.0f, 0.0f, 1.0f);
-
-		glm::mat4 matrixRot = glm::mat4(1.0f);
-		glm::mat4 matrixPos = glm::mat4(1.0f);
-
-		matrixPos = glm::translate(modelPos, -Object::Position);
-		matrixRot = glm::rotate(matrixRot, glm::radians(*degreToRotate), aroudTheAxle);
-		matrixPos = glm::translate(modelPos, Object::Position);
-
-		Object::modelRotate = Object::modelRotate * matrixRot;
-		OrientationZ_ = *degreToRotate;
-
-		glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(Object::modelRotate));  // Pošalji model matricu u shader
-	}
-};
-float Object::getOritation(Object::Rotation rotationAxl) // Make new implementation TODO
+float Object::getOritationEuler(Object::Rotation rotationAxl) 
 {
 	if (rotationAxl == Object::Rotation::X) {
-		return Object::OrientationX_;
+		return Object::m_orientationEuler.x;
 	}
 	else if(rotationAxl == Object::Rotation::Y)
 	{
-		return Object::OrientationY_;
+		return Object::m_orientationEuler.y;
 	}
 	else if(rotationAxl == Object::Rotation::Z)
 	{
-		return Object::OrientationZ_;
+		return Object::m_orientationEuler.z;
 	}
 };
 /*//------------Normalizing Quaterion-----------------------------//
