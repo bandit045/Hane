@@ -74,8 +74,8 @@ void Object::setRotateQuat(glm::quat orientationQuat) // This type of rotation s
 
 	quatRot_local_rotation = glm::normalize(quatRot_local_rotation);
 
-	quatRot_total = quatRot_local_rotation * quatRot_total;
-	Object::modelRotate = glm::mat4_cast(quatRot_total);
+	glm::quat quatRot_total_new = quatRot_local_rotation * quatRot_total;
+	Object::modelRotate = glm::mat4_cast(quatRot_total_new);
 	
 	Object::m_orientationQuat = quatRot_local_rotation;
 

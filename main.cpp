@@ -418,7 +418,7 @@ int main()
 				ImGui::Separator();
 				ImGui::DragFloat3("Position for point light", &positionOfLightSource.x, 0.1f);
 				ImGui::SliderFloat3("Rotation vector of point light", &rotationOfLightSourceEuler.x, -180.0f, 180.0f);
-				ImGui::DragFloat4("Quaternion orbit of lightource", &rotationOfLightSourceQuat.x, -180.0, 180.0f);
+				ImGui::DragFloat4("Quaternion orbit of lightource", &rotationOfLightSourceQuat.x, 64.0f, 720.0f);
 				ImGui::SliderFloat3("Scale factor of light", &scaleOfLightSource.x, 0.0f, 64.0f);
 				ImGui::Separator();
 				ImGui::SliderFloat3("Direction vector of light", &lightDirection.x, -0.5f, 0.5f); 
