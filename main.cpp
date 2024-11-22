@@ -287,25 +287,8 @@ int main()
 	Material pyramideMaterial;
 	//****
 
-
-
-	struct PointLightParams
-	{
-		float exponentForPointLight = 2.0f;
-		float linearTerm_Kl = 0.7f;
-		float quadraticTerm_Kq = 1.8f;
-		float constantTerm_Kc = 1.0f;
-	};
-	PointLightParams pointLightParams;
-
-	struct DirectionalLightParams
-	{
-		glm::vec3 lightDirection = glm::vec3(-0.2f, 0.5f, 0.4f);
-	};
-	DirectionalLightParams directionalLightParams;
-
-	//Light directionalLight(Light::TypeOfLight::DIRECTIONAL_LIGHT);
-
+	Light directionalLight(Light::TypeOfLight::DIRECTIONAL_LIGHT);
+	Light pointLight(Light::TypeOfLight::POINT_LIGHT);
 
 	//****
 	struct Transform
@@ -439,7 +422,7 @@ int main()
 				ImGui::DragFloat4("Quaternion orbit of lightource", &lampTransform.objectRotQuat.x, 64.0f, 720.0f);
 				ImGui::SliderFloat3("Scale factor of light", &lampTransform.objectScale.x, 0.0f, 64.0f);
 				ImGui::Separator();
-				ImGui::SliderFloat3("Direction vector of light", &directionalLightParams.lightDirection.x, -0.5f, 0.5f);
+				ImGui::SliderFloat3("Direction vector of light", &directionalLight.directionLightParams().lightDirection.x, -0.5f, 0.5f);
 
 				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
 				ImGui::Text("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff, A: %.2ff", lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
@@ -447,7 +430,7 @@ int main()
 				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lamp.Position.x, lamp.Position.y, lamp.Position.z);
 				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lamp.getOritationEuler(Object::Rotation::X), lamp.getOritationEuler(Object::Rotation::Y), lamp.getOritationEuler(Object::Rotation::Z));
 				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lamp.m_orientationQuat.w, lamp.m_orientationQuat.x, lamp.m_orientationQuat.y, lamp.m_orientationQuat.z);
-				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", directionalLightParams.lightDirection.x, directionalLightParams.lightDirection.y, directionalLightParams.lightDirection.z);
+				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", directionalLight.directionLightParams().lightDirection.x, directionalLight.directionLightParams().lightDirection.y, directionalLight.directionLightParams().lightDirection.z);
 			}
 			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
 
@@ -455,16 +438,16 @@ int main()
 				ImGui::Checkbox("Is Point Light Reducing On Distance", &renderFlags.isPointLightReducingOnDistance);
 
 				ImGui::SeparatorText("Control of variables:");
-				ImGui::SliderFloat("Exponent for distance:", &pointLightParams.exponentForPointLight, -64, 256); ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { pointLightParams.exponentForPointLight = 2.0f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Linear Term Kl:", &pointLightParams.linearTerm_Kl, -2.683f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.7f")) { pointLightParams.linearTerm_Kl = 2.0f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Quadratic Term Kq:", &pointLightParams.quadraticTerm_Kq, -64.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.8f")) { pointLightParams.quadraticTerm_Kq = 1.8f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Constant Term Kc:", &pointLightParams.constantTerm_Kc, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0f")) { pointLightParams.constantTerm_Kc = 1.0f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Exponent for distance:", &pointLight.pointLightParams().exponentForPointLight, -64, 256); ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { pointLight.pointLightParams().exponentForPointLight = 2.0f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Linear Term Kl:", &pointLight.pointLightParams().linearTerm_Kl, -2.683f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.7f")) { pointLight.pointLightParams().linearTerm_Kl = 2.0f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Quadratic Term Kq:", &pointLight.pointLightParams().quadraticTerm_Kq, -64.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.8f")) { pointLight.pointLightParams().quadraticTerm_Kq = 1.8f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Constant Term Kc:", &pointLight.pointLightParams().constantTerm_Kc, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0f")) { pointLight.pointLightParams().constantTerm_Kc = 1.0f; }; ImGui::Spacing();
 
 				if (ImGui::Button("RESET EQUATION", ImVec2(120, 40))) {
-					pointLightParams.exponentForPointLight = 2.0f;
-					pointLightParams.linearTerm_Kl = 0.7f;
-					pointLightParams.quadraticTerm_Kq = 1.8f;
-					pointLightParams.constantTerm_Kc = 1.0f;
+					pointLight.pointLightParams().exponentForPointLight = 2.0f;
+					pointLight.pointLightParams().linearTerm_Kl = 0.7f;
+					pointLight.pointLightParams().quadraticTerm_Kq = 1.8f;
+					pointLight.pointLightParams().constantTerm_Kc = 1.0f;
 				};
 
 				ImGui::SeparatorText("Bref explanation:"); ImGui::Spacing();
@@ -532,13 +515,13 @@ int main()
 		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLightReducingOnDistance"), renderFlags.isPointLightReducingOnDistance);
 		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isDirectionalLight"), renderFlags.isDirectionalLight);
 		// Export for reducing point light in propotional to distance, a constant term Kc, a linear term Kl, and a quadratic term Kq // https://learnopengl.com/Lighting/Light-casters
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), pointLightParams.exponentForPointLight);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), pointLightParams.linearTerm_Kl);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.quadraticTerm_Kq"), pointLightParams.quadraticTerm_Kq);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.constantTerm_Kc"), pointLightParams.constantTerm_Kc);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), pointLight.pointLightParams().exponentForPointLight);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), pointLight.pointLightParams().linearTerm_Kl);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.quadraticTerm_Kq"), pointLight.pointLightParams().quadraticTerm_Kq);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.constantTerm_Kc"), pointLight.pointLightParams().constantTerm_Kc);
 		// Exprort light position for dynamic light
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampTransform.objectPos.x, lampTransform.objectPos.y, lampTransform.objectPos.z);
-		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLightParams.lightDirection.x, directionalLightParams.lightDirection.y, directionalLightParams.lightDirection.z);
+		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.directionLightParams().lightDirection.x, directionalLight.directionLightParams().lightDirection.y, directionalLight.directionLightParams().lightDirection.z);
 		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
 		// Export uniforms to shader for different material and component strenght
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalAmbientStrenght);

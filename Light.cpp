@@ -4,51 +4,40 @@ Light::Light(Light::TypeOfLight typeOfLight)
 {
 	if (typeOfLight == TypeOfLight::POINT_LIGHT)
 	{
-		activatePointLight();
+		activeLight = (int)TypeOfLight::POINT_LIGHT; // 0 - Point Light, 1 - Directional Light
+		parameters = pointLightParameters;
 	}
 	else if(typeOfLight == TypeOfLight::DIRECTIONAL_LIGHT)
 	{
-		activateDirectionalLight();
+		activeLight = (int)TypeOfLight::DIRECTIONAL_LIGHT; // 0 - Point Light, 1 - Directional Light
+		parameters = directionalLightParameters;
 	}
-
-	// nesluzi nicemu ali da vidim kako se koristi ovo dole
-/*	std::get<PointLightParams>(parameters).constantTerm_Kc;
-	std::holds_alternative<PointLightParams>(parameters);
-	std::cout << parameters.index();*/
+	else
+	{
+		std::cout << "Invalid argument!";
+		throw std::runtime_error("Invalid argument!");
+	}
 }
 
-void Light::setLightDirection(float x, float y, float z){
-	directionalLightParams.lightDirection.x = x;
-	directionalLightParams.lightDirection.y = y;
-	directionalLightParams.lightDirection.z = z;
+Light::DirectionalLightParameters& Light::directionLightParams()
+{
+	if (activeLight == 1)
+	{
+		return directionalLightParameters;
+	}
+	if (activeLight != 1) {
+		std::cout << "You can`t edit Directional Light Params, at object light that are not Directional Light Type!";
+		throw std::runtime_error("Invalid light type for directional parameters!");
+	}
 }
-
-void Light::setLightDirection(glm::vec3 newDirection) {
-	directionalLightParams.lightDirection = newDirection;
-}
-
-float& Light::getFirstElementOfLightDirection()
+Light::PointLightParameters& Light::pointLightParams()
 {
-	return directionalLightParams.lightDirection.x;
-}
-
-Light::DirectionalLightParams Light::getDirectionalLightParams()
-{
-	return directionalLightParams;
-};
-Light::PointLightParams Light::getPointLightParams()
-{
-	return pointLightParams;
-};
-int Light::getIndexOfCurcurentActiveLight()
-{
-	return parameters.index();
-};
-void Light::activateDirectionalLight()
-{
-	parameters = directionalLightParams;
-}
-void Light::activatePointLight()
-{
-	parameters = pointLightParams;
+	if (activeLight == 0)
+	{
+		return pointLightParameters;
+	}
+	if (activeLight != 0) {
+		std::cout << "You can`t edit Point Light Params, at object light that are not Point Light Type!";
+		throw std::runtime_error("Invalid light type for point parameters!");
+	}
 }
