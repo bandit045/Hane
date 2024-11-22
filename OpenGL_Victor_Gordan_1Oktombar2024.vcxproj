@@ -139,6 +139,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)Libraries\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -173,6 +174,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -180,6 +182,7 @@
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="shaderClass.cpp" />
@@ -198,6 +201,8 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EBO.h" />
+    <ClInclude Include="GUI.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="Texture.h" />
