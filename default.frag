@@ -20,6 +20,8 @@ struct Light{
 	float linearTerm_Kl; // For reducing light strenght becouse of distande of impact for point light
 	float quadraticTerm_Kq; // For reducing light strenght becouse of distande of impact for point light
 	float constantTerm_Kc; // For reducing light strenght becouse of distande of impact for point light
+
+	float overallLightBrightness; //  Lower the constant parameter towards 0.0 to increase overall brightness, but don’t make it negative since that would break the formula.
 };
 struct ControlsOfState{
 	bool isPhong;
@@ -30,6 +32,9 @@ struct ControlsOfState{
 	bool isDirectionalLight;
 	bool isPointLight;
 	bool isPointLightReducingOnDistance;
+
+	bool isAutomaticLuminosity;
+	bool isManuelLuminosity;
 };
 
 out vec4 FragColor;
@@ -48,7 +53,7 @@ uniform ControlsOfState control;
 uniform Texture textures;
 
 float specAmount(vec3 viewDirection, vec3 lightDirection, vec3 normal);
-float lightProportinalToDistance(bool isPointLightReducingOnDistance);
+float luminosityCalculation(bool isPointLightReducingOnDistance, bool isAutomaticLuminosity, bool isManuelLuminosity, float overallLightBrightness);
 vec3 directionLightOrPointLight();
 vec4 finalFragColor(float diffuse, float ambientStrenght, float specular);
 
@@ -74,15 +79,29 @@ void main()
 	FragColor = finalFragColor(diffuse, ambientStrenght, specular);
 }
 
-float lightProportinalToDistance(bool isPointLightReducingOnDistance){
+float luminosityCalculation(bool isPointLightReducingOnDistance, bool isAutomaticLuminosity, bool isManuelLuminosity, float overallLightBrightness){
 	if(!isPointLightReducingOnDistance){return 1.0f;};
-	float constantTerm_Kc = light.constantTerm_Kc;
-	float linearTerm_Kl = light.linearTerm_Kl;
-	float quadraticTerm_Kq = light.quadraticTerm_Kq;
-
 	float distanceLightSourceToFragment = length(light.lightPos - crntPos);
-	return 1.0f / (constantTerm_Kc + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, light.exponentForPointLight));
+
+	float constantTerm_Kc;
+	float linearTerm_Kl;
+	float quadraticTerm_Kq;
+	if(isAutomaticLuminosity)
+	{
+		constantTerm_Kc = 1.0;   
+		linearTerm_Kl = 4.5/distanceLightSourceToFragment; 
+		quadraticTerm_Kq = 75.0 / sqrt(distanceLightSourceToFragment);
+		return 1.0f / ((constantTerm_Kc * max(0, overallLightBrightness)) + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, 2));
+	}
+	else if(isManuelLuminosity)
+	{
+		constantTerm_Kc = light.constantTerm_Kc;
+		linearTerm_Kl = light.linearTerm_Kl;
+		quadraticTerm_Kq = light.quadraticTerm_Kq;
+		return 1.0f / (constantTerm_Kc + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, light.exponentForPointLight));
+	}
 };
+
 vec3 directionLightOrPointLight(){
 	if(control.isDirectionalLight && !control.isPointLight){
 		return normalize(light.lightDirection);
@@ -93,10 +112,10 @@ vec3 directionLightOrPointLight(){
 };
 vec4 finalFragColor(float diffuse, float ambientStrenght, float specular){
 	if (control.isSpecularMap){ // Can be switched on M - N key
-		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + texture(textures.specularMap, texCoord).r * specular) * light.lightColor * lightProportinalToDistance(control.isPointLightReducingOnDistance);
+		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + texture(textures.specularMap, texCoord).r * specular) * light.lightColor * luminosityCalculation(control.isPointLightReducingOnDistance, control.isAutomaticLuminosity, control.isManuelLuminosity, light.overallLightBrightness);
 	}
 	else{
-		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + specular) * light.lightColor * lightProportinalToDistance(control.isPointLightReducingOnDistance);
+		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + specular) * light.lightColor * luminosityCalculation(control.isPointLightReducingOnDistance, control.isAutomaticLuminosity, control.isManuelLuminosity, light.overallLightBrightness);
 	}
 }
 float specAmount(vec3 viewDirection, vec3 lightDirection, vec3 normal){

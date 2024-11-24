@@ -16,7 +16,7 @@ public:
 	};
 
 	// Position of object
-	glm::vec3 Position;
+	glm::vec3 m_position;
 	glm::vec3 m_scale;
 	
 	// Matrix model

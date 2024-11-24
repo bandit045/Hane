@@ -3,7 +3,7 @@
 Object::Object(Shader shaderWhichRenderObject, glm::vec3 scaleFactor, glm::quat orientationQuat, glm::vec3 positionObject, glm::vec3 orientationEuler) /**/
 {
 	// Positions
-	Object::Position = positionObject;
+	Object::m_position = positionObject;
 	setPosition(positionObject);
 
 	// Orientation
@@ -37,7 +37,7 @@ void Object::setPosition(glm::vec3 newPosition)
 	matrixPos = glm::translate(matrixPos, newPosition);
 
 	// We update our position insde Object class 
-	Object::Position = newPosition;
+	Object::m_position = newPosition;
 
 	// We update our modelPos inside Object Class
 	Object::modelPos = matrixPos;
@@ -95,34 +95,3 @@ float Object::getOritationEuler(Object::Rotation rotationAxl)
 		return Object::m_orientationEuler.z;
 	}
 };
-/*//------------Normalizing Quaterion-----------------------------//
-	float magnitude = sqrt(componentW + pitchX + yawY + rollZ);
-
-	componentW = componentW / magnitude;
-	pitchX = pitchX / magnitude;
-	yawY = yawY / magnitude;
-	rollZ = rollZ / magnitude;
-//-----------Multiply of Quaterion----------------------------------// vazi pravilo komutativnosti
-	glm::quat Quat1;
-	glm::quat Quat2;
-	
-	(Quat1 * Quat2).w = (Quat1.w * Quat2.w - Quat1.x * Quat2.x - Quat1.y * Quat2.y - Quat1.z * Quat2.z);	 //            (Q1 * Q2).w = (w1w2 - x1x2 - y1y2 - z1z2)
-	(Quat1 * Quat2).x = (Quat1.w * Quat2.x + Quat1.x * Quat2.w + Quat1.y * Quat2.z - Quat1.z * Quat2.y);	 //			   (Q1 * Q2).x = (w1x2 + x1w2 + y1z2 - z1y2)
-	(Quat1 * Quat2).y = (Quat1.w * Quat2.y - Quat1.x * Quat2.z + Quat1.y * Quat2.w + Quat1.z * Quat2.x);	 //			   (Q1 * Q2).y = (w1y2 - x1z2 + y1w2 + z1x2)
-	(Quat1 * Quat2).z = (Quat1.w * Quat2.z + Quat1.x * Quat2.y - Quat1.y * Quat2.x + Quat1.z * Quat2.w);	 //			   (Q1 * Q2).z = (w1z2 + x1y2 - y1x2 + z1w2)
-//---------------------------------------------------------------------	               
-	glm::quat local_rotation;              // tempoary Quaterion which will simply represent how you're changing the rotationIf you're changing the current rotation by rotating backwards over the X-axis a little bit, this temporary quaternion will represent that.
-	
-	glm::quat total(0, 0, 0, 1);                      // permanent quaternion
-
-	total = local_rotation * total; //multiplication order matters on this line
-
-	//axis is a unit vector
-	local_rotation.w = cosf(fAngle / 2);
-	local_rotation.x = glm::vec3(1.0f,0.0f,0.0f) * sinf(glm::radians(pitchX) / 2);                                  //  local_rotation.w = cosf(fAngle / 2)
-	local_rotation.y = glm::vec3(0,1,0) * sinf(glm::radians(yawY) / 2);                                    //  local_rotation.x = axis.x * sinf(fAngle / 2) 
-	local_rotation.z = glm::vec3(0,0,1) * sinf(glm::radians(rollZ) / 2);								   //  local_rotation.y = axis.y * sinf(fAngle / 2) 
-																										   //  local_rotation.z = axis.z * sinf(fAngle / 2)
-
-
-*/

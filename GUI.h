@@ -10,7 +10,10 @@ class GUI
 public:
 	GUI(GLFWwindow* window);
 	static void startGUIframe(bool enabledDemo);
+
 	static void contextOfGUI();
+	static void Light();
+
 	static void renderGUI();
 	static void clearGUI();
 	ImGuiIO io;

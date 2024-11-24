@@ -21,6 +21,7 @@
 #include "Object.h"
 #include "GUI.h"
 #include "Light.h"
+#include "Transform.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -285,11 +286,12 @@ int main()
 	Material lampMaterial;
 	Material cubeMaterial;
 	Material pyramideMaterial;
+	Material globalMaterial;
 	//****
 
-	Light directionalLight(Light::TypeOfLight::DIRECTIONAL_LIGHT);
-	Light pointLight(Light::TypeOfLight::POINT_LIGHT);
-
+	Light directionalLight(TypeOfLight::DIRECTIONAL_LIGHT);
+	Light pointLight(TypeOfLight::POINT_LIGHT);
+	
 	//****
 	struct Transform
 	{
@@ -324,16 +326,14 @@ int main()
 		bool isBlinnPhong = true;
 		bool isSpecularMap = true;
 
-		bool isDirectionalLight = false;
-		bool isPointLight = true;
+		bool isDirectionalLight = false; // Light
+		bool isPointLight = true; // Light
+
+		bool isAutomaticLuminosity = true; // Light
+		bool isManuelLuminosity = false; // Light
 	};
 	RenderFlags renderFlags;
 
-	// Material GLOBAL
-	float globalAmbientStrenght = 0.6f;
-	float globalDiffuseStrenght = 1.9f;
-	float globalSpecularStrength = 0.5f;
-	float globalShininessStrenght = 16.0f;
 //-----------------------------------------------------------------------------------------------------------------
 	// Textures
 	Texture popCat("Textures/pop_cat.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -372,11 +372,12 @@ int main()
 	camera.setPosition(glm::vec3(0.03f, 4.12f, 4.09));
 	camera.setOrientation(glm::vec3(0.39f, -0.53f, -0.74));
 
+	//TransformObject lampTransformObject(lightSourceShader);
+	Object lampObject(lightSourceShader, lampTransform.objectScale, lampTransform.objectRotQuat, lampTransform.objectPos, lampTransform.objectRotEuler);
+ 
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
-		Object lamp(lightSourceShader, lampTransform.objectScale, lampTransform.objectRotQuat, lampTransform.objectPos, lampTransform.objectRotEuler);
-
 		GUI::startGUIframe(true);
 		GUI::contextOfGUI();
 		{
@@ -389,7 +390,7 @@ int main()
 					renderFlags.isPointLightReducingOnDistance = true;
 					renderFlags.isPhong = false;
 					renderFlags.isBlinnPhong = true;
-					globalAmbientStrenght = 0.5f;
+					globalMaterial.ambientStrenght = 0.5f;
 				}
 			}
 
@@ -399,14 +400,13 @@ int main()
 					renderFlags.isPointLightReducingOnDistance = false;
 					renderFlags.isPhong = true;
 					renderFlags.isBlinnPhong = false;
-					globalAmbientStrenght = 0.2f;
+					globalMaterial.ambientStrenght = 0.2f;
 				}
 			}
 
 			ImGui::Text("Position of camera: %.2f, %.2f, %.2f", camera.Position.x, camera.Position.y, camera.Position.z);
 			ImGui::Text("Orientation of camera: %.2f, %.2f, %.2f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 			ImGui::Text("Up of camera: %.2f, %.2f, %.2f", camera.Up.x, camera.Up.y, camera.Up.z);
-			ImGui::Text("Quat-stat: %.2f", lamp.m_orientationQuat.w);
 			ImGui::End();
 		}
 		{
@@ -422,33 +422,37 @@ int main()
 				ImGui::DragFloat4("Quaternion orbit of lightource", &lampTransform.objectRotQuat.x, 64.0f, 720.0f);
 				ImGui::SliderFloat3("Scale factor of light", &lampTransform.objectScale.x, 0.0f, 64.0f);
 				ImGui::Separator();
-				ImGui::SliderFloat3("Direction vector of light", &directionalLight.directionLightParams().lightDirection.x, -0.5f, 0.5f);
+				ImGui::SliderFloat3("Direction vector of light", &directionalLight.setDirectionLightParams().lightDirection.x, -0.5f, 0.5f);
 
 				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
 				ImGui::Text("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff, A: %.2ff", lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
 				ImGui::Separator();
-				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lamp.Position.x, lamp.Position.y, lamp.Position.z);
-				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lamp.getOritationEuler(Object::Rotation::X), lamp.getOritationEuler(Object::Rotation::Y), lamp.getOritationEuler(Object::Rotation::Z));
-				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lamp.m_orientationQuat.w, lamp.m_orientationQuat.x, lamp.m_orientationQuat.y, lamp.m_orientationQuat.z);
-				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", directionalLight.directionLightParams().lightDirection.x, directionalLight.directionLightParams().lightDirection.y, directionalLight.directionLightParams().lightDirection.z);
+				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lampObject.m_position.x, lampObject.m_position.y, lampObject.m_position.z);
+				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lampObject.getOritationEuler(Object::Rotation::X), lampObject.getOritationEuler(Object::Rotation::Y), lampObject.getOritationEuler(Object::Rotation::Z));
+				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lampObject.m_orientationQuat.w, lampObject.m_orientationQuat.x, lampObject.m_orientationQuat.y, lampObject.m_orientationQuat.z);
+				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
 			}
 			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 				ImGui::SeparatorText("State on/off:"); ImGui::Spacing();
 				ImGui::Checkbox("Is Point Light Reducing On Distance", &renderFlags.isPointLightReducingOnDistance);
 
-				ImGui::SeparatorText("Control of variables:");
-				ImGui::SliderFloat("Exponent for distance:", &pointLight.pointLightParams().exponentForPointLight, -64, 256); ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { pointLight.pointLightParams().exponentForPointLight = 2.0f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Linear Term Kl:", &pointLight.pointLightParams().linearTerm_Kl, -2.683f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.7f")) { pointLight.pointLightParams().linearTerm_Kl = 2.0f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Quadratic Term Kq:", &pointLight.pointLightParams().quadraticTerm_Kq, -64.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.8f")) { pointLight.pointLightParams().quadraticTerm_Kq = 1.8f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Constant Term Kc:", &pointLight.pointLightParams().constantTerm_Kc, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0f")) { pointLight.pointLightParams().constantTerm_Kc = 1.0f; }; ImGui::Spacing();
+				ImGui::SeparatorText("Control of variables MANUEL:");
+				ImGui::SliderFloat("Exponent for distance:", &pointLight.setPointLightParams().exponentForPointLight, -64, 256); ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { pointLight.setPointLightParams().exponentForPointLight = 2.0f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Linear Term Kl:", &pointLight.setPointLightParams().linearTerm_Kl, -2.683f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.7f")) { pointLight.setPointLightParams().linearTerm_Kl = 0.7f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Quadratic Term Kq:", &pointLight.setPointLightParams().quadraticTerm_Kq, -64.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.8f")) { pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Constant Term Kc:", &pointLight.setPointLightParams().constantTerm_Kc, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0f")) { pointLight.setPointLightParams().constantTerm_Kc = 1.0f; }; ImGui::Spacing();
 
 				if (ImGui::Button("RESET EQUATION", ImVec2(120, 40))) {
-					pointLight.pointLightParams().exponentForPointLight = 2.0f;
-					pointLight.pointLightParams().linearTerm_Kl = 0.7f;
-					pointLight.pointLightParams().quadraticTerm_Kq = 1.8f;
-					pointLight.pointLightParams().constantTerm_Kc = 1.0f;
-				};
+					pointLight.setPointLightParams().exponentForPointLight = 2.0f;
+					pointLight.setPointLightParams().linearTerm_Kl = 0.7f;
+					pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f;
+					pointLight.setPointLightParams().constantTerm_Kc = 1.0f;
+				};  ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set manuel active")) { renderFlags.isManuelLuminosity = true; renderFlags.isAutomaticLuminosity = false; };
+
+				ImGui::SeparatorText("Control of variables AUTOMATIC:"); ImGui::Spacing();
+				ImGui::SliderFloat("Overall Light Brightness:", &pointLight.setPointLightParams().overallLightBrightness, 0, 1); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0")) { pointLight.setPointLightParams().overallLightBrightness = 1.0f; }; ImGui::Spacing();
+				ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set automatic active")) { renderFlags.isManuelLuminosity = false; renderFlags.isAutomaticLuminosity = true; };
 
 				ImGui::SeparatorText("Bref explanation:"); ImGui::Spacing();
 				ImGui::BulletText("To reduce the intensity of point light over the distance");
@@ -475,16 +479,16 @@ int main()
 				ImGui::Checkbox("Specular Map", &renderFlags.isSpecularMap);
 
 				ImGui::SeparatorText("Control of variables:"); ImGui::Spacing();
-				ImGui::SliderFloat("Ambient Strenght:", &globalAmbientStrenght, 0.0f, 32.0f); ImGui::SameLine(0, 0);if(ImGui::SmallButton("0.6f")){ globalAmbientStrenght = 0.6f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Diffuse Strenght:", &globalDiffuseStrenght, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.9f")) { globalDiffuseStrenght = 1.9f; };  ImGui::Spacing();
-				ImGui::SliderFloat("Specular Strength:", &globalSpecularStrength, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.5f")) { globalSpecularStrength = 0.5f; };  ImGui::Spacing();
-				ImGui::SliderFloat("Shininess Strength:", &globalShininessStrenght, 0.0f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("16.0f")) { globalShininessStrenght = 16.0f; };  ImGui::Spacing();
+				ImGui::SliderFloat("Ambient Strenght:", &globalMaterial.ambientStrenght, 0.0f, 32.0f); ImGui::SameLine(0, 0);if(ImGui::SmallButton("0.6f")){ globalMaterial.ambientStrenght = 0.6f; }; ImGui::Spacing();
+				ImGui::SliderFloat("Diffuse Strenght:", &globalMaterial.diffuseStrenght, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.9f")) { globalMaterial.diffuseStrenght = 1.9f; };  ImGui::Spacing();
+				ImGui::SliderFloat("Specular Strength:", &globalMaterial.specularStrength, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.5f")) { globalMaterial.specularStrength = 0.5f; };  ImGui::Spacing();
+				ImGui::SliderFloat("Shininess Strength:", &globalMaterial.shininessStrenght, 0.0f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("16.0f")) { globalMaterial.shininessStrenght = 16.0f; };  ImGui::Spacing();
 
 				if (ImGui::Button("RESET STRENGHT", ImVec2(120, 40))) {
-					globalAmbientStrenght = 0.6f;
-					globalDiffuseStrenght = 1.9f;
-					globalSpecularStrength = 0.5f;
-					globalShininessStrenght = 16.0f;
+					globalMaterial.ambientStrenght = 0.6f;
+					globalMaterial.diffuseStrenght = 1.9f;
+					globalMaterial.specularStrength = 0.5f;
+					globalMaterial.shininessStrenght = 16.0f;
 				};
 				//ImGui::ArrowButton("Up", ImGuiDir_Up);
 				ImGui::Separator();
@@ -514,20 +518,24 @@ int main()
 		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLight"), renderFlags.isPointLight);
 		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLightReducingOnDistance"), renderFlags.isPointLightReducingOnDistance);
 		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isDirectionalLight"), renderFlags.isDirectionalLight);
+		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isAutomaticLuminosity"), renderFlags.isAutomaticLuminosity);
+		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isManuelLuminosity"), renderFlags.isManuelLuminosity);
 		// Export for reducing point light in propotional to distance, a constant term Kc, a linear term Kl, and a quadratic term Kq // https://learnopengl.com/Lighting/Light-casters
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), pointLight.pointLightParams().exponentForPointLight);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), pointLight.pointLightParams().linearTerm_Kl);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.quadraticTerm_Kq"), pointLight.pointLightParams().quadraticTerm_Kq);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.constantTerm_Kc"), pointLight.pointLightParams().constantTerm_Kc);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), pointLight.getPointLightParams().exponentForPointLight);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), pointLight.getPointLightParams().linearTerm_Kl);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.quadraticTerm_Kq"), pointLight.getPointLightParams().quadraticTerm_Kq);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.constantTerm_Kc"), pointLight.getPointLightParams().constantTerm_Kc);
+
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.overallLightBrightness"), pointLight.getPointLightParams().overallLightBrightness);
 		// Exprort light position for dynamic light
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampTransform.objectPos.x, lampTransform.objectPos.y, lampTransform.objectPos.z);
-		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.directionLightParams().lightDirection.x, directionalLight.directionLightParams().lightDirection.y, directionalLight.directionLightParams().lightDirection.z);
+		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
 		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
 		// Export uniforms to shader for different material and component strenght
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalAmbientStrenght);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalDiffuseStrenght);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalSpecularStrength);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessStrenght"), globalShininessStrenght);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalMaterial.ambientStrenght);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalMaterial.diffuseStrenght);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalMaterial.specularStrength);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessStrenght"), globalMaterial.shininessStrenght);
 
 		shaderProgramForObjects.Deactivate();
 
@@ -600,9 +608,9 @@ int main()
 
 			if (renderFlags.isDirectionalLight && !renderFlags.isPointLight) {
 
-				lamp.setPosition(lampTransform.objectPos);
-				lamp.setScale(lampTransform.objectScale);
-				lamp.setRotateEuler(lampTransform.objectRotEuler);
+				lampObject.setPosition(lampTransform.objectPos);
+				lampObject.setScale(lampTransform.objectScale);
+				lampObject.setRotateEuler(lampTransform.objectRotEuler);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvor
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
@@ -611,9 +619,9 @@ int main()
 			}
 			else if(!renderFlags.isDirectionalLight && renderFlags.isPointLight)
 			{
-				lamp.setPosition(lampTransform.objectPos);
-				lamp.setScale(lampTransform.objectScale);
-				lamp.setRotateQuat(lampTransform.objectRotQuat);
+				lampObject.setPosition(lampTransform.objectPos);
+				lampObject.setScale(lampTransform.objectScale);
+				lampObject.setRotateQuat(lampTransform.objectRotQuat);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvore
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
