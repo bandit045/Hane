@@ -1,24 +1,27 @@
 #include "Object.h"
 
-Object::Object(Shader shaderWhichRenderObject, glm::vec3 scaleFactor, glm::quat orientationQuat, glm::vec3 positionObject, glm::vec3 orientationEuler) /**/
+Object::Object(Shader shaderWhichRenderObject, TransformObject transform) /**/
 {
 	// Positions
-	Object::m_position = positionObject;
-	setPosition(positionObject);
+	//Object::m_position = positionObject;
+	//setPosition(positionObject);
 
 	// Orientation
-	Object::m_orientationEuler = orientationEuler;
-	Object::m_orientationQuat = orientationQuat;
-	setRotateEuler(orientationEuler);
+	//Object::m_orientationEuler = orientationEuler;
+	//Object::m_orientationQuat = orientationQuat;
+	//setRotateEuler(orientationEuler);
 
 	// Scale
-	Object::m_scale = scaleFactor;
-	setScale(scaleFactor);
+	//Object::m_scale = scaleFactor;
+	//setScale(scaleFactor);
+
+	// Transform
+	m_transform = transform;
 
 	// Storing shaders
 	shaderWhichRenderObject_ID = shaderWhichRenderObject.ID;
 }
-void Object::setScale(glm::vec3 scaleFactor)
+/*void Object::setScale(glm::vec3 scaleFactor)
 {
 	glm::mat4 matrixScale = glm::mat4(1.0f);
 	matrixScale = glm::scale(matrixScale, scaleFactor);
@@ -30,8 +33,8 @@ void Object::setScale(glm::vec3 scaleFactor)
 	Object::modelScale = matrixScale;
 
 	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelScale"), 1, GL_FALSE, glm::value_ptr(Object::modelScale));
-};
-void Object::setPosition(glm::vec3 newPosition)
+};*/
+/*void Object::setPosition(glm::vec3 newPosition)
 {
 	glm::mat4 matrixPos = glm::mat4(1.0f);
 	matrixPos = glm::translate(matrixPos, newPosition);
@@ -43,8 +46,8 @@ void Object::setPosition(glm::vec3 newPosition)
 	Object::modelPos = matrixPos;
 
 	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelPos"), 1, GL_FALSE, glm::value_ptr(Object::modelPos));
-};
-void Object::setRotateEuler(glm::vec3 rotationEuler)
+};*/
+/*void Object::setRotateEuler(glm::vec3 rotationEuler)
 {
 	// Apply rotations around each axis (in the order X, Y, Z)
 	glm::mat3 rotationX = glm::rotate(glm::mat4(1.0f), glm::radians(rotationEuler.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -58,8 +61,8 @@ void Object::setRotateEuler(glm::vec3 rotationEuler)
 	Object::modelRotate = Object::modelRotate * glm::mat4(rotationZ * rotationY * rotationX);
 
 	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(Object::modelRotate));
-};
-void Object::setRotateQuat(glm::quat orientationQuat) // This type of rotation solve gimbal lock
+};*/
+/*void Object::setRotateQuat(glm::quat orientationQuat) // This type of rotation solve gimbal lock
 {
 	// We define axis for rotation
 	glm::vec3 axis(1.0f, 1.0f, 1.0f);
@@ -80,8 +83,8 @@ void Object::setRotateQuat(glm::quat orientationQuat) // This type of rotation s
 	Object::m_orientationQuat = quatRot_local_rotation;
 
 	glUniformMatrix4fv(glGetUniformLocation(Object::shaderWhichRenderObject_ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(Object::modelRotate));
-};
-float Object::getOritationEuler(Object::Rotation rotationAxl) 
+};*/
+/*float Object::getOritationEuler(Object::Rotation rotationAxl)
 {
 	if (rotationAxl == Object::Rotation::X) {
 		return Object::m_orientationEuler.x;
@@ -94,4 +97,4 @@ float Object::getOritationEuler(Object::Rotation rotationAxl)
 	{
 		return Object::m_orientationEuler.z;
 	}
-};
+};*/

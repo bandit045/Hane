@@ -25,6 +25,7 @@ struct TransformParameters {
 class TransformObject{
 public:
 	TransformObject(Shader shaderProgramID);
+	TransformObject();
 	// Setters
 	void setPosition(const glm::vec3& newPosition);
 	void setScale(const glm::vec3& newScale);
@@ -32,7 +33,8 @@ public:
 	void setRotateQuat(const glm::quat& newOrientationQuat);
 	void inputs(GLFWwindow* window);
 	// Getters
-	const TransformParameters& getTransformParameters() const;
+	TransformParameters& getTransformParameters();
+	
 private:
 	GLuint shaderID;
 	TransformParameters transformParameters;

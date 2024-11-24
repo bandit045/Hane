@@ -83,7 +83,7 @@ glm::vec3 Camera::getOrientation()
 	return Camera::Orientation;
 }
 
-void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positionOfLightSource, bool& blinnPhong_switch, bool&phong_switch, bool& specularMap_Switch)
+void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, bool& blinnPhong_switch, bool&phong_switch, bool& specularMap_Switch)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -196,48 +196,6 @@ void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, glm::vec3& positi
 		else if (lightColor.b > 0.01f)
 		{
 			lightColor.b -= 0.01f;
-		}
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		{
-			if (positionOfLightSource.y <= 100.0f)
-			{
-				positionOfLightSource.y += 0.01f;
-			}
-		}
-		else
-		{
-			positionOfLightSource.y -= 0.01f;
-		}
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-	{
-		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		{
-			if (positionOfLightSource.x <= 100.0f)
-			{
-				positionOfLightSource.x += 0.01f;
-			}
-		}
-		else
-		{
-			positionOfLightSource.x -= 0.01f;
-		}
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		{
-			if (positionOfLightSource.z <= 100.0f) {
-				positionOfLightSource.z += 0.01f;
-			}
-		}
-		else
-		{
-			positionOfLightSource.z -= 0.01f;
 		}
 	}
 

@@ -7,6 +7,10 @@ TransformObject::TransformObject(Shader shaderProgram)
 	setPosition(transformParameters.m_objectPos);
 	shaderID = shaderProgram.ID;
 }
+TransformObject::TransformObject()
+{
+	shaderID = -1; // !!!!!!!!!!!!!!!!
+};
 void TransformObject::setPosition(const glm::vec3& newPosition)
 {
 	glm::mat4 matrixPos = glm::mat4(1.0f);
@@ -115,7 +119,7 @@ void TransformObject::inputs(GLFWwindow* window)
 	}
 }
 
-const TransformParameters& TransformObject::getTransformParameters() const
+TransformParameters& TransformObject::getTransformParameters()
 {
 	return transformParameters;
 }

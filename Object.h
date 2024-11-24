@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Transform.h"
 #include "shaderClass.h"
 
 class Object{
@@ -14,6 +15,8 @@ public:
 		Y,
 		Z,
 	};
+
+	TransformObject m_transform;
 
 	// Position of object
 	glm::vec3 m_position;
@@ -33,14 +36,14 @@ public:
 	// Which shader renders this object
 	GLuint shaderWhichRenderObject_ID;
 
-	Object(Shader shaderWhichRenderObject, glm::vec3 scaleFactor, glm::quat orientationQuat, glm::vec3 positionObject, glm::vec3 orientationEuler);
+	Object(Shader shaderWhichRenderObject, TransformObject transform);
 
 	// Setters
-	void setPosition(glm::vec3 newPosition);
-	void setScale(glm::vec3 scaleFactor);
-	void setRotateEuler(glm::vec3 rotationEuler);
-	void setRotateQuat(glm::quat orientationQuat);
+	//void setPosition(glm::vec3 newPosition);
+	//void setScale(glm::vec3 scaleFactor);
+	//void setRotateEuler(glm::vec3 rotationEuler);
+	//void setRotateQuat(glm::quat orientationQuat);
 	// Getters
-	float getOritationEuler(Rotation rotation);
+	//float getOritationEuler(Rotation rotation);
 };
 #endif // !OBJECT_CLASS_H

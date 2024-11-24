@@ -300,12 +300,12 @@ int main()
 		glm::quat objectRotQuat = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 		glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
 	};
-	Transform lampTransform = {
+	/*Transform lampTransform = {
 		glm::vec3(2.03f, 2.05f, 0.52f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
 		glm::vec3(1.0f, 1.0f, 1.0f)
-	};
+	};*/
 	Transform cubeTransform = {
 		glm::vec3(3.0f, 1.0f, 1.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
@@ -329,8 +329,8 @@ int main()
 		bool isDirectionalLight = false; // Light
 		bool isPointLight = true; // Light
 
-		bool isAutomaticLuminosity = true; // Light
-		bool isManuelLuminosity = false; // Light
+		bool isAutomaticLuminosity = false; // Light
+		bool isManuelLuminosity = true; // Light
 	};
 	RenderFlags renderFlags;
 
@@ -372,12 +372,16 @@ int main()
 	camera.setPosition(glm::vec3(0.03f, 4.12f, 4.09));
 	camera.setOrientation(glm::vec3(0.39f, -0.53f, -0.74));
 
-	//TransformObject lampTransformObject(lightSourceShader);
-	Object lampObject(lightSourceShader, lampTransform.objectScale, lampTransform.objectRotQuat, lampTransform.objectPos, lampTransform.objectRotEuler);
+	TransformObject lampTransformObject(lightSourceShader);
+	lampTransformObject.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position at program start
+
+	Object lampObject(lightSourceShader, lampTransformObject);
  
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
+		lampTransformObject.inputs(window);
+
 		GUI::startGUIframe(true);
 		GUI::contextOfGUI();
 		{
@@ -417,19 +421,19 @@ int main()
 				ImGui::SeparatorText("Color for light source:"); ImGui::Spacing();
 				ImGui::SliderFloat3("Color", &lampMaterial.objectColor.x, 0.0f, 1.0f);
 				ImGui::Separator();
-				ImGui::DragFloat3("Position for point light", &lampTransform.objectPos.x, 0.1f);
-				ImGui::SliderFloat3("Rotation vector of point light", &lampTransform.objectRotEuler.x, -180.0f, 180.0f);
-				ImGui::DragFloat4("Quaternion orbit of lightource", &lampTransform.objectRotQuat.x, 64.0f, 720.0f);
-				ImGui::SliderFloat3("Scale factor of light", &lampTransform.objectScale.x, 0.0f, 64.0f);
+				ImGui::DragFloat3("Position for point light", &lampTransformObject.getTransformParameters().m_objectPos.x, 0.1f);
+				ImGui::SliderFloat3("Rotation vector of point light", &lampTransformObject.getTransformParameters().m_objectRotEuler.x, -180.0f, 180.0f);
+				ImGui::DragFloat4("Quaternion orbit of lightource", &lampTransformObject.getTransformParameters().m_objectRotQuat.x, 64.0f, 720.0f);
+				ImGui::SliderFloat3("Scale factor of light", &lampTransformObject.getTransformParameters().m_objectScale.x, 0.0f, 64.0f);
 				ImGui::Separator();
 				ImGui::SliderFloat3("Direction vector of light", &directionalLight.setDirectionLightParams().lightDirection.x, -0.5f, 0.5f);
 
 				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
 				ImGui::Text("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff, A: %.2ff", lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
 				ImGui::Separator();
-				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lampObject.m_position.x, lampObject.m_position.y, lampObject.m_position.z);
-				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lampObject.getOritationEuler(Object::Rotation::X), lampObject.getOritationEuler(Object::Rotation::Y), lampObject.getOritationEuler(Object::Rotation::Z));
-				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lampObject.m_orientationQuat.w, lampObject.m_orientationQuat.x, lampObject.m_orientationQuat.y, lampObject.m_orientationQuat.z);
+				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lampObject.m_transform.getTransformParameters().m_objectPos.x, lampObject.m_transform.getTransformParameters().m_objectPos.y, lampObject.m_transform.getTransformParameters().m_objectPos.z);
+				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lampObject.m_transform.getTransformParameters().m_objectRotEuler.x, lampObject.m_transform.getTransformParameters().m_objectRotEuler.y, lampObject.m_transform.getTransformParameters().m_objectRotEuler.z);
+				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lampObject.m_transform.getTransformParameters().m_objectRotQuat.w, lampObject.m_transform.getTransformParameters().m_objectRotQuat.x, lampObject.m_transform.getTransformParameters().m_objectRotQuat.y, lampObject.m_transform.getTransformParameters().m_objectRotQuat.z);
 				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
 			}
 			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -504,7 +508,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handling input to move camera, light positon ond light color
-		camera.Inputs(window, lampMaterial.objectColor, lampTransform.objectPos, renderFlags.isBlinnPhong, renderFlags.isPhong, renderFlags.isSpecularMap);
+		camera.Inputs(window, lampMaterial.objectColor, renderFlags.isBlinnPhong, renderFlags.isPhong, renderFlags.isSpecularMap);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
 
@@ -528,7 +532,7 @@ int main()
 
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.overallLightBrightness"), pointLight.getPointLightParams().overallLightBrightness);
 		// Exprort light position for dynamic light
-		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampTransform.objectPos.x, lampTransform.objectPos.y, lampTransform.objectPos.z);
+		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampObject.m_transform.getTransformParameters().m_objectPos.x, lampObject.m_transform.getTransformParameters().m_objectPos.y, lampObject.m_transform.getTransformParameters().m_objectPos.z);
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
 		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
 		// Export uniforms to shader for different material and component strenght
@@ -608,9 +612,9 @@ int main()
 
 			if (renderFlags.isDirectionalLight && !renderFlags.isPointLight) {
 
-				lampObject.setPosition(lampTransform.objectPos);
-				lampObject.setScale(lampTransform.objectScale);
-				lampObject.setRotateEuler(lampTransform.objectRotEuler);
+				lampObject.m_transform.setPosition(lampTransformObject.getTransformParameters().m_objectPos);
+				lampObject.m_transform.setScale(lampTransformObject.getTransformParameters().m_objectScale);
+				lampObject.m_transform.setRotateEuler(lampTransformObject.getTransformParameters().m_objectRotEuler);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvor
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
@@ -619,9 +623,9 @@ int main()
 			}
 			else if(!renderFlags.isDirectionalLight && renderFlags.isPointLight)
 			{
-				lampObject.setPosition(lampTransform.objectPos);
-				lampObject.setScale(lampTransform.objectScale);
-				lampObject.setRotateQuat(lampTransform.objectRotQuat);
+				lampObject.m_transform.setPosition(lampTransformObject.getTransformParameters().m_objectPos);
+				lampObject.m_transform.setScale(lampTransformObject.getTransformParameters().m_objectScale);
+				lampObject.m_transform.setRotateQuat(lampTransformObject.getTransformParameters().m_objectRotQuat);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvore
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
