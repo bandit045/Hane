@@ -13,7 +13,7 @@
 #include "imgui/backends/imgui_impl_opengl3.h"
 
 #include "Texture.h"
-#include "shaderClass.h"
+#include "Shader.h"
 #include "VBO.h"
 #include "VAO.h"
 #include "EBO.h"
@@ -291,33 +291,6 @@ int main()
 
 	Light directionalLight(TypeOfLight::DIRECTIONAL_LIGHT);
 	Light pointLight(TypeOfLight::POINT_LIGHT);
-	
-	//****
-	struct Transform
-	{
-		glm::vec3 objectPos = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 objectRotEuler = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::quat objectRotQuat = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-		glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
-	};
-	/*Transform lampTransform = {
-		glm::vec3(2.03f, 2.05f, 0.52f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f)
-	};*/
-	Transform cubeTransform = {
-		glm::vec3(3.0f, 1.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f)
-	};
-	Transform pyramideTransform = {
-		glm::vec3(1.0f, 1.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::quat(1.0f, 0.0f, 0.0f, 0.0f),
-		glm::vec3(1.0f, 1.0f, 1.0f)
-	};
 
 	struct RenderFlags // For different state insade the fragment shader
 	{
@@ -372,21 +345,29 @@ int main()
 	camera.setPosition(glm::vec3(0.03f, 4.12f, 4.09));
 	camera.setOrientation(glm::vec3(0.39f, -0.53f, -0.74));
 
-	TransformObject lampTransformObject(lightSourceShader);
-	lampTransformObject.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position at program start
+	// Creating lamp transform
+	Transform lampTransform(lightSourceShader);
+	lampTransform.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position when program start
 
-	Object lampObject(lightSourceShader, lampTransformObject);
+	// Creating cube transform
+	Transform cubeTransform(shaderProgramForObjects);
+	cubeTransform.setPosition(glm::vec3(3.0f, 1.0f, 1.0f)); // Setting object position at program start
+
+	// Creating pyramide transfer
+	Transform pyramideTransformObject(shaderProgramForObjects);
+	pyramideTransformObject.setPosition(glm::vec3(1.0f, 1.0f, 1.0f)); // Setting object position at program start
+
+	Object lampObject(lightSourceShader, lampTransform);
  
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
-		lampTransformObject.inputs(window);
+		lampTransform.inputs(window);
 
 		GUI::startGUIframe(true);
 		GUI::contextOfGUI();
 		{
 			ImGui::Begin("Performance:");
-			//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 			
 			if (ImGui::Checkbox("Point Light", &renderFlags.isPointLight)) {
 				if (renderFlags.isPointLight) {
@@ -421,10 +402,10 @@ int main()
 				ImGui::SeparatorText("Color for light source:"); ImGui::Spacing();
 				ImGui::SliderFloat3("Color", &lampMaterial.objectColor.x, 0.0f, 1.0f);
 				ImGui::Separator();
-				ImGui::DragFloat3("Position for point light", &lampTransformObject.getTransformParameters().m_objectPos.x, 0.1f);
-				ImGui::SliderFloat3("Rotation vector of point light", &lampTransformObject.getTransformParameters().m_objectRotEuler.x, -180.0f, 180.0f);
-				ImGui::DragFloat4("Quaternion orbit of lightource", &lampTransformObject.getTransformParameters().m_objectRotQuat.x, 64.0f, 720.0f);
-				ImGui::SliderFloat3("Scale factor of light", &lampTransformObject.getTransformParameters().m_objectScale.x, 0.0f, 64.0f);
+				ImGui::DragFloat3("Position for point light", &lampTransform.getTransformParameters().m_objectPos.x, 0.1f);
+				ImGui::SliderFloat3("Rotation vector of point light", &lampTransform.getTransformParameters().m_objectRotEuler.x, -180.0f, 180.0f);
+				ImGui::DragFloat4("Quaternion orbit of lightource", &lampTransform.getTransformParameters().m_objectRotQuat.x, 64.0f, 720.0f);
+				ImGui::SliderFloat3("Scale factor of light", &lampTransform.getTransformParameters().m_objectScale.x, 0.0f, 64.0f);
 				ImGui::Separator();
 				ImGui::SliderFloat3("Direction vector of light", &directionalLight.setDirectionLightParams().lightDirection.x, -0.5f, 0.5f);
 
@@ -561,7 +542,7 @@ int main()
 
 			// Kreiraj lokalnu model matricu za piramidu
 			glm::mat4 pyramidModel = glm::mat4(1.0f); // Resetovana matrica
-			pyramidModel = glm::translate(pyramidModel, pyramideTransform.objectPos);;  // Translacija piramide
+			pyramidModel = glm::translate(pyramidModel, pyramideTransformObject.getTransformParameters().m_objectPos);;  // Translacija piramide
 			shaderProgramForObjects.sendMat4x4ToShader("model", pyramidModel);  // Pošalji model matricu u shader
 
 			// Bind the VAO so OpenGL knows to use it
@@ -593,7 +574,7 @@ int main()
 
 			// Kreiraj lokalnu model matricu za kocku
 			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
-			cubeModel = glm::translate(cubeModel, cubeTransform.objectPos); // Transplantacija kocke
+			cubeModel = glm::translate(cubeModel, cubeTransform.getTransformParameters().m_objectPos); // Transplantacija kocke
 			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel)); // Pošalji model matricu u shader
 
 			// Bind the VAO so OpenGL knows to use it
@@ -612,9 +593,9 @@ int main()
 
 			if (renderFlags.isDirectionalLight && !renderFlags.isPointLight) {
 
-				lampObject.m_transform.setPosition(lampTransformObject.getTransformParameters().m_objectPos);
-				lampObject.m_transform.setScale(lampTransformObject.getTransformParameters().m_objectScale);
-				lampObject.m_transform.setRotateEuler(lampTransformObject.getTransformParameters().m_objectRotEuler);
+				lampObject.m_transform.setPosition(lampTransform.getTransformParameters().m_objectPos);
+				lampObject.m_transform.setScale(lampTransform.getTransformParameters().m_objectScale);
+				lampObject.m_transform.setRotateEuler(lampTransform.getTransformParameters().m_objectRotEuler);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvor
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
@@ -623,9 +604,9 @@ int main()
 			}
 			else if(!renderFlags.isDirectionalLight && renderFlags.isPointLight)
 			{
-				lampObject.m_transform.setPosition(lampTransformObject.getTransformParameters().m_objectPos);
-				lampObject.m_transform.setScale(lampTransformObject.getTransformParameters().m_objectScale);
-				lampObject.m_transform.setRotateQuat(lampTransformObject.getTransformParameters().m_objectRotQuat);
+				lampObject.m_transform.setPosition(lampTransform.getTransformParameters().m_objectPos);
+				lampObject.m_transform.setScale(lampTransform.getTransformParameters().m_objectScale);
+				lampObject.m_transform.setRotateQuat(lampTransform.getTransformParameters().m_objectRotQuat);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvore
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica

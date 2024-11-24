@@ -1,5 +1,5 @@
-#ifndef SHADER_CLASS_H
-#define SHADER_CLASS_H
+#ifndef SHADER_H
+#define SHADER_H
 
 #include<glad/glad.h>
 #include<string>
@@ -20,6 +20,7 @@ class Shader
 		GLuint ID;
 		// Constructor that build the Shader Program from 2 different shaders
 		Shader(const char* vertexFile, const char* fragmentFile);
+		Shader();
 
 		// Activates the Shader Program
 		void Activate();
@@ -33,6 +34,7 @@ class Shader
 		void sendMat4x4ToShader(const char* varName, glm::mat4 matrix);
 		void sendMatrix3x3fToShader(const char* varName, glm::mat3 matrix);
 	private:
+		void constructShader(const char* vertexFile, const char* fragmentFile);
 		void compileErrors(unsigned int shader, const char* type);
 };
 #endif // !SHADER_CLASS_H

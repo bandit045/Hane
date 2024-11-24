@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "shaderClass.h"
+#include "Shader.h"
 
 enum class Rotation {
 	X,
@@ -22,21 +22,21 @@ struct TransformParameters {
 	glm::vec3 m_objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
 };
 
-class TransformObject{
+class Transform{
 public:
-	TransformObject(Shader shaderProgramID);
-	TransformObject();
+	Transform(Shader shaderProgramID);
+	Transform();
 	// Setters
-	void setPosition(const glm::vec3& newPosition);
-	void setScale(const glm::vec3& newScale);
-	void setRotateEuler(const glm::vec3& newRotationEuler);
-	void setRotateQuat(const glm::quat& newOrientationQuat);
+	void setPosition(glm::vec3 newPosition);
+	void setScale(glm::vec3 newScale);
+	void setRotateEuler(glm::vec3 newRotationEuler);
+	void setRotateQuat(glm::quat newOrientationQuat);
 	void inputs(GLFWwindow* window);
 	// Getters
 	TransformParameters& getTransformParameters();
 	
 private:
-	GLuint shaderID;
+	Shader m_shader;
 	TransformParameters transformParameters;
 
 	// Matrix model
@@ -48,8 +48,3 @@ private:
 };
 
 #endif // !TRANSFORM_H
-/*	// Orientation, position and scale variable for storing
-	glm::vec3 m_orientationEuler;
-	glm::quat m_orientationQuat;
-	glm::vec3 m_position;
-	glm::vec3 m_scale;*/

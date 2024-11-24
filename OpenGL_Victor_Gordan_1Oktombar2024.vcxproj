@@ -185,7 +185,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="shaderClass.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
@@ -205,7 +205,7 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="shaderClass.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="VAO.h" />

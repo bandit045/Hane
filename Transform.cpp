@@ -1,17 +1,22 @@
 #include "Transform.h"
 
-TransformObject::TransformObject(Shader shaderProgram)
+Transform::Transform(Shader shaderProgram)
 {
 	setScale(transformParameters.m_objectScale);
 	setRotateEuler(transformParameters.m_objectRotEuler);
 	setPosition(transformParameters.m_objectPos);
-	shaderID = shaderProgram.ID;
+	m_shader = shaderProgram;
 }
-TransformObject::TransformObject()
+Transform::Transform()
 {
-	shaderID = -1; // !!!!!!!!!!!!!!!!
+	setScale(transformParameters.m_objectScale);
+	setRotateEuler(transformParameters.m_objectRotEuler);
+	setPosition(transformParameters.m_objectPos);
+
+	Shader defaultShaderForObject("default.vert", "default.frag");
+	m_shader = defaultShaderForObject;
 };
-void TransformObject::setPosition(const glm::vec3& newPosition)
+void Transform::setPosition(glm::vec3 newPosition)
 {
 	glm::mat4 matrixPos = glm::mat4(1.0f);
 	matrixPos = glm::translate(matrixPos, newPosition);
@@ -22,9 +27,9 @@ void TransformObject::setPosition(const glm::vec3& newPosition)
 	// We update our modelPos inside Object Class
 	modelPos = matrixPos;
 
-	glUniformMatrix4fv(glGetUniformLocation(shaderID, "modelPos"), 1, GL_FALSE, glm::value_ptr(modelPos));
+	glUniformMatrix4fv(glGetUniformLocation(m_shader.ID, "modelPos"), 1, GL_FALSE, glm::value_ptr(modelPos));
 }
-void TransformObject::setScale(const glm::vec3& newScale)
+void Transform::setScale(glm::vec3 newScale)
 {
 	glm::mat4 matrixScale = glm::mat4(1.0f);
 	matrixScale = glm::scale(matrixScale, newScale);
@@ -35,9 +40,9 @@ void TransformObject::setScale(const glm::vec3& newScale)
 	// We update our modelScale inside Object Class
 	modelScale = matrixScale;
 
-	glUniformMatrix4fv(glGetUniformLocation(shaderID, "modelScale"), 1, GL_FALSE, glm::value_ptr(modelScale));
+	glUniformMatrix4fv(glGetUniformLocation(m_shader.ID, "modelScale"), 1, GL_FALSE, glm::value_ptr(modelScale));
 }
-void TransformObject::setRotateEuler(const glm::vec3& newRotationEuler)
+void Transform::setRotateEuler(glm::vec3 newRotationEuler)
 {
 	// Apply rotations around each axis (in the order X, Y, Z)
 	glm::mat3 rotationX = glm::rotate(glm::mat4(1.0f), glm::radians(newRotationEuler.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -50,9 +55,9 @@ void TransformObject::setRotateEuler(const glm::vec3& newRotationEuler)
 	// We update our modelRotate inside Object Class
 	modelRotate = modelRotate * glm::mat4(rotationZ * rotationY * rotationX);
 
-	glUniformMatrix4fv(glGetUniformLocation(shaderID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(modelRotate));
+	glUniformMatrix4fv(glGetUniformLocation(m_shader.ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(modelRotate));
 }
-void TransformObject::setRotateQuat(const glm::quat& newOrientationQuat) // This type of rotation solve gimbal lock
+void Transform::setRotateQuat(glm::quat newOrientationQuat) // This type of rotation solve gimbal lock
 {
 	// We define axis for rotation
 	glm::vec3 axis(1.0f, 1.0f, 1.0f);
@@ -72,9 +77,9 @@ void TransformObject::setRotateQuat(const glm::quat& newOrientationQuat) // This
 
 	transformParameters.m_objectRotQuat = quatRot_local_rotation;
 
-	glUniformMatrix4fv(glGetUniformLocation(shaderID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(modelRotate));
+	glUniformMatrix4fv(glGetUniformLocation(m_shader.ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(modelRotate));
 };
-void TransformObject::inputs(GLFWwindow* window)
+void Transform::inputs(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
@@ -119,7 +124,7 @@ void TransformObject::inputs(GLFWwindow* window)
 	}
 }
 
-TransformParameters& TransformObject::getTransformParameters()
+TransformParameters& Transform::getTransformParameters()
 {
 	return transformParameters;
 }
