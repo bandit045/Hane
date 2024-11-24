@@ -354,8 +354,8 @@ int main()
 	cubeTransform.setPosition(glm::vec3(3.0f, 1.0f, 1.0f)); // Setting object position at program start
 
 	// Creating pyramide transfer
-	Transform pyramideTransformObject(shaderProgramForObjects);
-	pyramideTransformObject.setPosition(glm::vec3(1.0f, 1.0f, 1.0f)); // Setting object position at program start
+	Transform pyramideTransform(shaderProgramForObjects);
+	pyramideTransform.setPosition(glm::vec3(1.0f, 1.0f, 1.0f)); // Setting object position at program start
 
 	Object lampObject(lightSourceShader, lampTransform);
  
@@ -542,7 +542,7 @@ int main()
 
 			// Kreiraj lokalnu model matricu za piramidu
 			glm::mat4 pyramidModel = glm::mat4(1.0f); // Resetovana matrica
-			pyramidModel = glm::translate(pyramidModel, pyramideTransformObject.getTransformParameters().m_objectPos);;  // Translacija piramide
+			pyramidModel = glm::translate(pyramidModel, pyramideTransform.getTransformParameters().m_objectPos);;  // Translacija piramide
 			shaderProgramForObjects.sendMat4x4ToShader("model", pyramidModel);  // Pošalji model matricu u shader
 
 			// Bind the VAO so OpenGL knows to use it

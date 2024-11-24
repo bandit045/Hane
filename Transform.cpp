@@ -53,7 +53,7 @@ void Transform::setRotateEuler(glm::vec3 newRotationEuler)
 	transformParameters.m_objectRotEuler = newRotationEuler;
 
 	// We update our modelRotate inside Object Class
-	modelRotate = modelRotate * glm::mat4(rotationZ * rotationY * rotationX);
+	modelRotate = glm::mat4(rotationZ * rotationY * rotationX);
 
 	glUniformMatrix4fv(glGetUniformLocation(m_shader.ID, "modelRotate"), 1, GL_FALSE, glm::value_ptr(modelRotate));
 }
