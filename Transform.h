@@ -24,7 +24,7 @@ struct TransformParameters {
 
 class Transform{
 public:
-	Transform(Shader shaderProgramID);
+	Transform(Shader& shaderProgramID);
 	Transform();
 	// Setters
 	void setPosition(glm::vec3 newPosition);

@@ -25,7 +25,7 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 
 Shader::Shader()
 {
-	constructShader("default.vert", "default.frag");
+	//constructShader("default.vert", "default.frag");
 }
 
 void Shader::constructShader(const char* vertexFile, const char* fragmentFile)

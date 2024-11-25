@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-Transform::Transform(Shader shaderProgram)
+Transform::Transform(Shader& shaderProgram)
 {
 	setScale(transformParameters.m_objectScale);
 	setRotateEuler(transformParameters.m_objectRotEuler);
@@ -9,13 +9,16 @@ Transform::Transform(Shader shaderProgram)
 }
 Transform::Transform()
 {
-	setScale(transformParameters.m_objectScale);
-	setRotateEuler(transformParameters.m_objectRotEuler);
-	setPosition(transformParameters.m_objectPos);
+	//setScale(transformParameters.m_objectScale);
+	//setRotateEuler(transformParameters.m_objectRotEuler);
+	//setPosition(transformParameters.m_objectPos);
 
-	Shader defaultShaderForObject("default.vert", "default.frag");
-	m_shader = defaultShaderForObject;
+
+
+	//Shader defaultShaderForObject("default.vert", "default.frag");
+	//m_shader = defaultShaderForObject;
 };
+
 void Transform::setPosition(glm::vec3 newPosition)
 {
 	glm::mat4 matrixPos = glm::mat4(1.0f);

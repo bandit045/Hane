@@ -6,9 +6,9 @@
 
 class Object{
 public:
-	Object(Shader shader, Transform transform);
+	Object(Shader& shader, Transform& transform);
 
-	Transform m_transform;
-	Shader m_shaderID;
+	Transform* m_transform;
+	Shader* m_shaderID;
 };
 #endif // !OBJECT_H

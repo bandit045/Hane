@@ -33,6 +33,7 @@ class Shader
 		void sendVec3fToShader(const char* varName, float x, float y, float z);
 		void sendMat4x4ToShader(const char* varName, glm::mat4 matrix);
 		void sendMatrix3x3fToShader(const char* varName, glm::mat3 matrix);
+		//static void setDefaultShaderForObjects(const GLuint& shaderID);
 	private:
 		void constructShader(const char* vertexFile, const char* fragmentFile);
 		void compileErrors(unsigned int shader, const char* type);
