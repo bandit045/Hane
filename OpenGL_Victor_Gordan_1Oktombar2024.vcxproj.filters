@@ -93,6 +93,9 @@
     <ClCompile Include="Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MenageShaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="lightingSourceShader.vert">
@@ -110,6 +113,7 @@
     <None Include="default.frag">
       <Filter>Resource Files\Shaders\Object</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -140,6 +144,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenageShaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

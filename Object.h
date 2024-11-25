@@ -9,6 +9,6 @@ public:
 	Object(Shader& shader, Transform& transform);
 
 	Transform* m_transform;
-	Shader* m_shaderID;
+	Shader* m_shader;
 };
 #endif // !OBJECT_H

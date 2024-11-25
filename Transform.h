@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
+#include "MenageShaders.h"
 
 enum class Rotation {
 	X,
@@ -24,8 +25,9 @@ struct TransformParameters {
 
 class Transform{
 public:
-	Transform(Shader& shaderProgramID);
+	Transform(GLuint shaderProgramID);
 	Transform();
+
 	// Setters
 	void setPosition(glm::vec3 newPosition);
 	void setScale(glm::vec3 newScale);
@@ -33,10 +35,10 @@ public:
 	void setRotateQuat(glm::quat newOrientationQuat);
 	void inputs(GLFWwindow* window);
 	// Getters
-	TransformParameters& getTransformParameters();
+	TransformParameters& transformParams();
 	
 private:
-	Shader m_shader;
+	GLuint m_shader;
 	TransformParameters transformParameters;
 
 	// Matrix model

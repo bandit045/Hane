@@ -22,6 +22,7 @@
 #include "GUI.h"
 #include "Light.h"
 #include "Transform.h"
+#include "MenageShaders.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -221,6 +222,9 @@ int main()
 	// Generates Shader object using shaders defualt.vert and default.frag
 	Shader shaderProgramForObjects("default.vert", "default.frag");
 	Shader lightSourceShader("lightingSourceShader.vert", "lightingSourceShader.frag");
+	MenageShaders::setDefaultShadersForAll(shaderProgramForObjects.ID, lightSourceShader.ID);
+	std::cout << "Light Source Shader(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT);
+	std::cout << "\nShader Program For Objects(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS);
 //------------------------------------------------------------------------------------------------
 	// Generates Vertex Array Object and binds it
 	VAO TRIANGLE_SHAPE_VAO;
@@ -346,16 +350,16 @@ int main()
 	camera.setOrientation(glm::vec3(0.39f, -0.53f, -0.74));
 
 	// Creating lamp transform
-	Transform lampTransform(lightSourceShader);
+	Transform lampTransform(lightSourceShader.ID);
 	lampTransform.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position when program start
 
 	// Creating cube transform
-	Transform cubeTransform(shaderProgramForObjects);
+	Transform cubeTransform(shaderProgramForObjects.ID);
 	cubeTransform.setPosition(glm::vec3(3.0f, 1.0f, 1.0f)); // Setting object position at program start
 
 	// Creating pyramide transfer
-	Transform* pyramideTransform = new Transform(shaderProgramForObjects);
-	pyramideTransform->setPosition(glm::vec3(1.0f, 1.0f, 1.0f)); // Setting object position at program start
+	Transform pyramideTransform(shaderProgramForObjects.ID);
+	pyramideTransform.setPosition(glm::vec3(1.0f, 1.0f, 1.0f)); // Setting object position at program start
 	
 	Object lampObject(lightSourceShader, lampTransform);
  
@@ -402,19 +406,19 @@ int main()
 				ImGui::SeparatorText("Color for light source:"); ImGui::Spacing();
 				ImGui::SliderFloat3("Color", &lampMaterial.objectColor.x, 0.0f, 1.0f);
 				ImGui::Separator();
-				ImGui::DragFloat3("Position for point light", &lampTransform.getTransformParameters().m_objectPos.x, 0.1f);
-				ImGui::SliderFloat3("Rotation vector of point light", &lampTransform.getTransformParameters().m_objectRotEuler.x, -180.0f, 180.0f);
-				ImGui::DragFloat4("Quaternion orbit of lightource", &lampTransform.getTransformParameters().m_objectRotQuat.x, 64.0f, 720.0f);
-				ImGui::SliderFloat3("Scale factor of light", &lampTransform.getTransformParameters().m_objectScale.x, 0.0f, 64.0f);
+				ImGui::DragFloat3("Position for point light", &lampObject.m_transform->transformParams().m_objectPos.x, 0.1f);
+				ImGui::SliderFloat3("Rotation vector of point light", &lampObject.m_transform->transformParams().m_objectRotEuler.x, -180.0f, 180.0f);
+				ImGui::DragFloat4("Quaternion orbit of lightource", &lampObject.m_transform->transformParams().m_objectRotQuat.x, 64.0f, 720.0f);
+				ImGui::SliderFloat3("Scale factor of light", &lampObject.m_transform->transformParams().m_objectScale.x, 0.0f, 64.0f);
 				ImGui::Separator();
 				ImGui::SliderFloat3("Direction vector of light", &directionalLight.setDirectionLightParams().lightDirection.x, -0.5f, 0.5f);
 
 				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
 				ImGui::Text("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff, A: %.2ff", lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
 				ImGui::Separator();
-				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lampObject.m_transform->getTransformParameters().m_objectPos.x, lampObject.m_transform->getTransformParameters().m_objectPos.y, lampObject.m_transform->getTransformParameters().m_objectPos.z);
-				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lampObject.m_transform->getTransformParameters().m_objectRotEuler.x, lampObject.m_transform->getTransformParameters().m_objectRotEuler.y, lampObject.m_transform->getTransformParameters().m_objectRotEuler.z);
-				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lampObject.m_transform->getTransformParameters().m_objectRotQuat.w, lampObject.m_transform->getTransformParameters().m_objectRotQuat.x, lampObject.m_transform->getTransformParameters().m_objectRotQuat.y, lampObject.m_transform->getTransformParameters().m_objectRotQuat.z);
+				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lampObject.m_transform->transformParams().m_objectPos.x, lampObject.m_transform->transformParams().m_objectPos.y, lampObject.m_transform->transformParams().m_objectPos.z);
+				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lampObject.m_transform->transformParams().m_objectRotEuler.x, lampObject.m_transform->transformParams().m_objectRotEuler.y, lampObject.m_transform->transformParams().m_objectRotEuler.z);
+				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lampObject.m_transform->transformParams().m_objectRotQuat.x, lampObject.m_transform->transformParams().m_objectRotQuat.y, lampObject.m_transform->transformParams().m_objectRotQuat.z, lampObject.m_transform->transformParams().m_objectRotQuat.w);
 				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
 			}
 			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -513,7 +517,7 @@ int main()
 
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.overallLightBrightness"), pointLight.getPointLightParams().overallLightBrightness);
 		// Exprort light position for dynamic light
-		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampObject.m_transform->getTransformParameters().m_objectPos.x, lampObject.m_transform->getTransformParameters().m_objectPos.y, lampObject.m_transform->getTransformParameters().m_objectPos.z);
+		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampObject.m_transform->transformParams().m_objectPos.x, lampObject.m_transform->transformParams().m_objectPos.y, lampObject.m_transform->transformParams().m_objectPos.z);
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
 		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
 		// Export uniforms to shader for different material and component strenght
@@ -542,7 +546,7 @@ int main()
 
 			// Kreiraj lokalnu model matricu za piramidu
 			glm::mat4 pyramidModel = glm::mat4(1.0f); // Resetovana matrica
-			pyramidModel = glm::translate(pyramidModel, pyramideTransform->getTransformParameters().m_objectPos);;  // Translacija piramide
+			pyramidModel = glm::translate(pyramidModel, pyramideTransform.transformParams().m_objectPos);;  // Translacija piramide
 			shaderProgramForObjects.sendMat4x4ToShader("model", pyramidModel);  // Pošalji model matricu u shader
 
 			// Bind the VAO so OpenGL knows to use it
@@ -574,7 +578,7 @@ int main()
 
 			// Kreiraj lokalnu model matricu za kocku
 			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
-			cubeModel = glm::translate(cubeModel, cubeTransform.getTransformParameters().m_objectPos); // Transplantacija kocke
+			cubeModel = glm::translate(cubeModel, cubeTransform.transformParams().m_objectPos); // Transplantacija kocke
 			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel)); // Pošalji model matricu u shader
 
 			// Bind the VAO so OpenGL knows to use it
@@ -591,22 +595,22 @@ int main()
 			// Activating shader that is used only for lightSource
 			lightSourceShader.Activate();
 
-			if (renderFlags.isDirectionalLight && !renderFlags.isPointLight) {
+			if (renderFlags.isDirectionalLight) {
 
-				lampObject.m_transform->setPosition(lampTransform.getTransformParameters().m_objectPos);
-				lampObject.m_transform->setScale(lampTransform.getTransformParameters().m_objectScale);
-				lampObject.m_transform->setRotateEuler(lampTransform.getTransformParameters().m_objectRotEuler);
+				lampObject.m_transform->setPosition(lampTransform.transformParams().m_objectPos);
+				lampObject.m_transform->setScale(lampTransform.transformParams().m_objectScale);
+				lampObject.m_transform->setRotateEuler(lampTransform.transformParams().m_objectRotEuler);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvor
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
 				lightModel = glm::translate(lightModel, lightDirection); // Translantacija svetla
 				glUniformMatrix4fv(glGetUniformLocation(lightSourceShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));  // Pošalji model matricu u shader*/
 			}
-			else if(!renderFlags.isDirectionalLight && renderFlags.isPointLight)
+			else if(renderFlags.isPointLight)
 			{
-				lampObject.m_transform->setPosition(lampTransform.getTransformParameters().m_objectPos);
-				lampObject.m_transform->setScale(lampTransform.getTransformParameters().m_objectScale);
-				lampObject.m_transform->setRotateQuat(lampTransform.getTransformParameters().m_objectRotQuat);
+				lampObject.m_transform->setPosition(lampObject.m_transform->transformParams().m_objectPos);
+				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);
+				lampObject.m_transform->setRotateQuat(lampObject.m_transform->transformParams().m_objectRotQuat);
 
 				/*// Kreiraj lokalnu model matricu za svetlosni izvore
 				glm::mat4 lightModel = glm::mat4(1.0f); // Resetovana matrica
@@ -654,8 +658,6 @@ int main()
 	wood.Delete();
 	shaderProgramForObjects.Delete();
 	lightSourceShader.Delete();
-
-	delete pyramideTransform;
 
 	GUI::clearGUI();
 
