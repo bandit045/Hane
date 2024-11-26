@@ -222,7 +222,8 @@ int main()
 	// Generates Shader object using shaders defualt.vert and default.frag
 	Shader shaderProgramForObjects("default.vert", "default.frag");
 	Shader lightSourceShader("lightingSourceShader.vert", "lightingSourceShader.frag");
-	MenageShaders::setDefaultShadersForAll(shaderProgramForObjects.ID, lightSourceShader.ID);
+	MenageShaders::setDefaultShadersForAllID(shaderProgramForObjects.ID, lightSourceShader.ID);
+	//MenageShaders::setDefaultShadersForAllProgram(shaderProgramForObjects, lightSourceShader);
 	std::cout << "Light Source Shader(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT);
 	std::cout << "\nShader Program For Objects(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS);
 //------------------------------------------------------------------------------------------------
@@ -362,7 +363,8 @@ int main()
 	pyramideTransform.setPosition(glm::vec3(1.0f, 1.0f, 1.0f)); // Setting object position at program start
 	
 	Object lampObject(lightSourceShader, lampTransform);
- 
+	Object cubeObject(shaderProgramForObjects, cubeTransform);
+
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
 	{	
@@ -580,6 +582,7 @@ int main()
 			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
 			cubeModel = glm::translate(cubeModel, cubeTransform.transformParams().m_objectPos); // Transplantacija kocke
 			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel)); // Pošalji model matricu u shader
+
 
 			// Bind the VAO so OpenGL knows to use it
 			CUBE_SHAPE_VAO.Bind();

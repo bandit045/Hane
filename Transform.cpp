@@ -8,7 +8,7 @@ Transform::Transform(GLuint shaderProgram)
 	setPosition(transformParameters.m_objectPos);
 	m_shader = shaderProgram;
 }
-Transform::Transform()
+Transform::Transform() // If we dont specify sheder Program by default will be DefaultShader::FOR_OBJECTS
 {
 	setScale(transformParameters.m_objectScale);
 	setRotateEuler(transformParameters.m_objectRotEuler);
@@ -17,6 +17,16 @@ Transform::Transform()
 	m_shader = MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS);
 	std::cout << "\nYou invoked constructor for Transform to render it as Object\n";
 };
+
+Transform Transform::getDefaultTransform()
+{
+	return Transform();
+}
+
+GLuint Transform::getShaderID()
+{
+	return m_shader;
+}
 
 void Transform::setPosition(glm::vec3 newPosition)
 {
@@ -74,10 +84,8 @@ void Transform::setRotateQuat(glm::quat newOrientationQuat) // This type of rota
 
 	quatRot_local_rotation = glm::normalize(quatRot_local_rotation);
 
-	quatRot_total = quatRot_local_rotation * quatRot_local_rotation;
-	modelRotate = glm::mat4_cast(quatRot_total); // We cast quat to mat4x4
-
-	transformParameters.m_objectRotQuat = quatRot_local_rotation;
+	quatRot_total = quatRot_local_rotation * quatRot_total;
+	modelRotate = glm::mat4_cast(quatRot_total * quatRot_total);
 
 	glUniformMatrix4fv(glGetUniformLocation(m_shader, "modelRotate"), 1, GL_FALSE, glm::value_ptr(modelRotate));
 };

@@ -7,6 +7,8 @@
 class Object{
 public:
 	Object(Shader& shader, Transform& transform);
+	Object(Shader& shader);
+	Object();
 
 	Transform* m_transform;
 	Shader* m_shader;

@@ -12,12 +12,17 @@ enum class DefaultShader
 class MenageShaders
 {
 public:
-	MenageShaders();
-	static void setDefaultShadersForAll(GLuint& defaultShaderForObjects, GLuint& defaultShaderForLights);
+	static void setDefaultShadersForAllID(GLuint& defaultShaderForObjectsID, GLuint& defaultShaderForLightsID);
+	//static void setDefaultShadersForAllProgram(Shader& defaultShaderForObjectsProgram, Shader& defaultShaderForLightsProgram);
 	static GLuint& getDefaultShaderID(DefaultShader defaultShader);
+	//static Shader& getDefaultShaderProgram(DefaultShader defaultShader);
 private:
-	static GLuint* m_defaultShaderForObjects;
-	static GLuint* m_defaultShaderForLight;
+	MenageShaders();
+	static GLuint* m_defaultShaderForObjectsID;
+	static GLuint* m_defaultShaderForLightID;
+
+	//static Shader* m_defaultShaderForObjectsProgram;
+	//static Shader* m_defaultShaderForLightProgram;
 };
 
 #endif // !MENAGE_SHADERS_H*/

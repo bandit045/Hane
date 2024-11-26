@@ -35,7 +35,10 @@ public:
 	void setRotateQuat(glm::quat newOrientationQuat);
 	void inputs(GLFWwindow* window);
 	// Getters
+	GLuint getShaderID();
 	TransformParameters& transformParams();
+	static Transform getDefaultTransform();
+
 	
 private:
 	GLuint m_shader;
