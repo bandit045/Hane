@@ -17,7 +17,6 @@ public:
 	static GLuint& getDefaultShaderID(DefaultShader defaultShader);
 	//static Shader& getDefaultShaderProgram(DefaultShader defaultShader);
 private:
-	MenageShaders();
 	static GLuint* m_defaultShaderForObjectsID;
 	static GLuint* m_defaultShaderForLightID;
 

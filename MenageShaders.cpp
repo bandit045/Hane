@@ -3,13 +3,8 @@
 GLuint* MenageShaders::m_defaultShaderForObjectsID = 0;
 GLuint* MenageShaders::m_defaultShaderForLightID = 0;
 
-/*/Shader* MenageShaders::m_defaultShaderForObjectsProgram = new Shader();
-Shader* MenageShaders::m_defaultShaderForLightProgram = new Shader();*/
-
-MenageShaders::MenageShaders()
-{
-
-}
+//Shader* MenageShaders::m_defaultShaderForObjectsProgram = new Shader();
+//Shader* MenageShaders::m_defaultShaderForLightProgram = new Shader();
 
 void MenageShaders::setDefaultShadersForAllID(GLuint& defaultShaderForObjectsID, GLuint& defaultShaderForLightsID)
 {

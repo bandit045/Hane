@@ -23,6 +23,7 @@
 #include "Light.h"
 #include "Transform.h"
 #include "MenageShaders.h"
+#include "LoadOBJ.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -69,7 +70,7 @@ GLuint indices_pyramide[] =
 // Vertices for cube
 GLfloat vertices_cube[] =
 {
-	// Positions          // Normals (x, y, z)
+	// Positions     // Colors      // Texture-cordinates(x, y)    // Normals (x, y, z)
 
 	// Front face (z = 1.0)
 	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-left
@@ -128,6 +129,55 @@ GLuint indices_cube[] =
 
 	// Bottom face
 	20, 21, 22,  22, 23, 20
+
+};
+
+/*GLfloat imported_vertex_cube[] =
+{
+- 1.000000,   1.000000,   1.000000,
+- 1.000000, - 1.000000,   1.000000,
+- 1.000000,   1.000000, - 1.000000,
+- 1.000000, - 1.000000, - 1.000000,
+  1.000000,   1.000000,   1.000000,
+  1.000000, - 1.000000,   1.000000,
+  1.000000,   1.000000, - 1.000000,
+  1.000000, - 1.000000, - 1.000000
+};*/
+
+GLuint imported_indices_cube[] =
+{
+	 4, 2, 0,
+	 2, 7, 3,
+	 6, 5, 7,
+	 1, 7, 5,
+	 0, 3, 1,
+	 4, 1, 5,
+	 4, 6, 2,
+	 2, 6, 7,
+	 6, 4, 5,
+	 1, 3, 7,
+	 0, 2, 3,
+	 4, 0, 1,
+
+	/* 5, 3, 1,
+	 3, 8, 4,
+	 7, 6, 8,
+	 2, 8, 6,
+	 1, 4, 2,
+	 5, 2, 6,
+	 5, 7, 3,
+	 3, 7, 8,
+	 7, 5, 6,
+	 2, 4, 5,
+	 1, 3, 4,
+	 5, 1, 2
+
+	 /*1,2,3,2,4,5,
+	 6,7,8,9,10,11,
+	 3,5,9,12,9,7,
+	 1,13,2,2,14,4,
+	 6,12,7,9,5,10,
+	 3,2,5,12,3,9*/
 };
 
 // Vertices for Light source  
@@ -221,11 +271,12 @@ int main()
 
 	// Generates Shader object using shaders defualt.vert and default.frag
 	Shader shaderProgramForObjects("default.vert", "default.frag");
+	//Shader importShaderOBJ("default_obj.vert", "default_obj.frag");
 	Shader lightSourceShader("lightingSourceShader.vert", "lightingSourceShader.frag");
 	MenageShaders::setDefaultShadersForAllID(shaderProgramForObjects.ID, lightSourceShader.ID);
 	//MenageShaders::setDefaultShadersForAllProgram(shaderProgramForObjects, lightSourceShader);
 	std::cout << "Light Source Shader(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT);
-	std::cout << "\nShader Program For Objects(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS);
+	std::cout << "\nShader Program For Objects(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS) << "\n";
 //------------------------------------------------------------------------------------------------
 	// Generates Vertex Array Object and binds it
 	VAO TRIANGLE_SHAPE_VAO;
@@ -246,23 +297,50 @@ int main()
 	TRIANGLE_SHAPE_VBO.Unbind();
 	TRIANGLE_SHAPE_EBO.Unbind();
 //----------------------------------------------------------------------------------------------------------------------------------------
+	std::vector< glm::vec3 > importVerticesCube;
+	std::vector< glm::vec2 > importUvsCube;
+	std::vector< glm::vec3 > importNormalsCube;
+
+	std::vector<int> importCubeIndex;
+
+	LoadOBJ::loadOBJ("ff.obj", importVerticesCube, importUvsCube, importNormalsCube, importCubeIndex); // Cordinates, Texture-cords, Normals, EBO
+
+	// Generates Vertex Array Object for file from import and binds it
+	VAO IMPORT_CUBE_SHAPE_VAO;
+	IMPORT_CUBE_SHAPE_VAO.Bind();
+
+	// Generates Vertex Buffer Object for impport object cube and links it to vertices
+	VBO IMPORT_CUBE_SHAPE_VBO_CORDINATES(importVerticesCube, importVerticesCube.size() * sizeof(glm::vec3));
+	VBO IMPORT_CUBE_SHAPE_VBO_NORMALS(importNormalsCube, importNormalsCube.size() * sizeof(glm::vec3));
+	VBO IMPORT_CUBE_SHAPE_VBO_UV(importUvsCube, importUvsCube.size() * sizeof(glm::vec2));
+	// Generates Element Buffer Object for imported cube and links it to indices
+	EBO IMPORT_CUBE_SHAPE_EBO(importCubeIndex, importCubeIndex.size() * sizeof(int));
+
+	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_CORDINATES, 0 , 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_NORMALS, 1 , 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_UV, 2 , 2, GL_FLOAT, 2 * sizeof(float), (void*)0);
+	// Unbind all to prevent accidentally modifying them
+	IMPORT_CUBE_SHAPE_VAO.Unbind();
+	IMPORT_CUBE_SHAPE_VBO_CORDINATES.Unbind();
+	IMPORT_CUBE_SHAPE_EBO.Unbind();
+//----------------------------------------------------------------------------------------------------------------------------------------
 	// Generates Vertex Array Object and binds it
 	VAO CUBE_SHAPE_VAO;
 	CUBE_SHAPE_VAO.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO CUBE_SHAPE_VBO(vertices_cube, sizeof(vertices_cube));
+	VBO CUBE_SHAPE_VBO_VERTICES(vertices_cube, sizeof(vertices_cube));
 	// Generates Element Buffer Object and links it to indices
 	EBO CUBE_SHAPE_EBO(indices_cube, sizeof(indices_cube));
 
 	// Links VBO attributes such as cordinates and colors to VAO
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);              
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
 	// Unbind all to prevent accidentally modifying them
 	CUBE_SHAPE_VAO.Unbind();
-	CUBE_SHAPE_VBO.Unbind();
+	CUBE_SHAPE_VBO_VERTICES.Unbind();
 	CUBE_SHAPE_EBO.Unbind();
 //----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -351,7 +429,7 @@ int main()
 	camera.setOrientation(glm::vec3(0.39f, -0.53f, -0.74));
 
 	// Creating lamp transform
-	Transform lampTransform(lightSourceShader.ID);
+	Transform lampTransform(MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT));
 	lampTransform.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position when program start
 
 	// Creating cube transform
@@ -362,8 +440,8 @@ int main()
 	Transform pyramideTransform(shaderProgramForObjects.ID);
 	pyramideTransform.setPosition(glm::vec3(1.0f, 1.0f, 1.0f)); // Setting object position at program start
 	
-	Object lampObject(lightSourceShader, lampTransform);
-	Object cubeObject(shaderProgramForObjects, cubeTransform);
+	Object lampObject("lampObject", lampTransform);
+	Object cubeObject("cubeObject", cubeTransform);
 
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
@@ -594,6 +672,28 @@ int main()
 			CUBE_SHAPE_VAO.Unbind();
 			shaderProgramForObjects.Deactivate();
 		}
+		{ // IMPORTED_CUBE
+			// Activating shader that is used only for IMPORT_CUBE
+			shaderProgramForObjects.Activate();
+
+			// Exports the camera Position to the Fragment Shader for specular lighting calculation
+			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+			// Passing camMatrix uniform to lightSourceCube for projection matrix
+			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
+
+			// Export uniforms to shader for different material and component strenght
+			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), 1, 1, 0, 0);
+
+			// Kreiraj lokalnu model matricu za piramidu
+			glm::mat4 importCube = glm::mat4(1.0f);
+			importCube = glm::translate(importCube, glm::vec3(0, 0, 0));
+			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(importCube));
+
+		    IMPORT_CUBE_SHAPE_VAO.Bind();
+			glDrawElements(GL_TRIANGLES, importCubeIndex.size(), GL_UNSIGNED_INT, 0);
+			IMPORT_CUBE_SHAPE_VAO.Unbind();
+			shaderProgramForObjects.Deactivate();
+		}
 		{ // LIGHT CUBE SOURCE
 			// Activating shader that is used only for lightSource
 			lightSourceShader.Activate();
@@ -649,7 +749,7 @@ int main()
 	TRIANGLE_SHAPE_VBO.Delete();
 	TRIANGLE_SHAPE_EBO.Delete();
 	CUBE_SHAPE_VAO.Delete();
-	CUBE_SHAPE_VBO.Delete();
+	CUBE_SHAPE_VBO_VERTICES.Delete();
 	CUBE_SHAPE_EBO.Delete();
 	LIGHT_SOURCE_VAO.Delete();
 	LIGHT_SOURCE_VBO.Delete();

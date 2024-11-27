@@ -15,7 +15,7 @@ Transform::Transform() // If we dont specify sheder Program by default will be D
 	setRotateQuat(transformParameters.m_objectRotQuat);
 	setPosition(transformParameters.m_objectPos);
 	m_shader = MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS);
-	std::cout << "\nYou invoked constructor for Transform to render it as Object\n";
+	std::cout << "\nYou invoked default constructor for Transform to render it as Object\n";
 };
 
 Transform Transform::getDefaultTransform()
@@ -38,7 +38,7 @@ void Transform::setPosition(glm::vec3 newPosition)
 
 	// We update our modelPos inside Object Class
 	modelPos = matrixPos;
-
+	
 	glUniformMatrix4fv(glGetUniformLocation(m_shader, "modelPos"), 1, GL_FALSE, glm::value_ptr(modelPos));
 }
 void Transform::setScale(glm::vec3 newScale)
