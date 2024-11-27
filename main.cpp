@@ -385,21 +385,21 @@ int main()
 	lampTransform.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position when program start
 
 	// Creating cube transform
-	Transform cubeTransform(shaderProgramForObjects.ID);
+	Transform cubeTransform(MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS));
 	cubeTransform.setPosition(glm::vec3(3.0f, 1.0f, 1.0f)); // Setting object position at program start
 
 	// Creating pyramide transfer
-	Transform pyramideTransform(shaderProgramForObjects.ID);
+	Transform pyramideTransform(MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS));
 	pyramideTransform.setPosition(glm::vec3(1.0f, 1.0f, 1.0f)); // Setting object position at program start
 	
 	//Creating importedMeshOBJ transfer
-	Transform importedMeshOBJ(MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS));
-	importedMeshOBJ.setPosition(glm::vec3(0.0f, 0.0f, 0.0f)); // Setting object position at program start
+	Transform importedMeshTransform(MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS));
+	importedMeshTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f)); // Setting object position at program start
 
 	Object lampObject("lampObject", lampTransform);
 	Object cubeObject("cubeObject", cubeTransform);
 	Object pyramideObject("pyramideObject", pyramideTransform);
-	Object importedMeshObject("importedmMeshObject", importedMeshOBJ);
+	Object importedMeshObject("importedmMeshObject", importedMeshTransform);
 
 	// Main while loop
 	while(!glfwWindowShouldClose(window))
@@ -582,10 +582,10 @@ int main()
 			planks.Bind();
 			planksSpec.Bind();
 
-			// Kreiraj lokalnu model matricu za piramidu
-			glm::mat4 pyramidModel = glm::mat4(1.0f); // Resetovana matrica
-			pyramidModel = glm::translate(pyramidModel, pyramideTransform.transformParams().m_objectPos);;  // Translacija piramide
-			shaderProgramForObjects.sendMat4x4ToShader("model", pyramidModel);  // Pošalji model matricu u shader*/
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "useCustomTransform"), true); // If is true it will use modelRotate modelPos modelScale for gl_Position
+			pyramideObject.m_transform->setPosition(pyramideTransform.transformParams().m_objectPos);
+			pyramideObject.m_transform->setScale(pyramideTransform.transformParams().m_objectScale);
+			pyramideObject.m_transform->setRotateEuler(pyramideTransform.transformParams().m_objectRotEuler);
 
 			// Bind the VAO so OpenGL knows to use it
 			TRIANGLE_SHAPE_VAO.Bind();
@@ -613,13 +613,10 @@ int main()
 			planks.Bind();
 			planksSpec.Bind();
 
-
-			// Kreiraj lokalnu model matricu za kocku
-			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
-			cubeModel = glm::translate(cubeModel, cubeTransform.transformParams().m_objectPos); // Transplantacija kocke
-			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel)); // Pošalji model matricu u shader
-
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "useCustomTransform"), false); // If is true it will use modelRotate modelPos modelScale for gl_Position
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "useCustomTransform"), true); // If is true it will use modelRotate modelPos modelScale for gl_Position
+			cubeObject.m_transform->setPosition(cubeTransform.transformParams().m_objectPos);
+			cubeObject.m_transform->setScale(cubeTransform.transformParams().m_objectScale);
+			cubeObject.m_transform->setRotateEuler(cubeTransform.transformParams().m_objectRotEuler);
 
 			// Bind the VAO so OpenGL knows to use it
 			CUBE_SHAPE_VAO.Bind();
@@ -640,10 +637,10 @@ int main()
 			// Passing camMatrix uniform to lightSourceCube for projection matrix
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
-			// Kreiraj lokalnu model matricu za piramidu
-			glm::mat4 importCube = glm::mat4(1.0f);
-			importCube = glm::translate(importCube, glm::vec3(0, 0, 0));
-			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(importCube));
+			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "useCustomTransform"), true); // If is true it will use modelRotate modelPos modelScale for gl_Position
+			importedMeshObject.m_transform->setPosition(importedMeshTransform.transformParams().m_objectPos);
+			importedMeshObject.m_transform->setScale(importedMeshTransform.transformParams().m_objectScale);
+			importedMeshObject.m_transform->setRotateEuler(importedMeshTransform.transformParams().m_objectRotEuler);
 
 		    IMPORT_CUBE_SHAPE_VAO.Bind();
 			glDrawElements(GL_TRIANGLES, importCubeIndex.size(), GL_UNSIGNED_INT, 0);

@@ -25,13 +25,14 @@ void main()
 	if(!useCustomTransform)
 	{
 		gl_Position = camMatrix * model * vec4(aPos, 1.0);
+		crntPos = vec3(model * vec4(aPos, 1.0));
 	}
 	else
 	{
 		gl_Position =  camMatrix * modelPos * modelRotate * modelScale * vec4(aPos, 1.0);
+		crntPos = vec3(modelPos * modelRotate * modelScale * vec4(aPos, 1.0));
 	}
-	
-	crntPos = vec3(model * vec4(aPos, 1.0));
+
 	color = aColor;
 	texCoord = aTex;
 	Normal = aNormal;
