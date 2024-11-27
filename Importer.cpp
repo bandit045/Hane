@@ -1,11 +1,11 @@
-#include "LoadOBJ.h"
+#include "Importer.h"
 
 #define WHILE_HAS_TO_READ 1
 #define NO_NEXT_LINE EOF
 
-bool LoadOBJ::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std::vector<glm::vec2>& _textureCordinates, std::vector<glm::vec3>& _normals, std::vector<int>& _indices)
+bool Importer::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std::vector<glm::vec2>& _textureCordinates, std::vector<glm::vec3>& _normals, std::vector<unsigned int>& _indices)
 {
-	std::vector<int> vertexIndices;
+	std::vector<unsigned int> vertexIndices;
 	std::vector<int> uvIndices;
 	std::vector<int> normalIndices;
 
@@ -15,7 +15,8 @@ bool LoadOBJ::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std::
 
 	FILE* file = fopen(path, "r");
 	if (file == NULL) {
-		printf("Impossible to open the file !\n");
+		std::cout << "Imposible to open a file!";
+		throw std::runtime_error("Imposible to open a file!");
 		return false;
 	}
 
@@ -27,14 +28,14 @@ bool LoadOBJ::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std::
 		if (firstWordOfLine == NO_NEXT_LINE)
 			break; // EOF = End Of File. Quit the loop.
 
-		// else : parse lineHeader
 		if (strcmp(lineHeader, "v") == 0) { // Cordinates
 			glm::vec3 vertex;
 			int check;
 			check = fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			if (check != 3)
 			{
-				std::cout << "Error while reading Vertex Cordinates inside OBJ file!" << "\n";
+				std::cout << "Error while reading Vertex Cordinates v(X Y Z)inside OBJ file!" << "\n";
+				throw std::runtime_error("Error while reading Vertex Cordinates v(X Y Z)inside OBJ file!");
 			}
 			temp_vertices.push_back(vertex);
 		}
@@ -44,7 +45,8 @@ bool LoadOBJ::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std::
 			check = fscanf(file, "%f %f\n", &uv.x, &uv.y);
 			if (check != 2)
 			{
-				std::cout << "Error while reading Texture Cordinates inside OBJ file!" << "\n";
+				std::cout << "Error while reading Texture Cordinates vt(UV) inside OBJ file!" << "\n";
+				throw std::runtime_error("Error while reading Texture Cordinates vt(UV) inside OBJ file!");
 			}
 			temp_textureCordinates.push_back(uv);
 		}
@@ -54,7 +56,8 @@ bool LoadOBJ::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std::
 			check = fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
 			if (check != 3)
 			{
-				std::cout << "Error while reading Normals inside OBJ file!" << "\n";
+				std::cout << "Error while reading Normal Vector VN(X Y Z) inside OBJ file!" << "\n";
+				throw std::runtime_error("Error while reading Normal Vector VN(X Y Z) inside OBJ file!");
 			}
 			temp_normals.push_back(normal);
 		}
@@ -63,7 +66,7 @@ bool LoadOBJ::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std::
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
 			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 			if (matches != 9) {
-				printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+				std::cout << ("File can't be read by our simple parser : ( Try exporting with other options\n");
 				return false;
 			}
 			vertexIndices.push_back(vertexIndex[0] - 1);
@@ -82,30 +85,6 @@ bool LoadOBJ::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std::
 	_normals = temp_normals;
 	_textureCordinates = temp_textureCordinates;
 	_indices = vertexIndices;
-
-	/*// For each vertex of each triangle
-	for (unsigned int i = 0; i < vertexIndices.size(); i++) 
-	{
-		unsigned int vertexIndex = vertexIndices[i];
-		glm::vec3 vertex = temp_vertices[vertexIndex - 1];
-		_vertices.push_back(vertex);
-	}
-
-	// For each Texture Cordinates of each triangle !!!!!!!!!!!!
-	for (unsigned int i = 0; i < uvIndices.size(); i++)
-	{
-		unsigned int uvIndex = uvIndices[i];
-		glm::vec2 textureCordinates = temp_textureCordinates[uvIndex - 1];
-		_textureCordinates.push_back(textureCordinates);
-	}
-
-	// For each Normal of each face
-	for (unsigned int i = 0; i < normalIndices.size(); i++)
-	{
-		unsigned int normalIndex = normalIndices[i];
-		glm::vec3 normals = temp_normals[normalIndex - 1];
-		_normals.push_back(normals);
-	}*/
 
 	fclose(file);
 }

@@ -92,11 +92,11 @@
       <FileName>Transform.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="LoadOBJ">
+  <Class Name="Importer">
     <Position X="1" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>LoadOBJ.h</FileName>
+      <FileName>Importer.h</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="TransformParameters">

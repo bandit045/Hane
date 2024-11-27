@@ -23,9 +23,10 @@ private:
 	// Member variables
 	std::string m_objectName;
 
+	// Static counter increment to giving a name to the object who dosnt have it
 	static int name_counter;
 
-	// Private member function
+	// Private member functions
 	static std::string setDefaultObjectName();
 };
 #endif // !OBJECT_H

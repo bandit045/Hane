@@ -10,17 +10,27 @@ out vec3 Normal;
 out vec3 crntPos;
 out vec3 vertNormal;
 
+uniform bool useCustomTransform; // Flag to decide transformation mode
+
 uniform mat4 camMatrix;
 uniform vec3 camPos;
 
 uniform mat4 model;
 uniform mat4 modelPos;
+uniform mat4 modelRotate;
 uniform mat4 modelScale;
-uniform mat4 modelRot;
 
 void main()
 {
-	gl_Position = camMatrix * model * vec4(aPos, 1.0);
+	if(!useCustomTransform)
+	{
+		gl_Position = camMatrix * model * vec4(aPos, 1.0);
+	}
+	else
+	{
+		gl_Position =  camMatrix * modelPos * modelRotate * modelScale * vec4(aPos, 1.0);
+	}
+	
 	crntPos = vec3(model * vec4(aPos, 1.0));
 	color = aColor;
 	texCoord = aTex;
