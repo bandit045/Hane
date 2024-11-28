@@ -523,6 +523,7 @@ int main()
 			ImGui::End();
 		}
 
+
 		// Setting rendering mode to line
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Specify the color of the background
