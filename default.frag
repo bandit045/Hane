@@ -1,5 +1,7 @@
 #version 330 core
 
+#define control.isDirectionalLight killme[]
+
 struct Material{
 	vec4 objectColor;
 	float ambientStrenght;
@@ -23,19 +25,16 @@ struct Light{
 
 	float overallLightBrightness; //  Lower the constant parameter towards 0.0 to increase overall brightness, but don’t make it negative since that would break the formula.
 };
-struct ControlsOfState{
+layout (std140) uniform ControlsOfState{
+	bool isPointLightReducingOnDistance;
 	bool isPhong;
 	bool isBlinnPhong;
-
 	bool isSpecularMap;
-
 	bool isDirectionalLight;
 	bool isPointLight;
-	bool isPointLightReducingOnDistance;
-
 	bool isAutomaticLuminosity;
 	bool isManuelLuminosity;
-};
+} control;
 
 out vec4 FragColor;
 
@@ -49,7 +48,7 @@ uniform vec3 camPos;
 
 uniform Material material;
 uniform Light light;
-uniform ControlsOfState control;
+//uniform ControlsOfState control;
 uniform Texture textures;
 
 float specAmount(vec3 viewDirection, vec3 lightDirection, vec3 normal);

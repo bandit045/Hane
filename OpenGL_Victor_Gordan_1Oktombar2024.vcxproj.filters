@@ -31,27 +31,21 @@
     <Filter Include="Resource Files\Shaders\Object">
       <UniqueIdentifier>{66ddd3a9-bef9-48bb-b851-865e4daad558}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Outer">
+      <UniqueIdentifier>{4dc88a2b-bc4f-4597-8f2b-dbe1fadc3bcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Buffers Objects Source">
+      <UniqueIdentifier>{02ec9f7b-6640-438d-b2a6-637218209071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Buffers Objects Header">
+      <UniqueIdentifier>{ad696b4b-5be3-436a-9403-0cdbb94c7041}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VBO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EBO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VAO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
@@ -99,6 +93,24 @@
     <ClCompile Include="Importer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>Outer</Filter>
+    </ClCompile>
+    <ClCompile Include="stb.cpp">
+      <Filter>Outer</Filter>
+    </ClCompile>
+    <ClCompile Include="VBO.cpp">
+      <Filter>Source Files\Buffers Objects Source</Filter>
+    </ClCompile>
+    <ClCompile Include="VAO.cpp">
+      <Filter>Source Files\Buffers Objects Source</Filter>
+    </ClCompile>
+    <ClCompile Include="EBO.cpp">
+      <Filter>Source Files\Buffers Objects Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UnifformBufferObject.cpp">
+      <Filter>Source Files\Buffers Objects Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="lightingSourceShader.vert">
@@ -128,15 +140,6 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EBO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VAO.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -160,6 +163,18 @@
     </ClInclude>
     <ClInclude Include="Importer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EBO.h">
+      <Filter>Header Files\Buffers Objects Header</Filter>
+    </ClInclude>
+    <ClInclude Include="VBO.h">
+      <Filter>Header Files\Buffers Objects Header</Filter>
+    </ClInclude>
+    <ClInclude Include="VAO.h">
+      <Filter>Header Files\Buffers Objects Header</Filter>
+    </ClInclude>
+    <ClInclude Include="UnifformBufferObject.h">
+      <Filter>Header Files\Buffers Objects Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

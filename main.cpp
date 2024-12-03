@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <variant>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -24,6 +25,7 @@
 #include "Transform.h"
 #include "MenageShaders.h"
 #include "Importer.h"
+#include "UnifformBufferObject.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -327,7 +329,7 @@ int main()
 	Light directionalLight(TypeOfLight::DIRECTIONAL_LIGHT);
 	Light pointLight(TypeOfLight::POINT_LIGHT);
 
-	struct RenderFlags // For different state insade the fragment shader
+	/*struct RenderFlags // For different state insade the fragment shader
 	{
 		bool isPointLightReducingOnDistance = true;
 		bool isPhong = false;
@@ -339,8 +341,20 @@ int main()
 
 		bool isAutomaticLuminosity = false; // Light
 		bool isManuelLuminosity = true; // Light
+	};*/
+	RenderFlags renderFlags{
+		true,
+		false,
+		true,
+		true,
+
+		false, // Light
+		true, // Light
+
+		false, // Light
+		true, // Light
+	
 	};
-	RenderFlags renderFlags;
 
 //-----------------------------------------------------------------------------------------------------------------
 	// Textures
@@ -539,15 +553,109 @@ int main()
 		// Tell OpenGL which Shader Program we want to use 
 		shaderProgramForObjects.Activate();
 
+		/*unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(shaderProgramForObjects.ID, "ControlsOfState");
+		glUniformBlockBinding(shaderProgramForObjects.ID, uniformBlockIndexRed, 0);
+
+		unsigned int renderFlagsUnifformObject;
+		glGenBuffers(1, &renderFlagsUnifformObject);
+
+		glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
+		glBufferData(GL_UNIFORM_BUFFER, 8 * sizeof(int), NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glBindBufferRange(GL_UNIFORM_BUFFER, 0, renderFlagsUnifformObject, 0, 8 * sizeof(int));
+
+		int renderFlagsInt[8] = {
+			renderFlags.isPointLightReducingOnDistance ? 1 : 0,
+			renderFlags.isPhong ? 1 : 0,
+			renderFlags.isBlinnPhong ? 1 : 0,
+			renderFlags.isSpecularMap ? 1 : 0,
+			renderFlags.isDirectionalLight ? 1 : 0,
+			renderFlags.isPointLight ? 1 : 0,
+			renderFlags.isAutomaticLuminosity ? 1 : 0,
+			renderFlags.isManuelLuminosity ? 1 : 0,
+		};
+
+		glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(renderFlagsInt), &renderFlagsInt);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+
+		/*glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, 8 * 4, &renderFlagsShader.isPointLightReducingOnDistance);
+		glBufferSubData(GL_UNIFORM_BUFFER, 4, 8 * 4, &renderFlagsShader.isPhong);
+		glBufferSubData(GL_UNIFORM_BUFFER, 8, 8 * 4, &renderFlagsShader.isBlinnPhong);
+		glBufferSubData(GL_UNIFORM_BUFFER, 12, 8 * 4, &renderFlagsShader.isSpecularMap);
+		glBufferSubData(GL_UNIFORM_BUFFER, 16, 8 * 4, &renderFlagsShader.isDirectionalLight);
+		glBufferSubData(GL_UNIFORM_BUFFER, 20, 8 * 4, &renderFlagsShader.isPointLight);
+		glBufferSubData(GL_UNIFORM_BUFFER, 24, 8 * 4, &renderFlagsShader.isAutomaticLuminosity);
+		glBufferSubData(GL_UNIFORM_BUFFER, 28, 8 * 4, &renderFlagsShader.isManuelLuminosity);
+
+		/*		bool isPointLightReducingOnDistance = true;
+		bool isPhong = false;
+		bool isBlinnPhong = true;
+		bool isSpecularMap = true;
+
+		bool isDirectionalLight = false; // Light
+		bool isPointLight = true; // Lights
+
+		bool isAutomaticLuminosity = false; // Light
+		bool isManuelLuminosity = true; // Light*/
+
+		std::vector<std::string> insertOrder;
+		//insertOrder.resize(8);
+		std::unordered_map<std::string, bool> flags;
+
+		flags.insert(std::pair<std::string, bool>("isPointLightReducingOnDistance", renderFlags.isPointLightReducingOnDistance));
+		insertOrder.push_back("isPointLightReducingOnDistance");
+
+		flags.insert(std::pair<std::string, bool>("isPhong", renderFlags.isPhong));
+		insertOrder.push_back("isPhong");
+
+		flags.insert(std::pair<std::string, bool>("isBlinnPhong", renderFlags.isBlinnPhong));
+		insertOrder.push_back("isBlinnPhong");
+
+		flags.insert(std::pair<std::string, bool>("isSpecularMap", renderFlags.isSpecularMap));
+		insertOrder.push_back("isSpecularMap");
+
+		flags.insert(std::pair<std::string, bool>("isDirectionalLight", renderFlags.isDirectionalLight));
+		insertOrder.push_back("isDirectionalLight");
+
+		flags.insert(std::pair<std::string, bool>("isPointLight", renderFlags.isPointLight));
+		insertOrder.push_back("isPointLight");
+
+		flags.insert(std::pair<std::string, bool>("isAutomaticLuminosity", renderFlags.isAutomaticLuminosity));
+		insertOrder.push_back("isAutomaticLuminosity");
+
+		flags.insert(std::pair<std::string, bool>("isManuelLuminosity", renderFlags.isManuelLuminosity));
+		insertOrder.push_back("isManuelLuminosity");
+
+
+		/*std::vector<int> boolsToSend;
+		boolsToSend.resize(8);
+		boolsToSend[0] = flags["isPointLightReducingOnDistance"];
+		boolsToSend[1] = flags["isPhong"];
+		boolsToSend[2] = flags["isBlinnPhong"];
+		boolsToSend[3] = flags["isSpecularMap"];
+		boolsToSend[4] = flags["isDirectionalLight"];
+		boolsToSend[5] = flags["isPointLight"];
+		boolsToSend[6] = flags["isAutomaticLuminosity"];
+		boolsToSend[7] = flags["isManuelLuminosity"];*/
+
+
+		//UnifformBufferObject::prepareVectorToSendFromUnordered_map(flags);
+		UnifformBufferObject::sendBoolsUniformToShader("ControlsOfState", UnifformBufferObject::prepareVectorToSendFromUnordered_Map(flags, insertOrder), shaderProgramForObjects.ID);
+		
+		//shaderProgramForObjects.sendUniformBufferStructBool("ControlsOfState", 8, renderFlags);
+
 		// Export state in shader in order to dynamicly change during runtime
-		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPhong"), renderFlags.isPhong);
-		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isBlinnPhong"), renderFlags.isBlinnPhong);
-		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isSpecularMap"), renderFlags.isSpecularMap);
-		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLight"), renderFlags.isPointLight);
-		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLightReducingOnDistance"), renderFlags.isPointLightReducingOnDistance);
-		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isDirectionalLight"), renderFlags.isDirectionalLight);
-		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isAutomaticLuminosity"), renderFlags.isAutomaticLuminosity);
-		glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isManuelLuminosity"), renderFlags.isManuelLuminosity);
+		//shaderProgramForObjects.sendBool("control.isPhong", renderFlags.isPhong);																// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPhong"), renderFlags.isPhong);
+		//shaderProgramForObjects.sendBool("control.isBlinnPhong", renderFlags.isBlinnPhong);														// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isBlinnPhong"), renderFlags.isBlinnPhong);
+		//shaderProgramForObjects.sendBool("control.isSpecularMap", renderFlags.isSpecularMap);													// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isSpecularMap"), renderFlags.isSpecularMap);
+		//shaderProgramForObjects.sendBool("control.isPointLight", renderFlags.isPointLight);														// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLight"), renderFlags.isPointLight);
+		//shaderProgramForObjects.sendBool("control.isPointLightReducingOnDistance", renderFlags.isPointLightReducingOnDistance);					// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLightReducingOnDistance"), renderFlags.isPointLightReducingOnDistance);
+		//shaderProgramForObjects.sendBool("control.isDirectionalLight", renderFlags.isDirectionalLight);											// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isDirectionalLight"), renderFlags.isDirectionalLight);
+		//shaderProgramForObjects.sendBool("control.isAutomaticLuminosity", renderFlags.isAutomaticLuminosity);									// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isAutomaticLuminosity"), renderFlags.isAutomaticLuminosity);
+		//shaderProgramForObjects.sendBool("control.isManuelLuminosity", renderFlags.isManuelLuminosity);											// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isManuelLuminosity"), renderFlags.isManuelLuminosity);
 		// Export for reducing point light in propotional to distance, a constant term Kc, a linear term Kl, and a quadratic term Kq // https://learnopengl.com/Lighting/Light-casters
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), pointLight.getPointLightParams().exponentForPointLight);
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), pointLight.getPointLightParams().linearTerm_Kl);
@@ -583,7 +691,7 @@ int main()
 			planks.Bind();
 			planksSpec.Bind();
 
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "useCustomTransform"), true); // If is true it will use modelRotate modelPos modelScale for gl_Position
+			shaderProgramForObjects.sendBool("useCustomTransform", true); // If is true it will use modelRotate modelPos modelScale for gl_Position
 			pyramideObject.m_transform->setPosition(pyramideTransform.transformParams().m_objectPos);
 			pyramideObject.m_transform->setScale(pyramideTransform.transformParams().m_objectScale);
 			pyramideObject.m_transform->setRotateEuler(pyramideTransform.transformParams().m_objectRotEuler);
@@ -614,7 +722,7 @@ int main()
 			planks.Bind();
 			planksSpec.Bind();
 
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "useCustomTransform"), true); // If is true it will use modelRotate modelPos modelScale for gl_Position
+			shaderProgramForObjects.sendBool("useCustomTransform", true); // If is true it will use modelRotate modelPos modelScale for gl_Position
 			cubeObject.m_transform->setPosition(cubeTransform.transformParams().m_objectPos);
 			cubeObject.m_transform->setScale(cubeTransform.transformParams().m_objectScale);
 			cubeObject.m_transform->setRotateEuler(cubeTransform.transformParams().m_objectRotEuler);
@@ -638,15 +746,19 @@ int main()
 			// Passing camMatrix uniform to lightSourceCube for projection matrix
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
-			glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "useCustomTransform"), true); // If is true it will use modelRotate modelPos modelScale for gl_Position
+			shaderProgramForObjects.sendBool("useCustomTransform", true); // If is true it will use modelRotate modelPos modelScale for gl_Position
 			importedMeshObject.m_transform->setPosition(importedMeshTransform.transformParams().m_objectPos);
 			importedMeshObject.m_transform->setScale(importedMeshTransform.transformParams().m_objectScale);
 			importedMeshObject.m_transform->setRotateEuler(importedMeshTransform.transformParams().m_objectRotEuler);
 
+			oak.Bind();
+			oakSpec.Bind();
 		    IMPORT_CUBE_SHAPE_VAO.Bind();
 			glDrawElements(GL_TRIANGLES, importCubeIndex.size(), GL_UNSIGNED_INT, 0);
 			IMPORT_CUBE_SHAPE_VAO.Unbind();
 			shaderProgramForObjects.Deactivate();
+			oak.Unbind();
+			oakSpec.Unbind();
 		}
 		{ // LIGHT CUBE SOURCE
 			// Activating shader that is used only for lightSource

@@ -23,6 +23,7 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 	constructShaderProgram(vertexFile, fragmentFile);
 }
 
+
 void Shader::constructShaderProgram(const char* vertexFile, const char* fragmentFile)
 {
 	// Read vertexFile and fragmentFile and store the strings
@@ -81,24 +82,81 @@ void Shader::Delete()
 	glDeleteProgram(ID);
 }
 
-void Shader::sendVec3fToShader(const char* varName, glm::vec3 vec3)
+void Shader::sendBool(const std::string& varName, const bool& boolValue)
 {
-	glUniform3f(glGetUniformLocation(ID, varName), vec3.x, vec3.y, vec3.z);
+	glUniform1i(glGetUniformLocation(ID, varName.c_str()), boolValue);
 }
 
-void Shader::sendVec3fToShader(const char* varName, float x, float y, float z)
+void Shader::sendVec3f(const std::string& varName,const glm::vec3& vec3)
 {
-	glUniform3f(glGetUniformLocation(ID, varName), x, y, z);
+	glUniform3f(glGetUniformLocation(ID, varName.c_str()), vec3.x, vec3.y, vec3.z);
+}
+void Shader::sendVec3f(const std::string& varName, const float& x, const float& y, const float& z)
+{
+	glUniform3f(glGetUniformLocation(ID, varName.c_str()), x, y, z);
 }
 
-void Shader::sendMatrix3x3fToShader(const char* varName, glm::mat3 matrix)
+void Shader::sendVec2f(const std::string& varName, const glm::vec2& vec2)
 {
-	glUniformMatrix3fv(glGetUniformLocation(ID, varName), 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniform2f(glGetUniformLocation(ID, varName.c_str()), vec2.x, vec2.y);
+}
+void Shader::sendVec2f(const std::string& varName, const float& x, const float& y)
+{
+	glUniform2f(glGetUniformLocation(ID, varName.c_str()), x, y);
 }
 
-void Shader::sendMat4x4ToShader(const char* varName, glm::mat4 matrix)
+void Shader::sendVec1f(const std::string& varName, const float& x)
 {
-	glUniformMatrix4fv(glGetUniformLocation(ID, varName), 1, GL_FALSE, glm::value_ptr(matrix));
+	glUniform1f(glGetUniformLocation(ID, varName.c_str()), x);
+}
+
+void Shader::sendMatrix3x3f(const std::string& varName, const glm::mat3& matrix)
+{
+	glUniformMatrix3fv(glGetUniformLocation(ID, varName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+}
+void Shader::sendMatrix4x4f(const std::string& varName, const glm::mat4& matrix)
+{
+	glUniformMatrix4fv(glGetUniformLocation(ID, varName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Shader::sendUniformBufferStructBool(const char* nameOfUnifformStructInShader, int _numberOfElementsInside, const RenderFlags& structData)
+{
+	unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(ID, "ControlsOfState");
+	glUniformBlockBinding(ID, uniformBlockIndexRed, 0);
+
+	//unsigned int renderFlagsUnifformObject;
+	glGenBuffers(1, &renderFlagsUnifformObject);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(structData) * sizeof(int), nullptr, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, renderFlagsUnifformObject, 0, sizeof(structData) * sizeof(int));
+
+	int renderFlagsInt[8] = {
+		structData.isPointLightReducingOnDistance ? 1 : 0,
+		structData.isPhong ? 1 : 0,
+		structData.isBlinnPhong ? 1 : 0,
+		structData.isSpecularMap ? 1 : 0,
+		structData.isDirectionalLight ? 1 : 0,
+		structData.isPointLight ? 1 : 0,
+		structData.isAutomaticLuminosity ? 1 : 0,
+		structData.isManuelLuminosity ? 1 : 0,
+	};
+
+	glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(renderFlagsInt), &renderFlagsInt);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void Shader::BindUBO()
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
+}
+
+void Shader::UnbindUBO()
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 // This metod is private

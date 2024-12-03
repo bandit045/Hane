@@ -44,7 +44,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="MenageShaders">
-    <Position X="9.25" Y="3.75" Width="2.5" />
+    <Position X="9.25" Y="5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAEAQAAAgAAAAAAAEAAAAAAA=</HashCode>
       <FileName>MenageShaders.h</FileName>
@@ -53,14 +53,14 @@
   <Class Name="Object">
     <Position X="12" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIAAAAAAAgAAAAAAAAAAAIAIEAAAAAAABKAAA=</HashCode>
+      <HashCode>AAAAAAAIAAAAAAAgABAAAAAAAAAIAIAAAAAAAABKAAA=</HashCode>
       <FileName>Object.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Shader">
     <Position X="9.25" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>QAAAAAAAACBAgABAAAAAQAAAAAEAAAAIAgAAAAAAAAg=</HashCode>
+      <HashCode>SBAAAAACgiBAgADAAAABAAAAAAEAAAAAIgBgAAAAAAA=</HashCode>
       <FileName>Shader.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -114,7 +114,7 @@
     </TypeIdentifier>
   </Enum>
   <Enum Name="DefaultShader">
-    <Position X="9.25" Y="6" Width="2.5" />
+    <Position X="9.25" Y="7" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
       <FileName>MenageShaders.h</FileName>
