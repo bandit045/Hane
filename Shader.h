@@ -16,25 +16,11 @@
 
 std::string get_file_contents(const char* filename);
 
-struct RenderFlags // For different state insade the fragment shader
-{
-	bool isPointLightReducingOnDistance = true;
-	bool isPhong = false;
-	bool isBlinnPhong = true;
-	bool isSpecularMap = true;
-
-	bool isDirectionalLight = false; // Light
-	bool isPointLight = true; // Light
-
-	bool isAutomaticLuminosity = false; // Light
-	bool isManuelLuminosity = true; // Light
-};
-
 class Shader
 {
 	public:
 		// Reference ID of the Shader Program
-		GLuint ID, renderFlagsUnifformObject;
+		GLuint ID;
 		// Constructor that build the Shader Program from 2 different shaders
 		Shader(const char* vertexFile, const char* fragmentFile);
 
@@ -53,10 +39,6 @@ class Shader
 		void sendVec1f(const std::string& varName, const float& x);
 		void sendMatrix4x4f(const std::string& varName, const glm::mat4& matrix);
 		void sendMatrix3x3f(const std::string& varName, const glm::mat3& matrix);
-		// Update trought UBO
-		void sendUniformBufferStructBool(const char* nameOfUnifformStructInShader, int numberOfElementsInside, const RenderFlags& structData);
-		void BindUBO();
-		void UnbindUBO();
 	private:
 		void constructShaderProgram(const char* vertexFile, const char* fragmentFile);
 		void compileErrors(unsigned int shader, const char* type);

@@ -111,6 +111,9 @@
     <ClCompile Include="UnifformBufferObject.cpp">
       <Filter>Source Files\Buffers Objects Source</Filter>
     </ClCompile>
+    <ClCompile Include="RenderFlags.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="lightingSourceShader.vert">
@@ -175,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="UnifformBufferObject.h">
       <Filter>Header Files\Buffers Objects Header</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderFlags.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

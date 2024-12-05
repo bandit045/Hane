@@ -119,46 +119,6 @@ void Shader::sendMatrix4x4f(const std::string& varName, const glm::mat4& matrix)
 	glUniformMatrix4fv(glGetUniformLocation(ID, varName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void Shader::sendUniformBufferStructBool(const char* nameOfUnifformStructInShader, int _numberOfElementsInside, const RenderFlags& structData)
-{
-	unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(ID, "ControlsOfState");
-	glUniformBlockBinding(ID, uniformBlockIndexRed, 0);
-
-	//unsigned int renderFlagsUnifformObject;
-	glGenBuffers(1, &renderFlagsUnifformObject);
-
-	glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(structData) * sizeof(int), nullptr, GL_STATIC_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0, renderFlagsUnifformObject, 0, sizeof(structData) * sizeof(int));
-
-	int renderFlagsInt[8] = {
-		structData.isPointLightReducingOnDistance ? 1 : 0,
-		structData.isPhong ? 1 : 0,
-		structData.isBlinnPhong ? 1 : 0,
-		structData.isSpecularMap ? 1 : 0,
-		structData.isDirectionalLight ? 1 : 0,
-		structData.isPointLight ? 1 : 0,
-		structData.isAutomaticLuminosity ? 1 : 0,
-		structData.isManuelLuminosity ? 1 : 0,
-	};
-
-	glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(renderFlagsInt), &renderFlagsInt);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-}
-
-void Shader::BindUBO()
-{
-	glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
-}
-
-void Shader::UnbindUBO()
-{
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-}
-
 // This metod is private
 void Shader::compileErrors(unsigned int shader, const char* type)
 {

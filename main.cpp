@@ -26,6 +26,7 @@
 #include "MenageShaders.h"
 #include "Importer.h"
 #include "UnifformBufferObject.h"
+#include "RenderFlags.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -312,7 +313,7 @@ int main()
 	LIGHT_SOURCE_VBO.Unbind();
 //-------------------------------------------------------------------------------------------------------------------------
 
-	struct Material
+	struct MaterialStruct
 	{
 		glm::vec4 objectColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		float ambientStrenght = 0.6f;
@@ -320,41 +321,26 @@ int main()
 		float specularStrength = 0.5f;
 		float shininessStrenght = 16.0f;
 	};
-	Material lampMaterial;
-	Material cubeMaterial;
-	Material pyramideMaterial;
-	Material globalMaterial;
-	//****
+	MaterialStruct lampMaterial;
+	MaterialStruct cubeMaterial;
+	MaterialStruct pyramideMaterial;
+	MaterialStruct globalMaterial;
 
 	Light directionalLight(TypeOfLight::DIRECTIONAL_LIGHT);
 	Light pointLight(TypeOfLight::POINT_LIGHT);
 
-	/*struct RenderFlags // For different state insade the fragment shader
-	{
-		bool isPointLightReducingOnDistance = true;
-		bool isPhong = false;
-		bool isBlinnPhong = true;
-		bool isSpecularMap = true;
+	// Serve as bool value that is send to shader in UBO Buffer to control different state on/off effect etc.
+	RenderFlags renderFlags;
+	renderFlags.addRenderFlag("isPointLightReducingOnDistance", true);
+	renderFlags.addRenderFlag("isPhong", false);
+	renderFlags.addRenderFlag("isBlinnPhong", true);
+	renderFlags.addRenderFlag("isSpecularMap", true);
 
-		bool isDirectionalLight = false; // Light
-		bool isPointLight = true; // Light
+	renderFlags.addRenderFlag("isDirectionalLight", false);
+	renderFlags.addRenderFlag("isPointLight", true);
 
-		bool isAutomaticLuminosity = false; // Light
-		bool isManuelLuminosity = true; // Light
-	};*/
-	RenderFlags renderFlags{
-		true,
-		false,
-		true,
-		true,
-
-		false, // Light
-		true, // Light
-
-		false, // Light
-		true, // Light
-	
-	};
+	renderFlags.addRenderFlag("isAutomaticLuminosity", false);
+	renderFlags.addRenderFlag("isManuelLuminosity", true);
 
 //-----------------------------------------------------------------------------------------------------------------
 	// Textures
@@ -421,37 +407,8 @@ int main()
 		lampObject.m_transform->inputs(window);
 
 		GUI::startGUIframe(true);
-		GUI::contextOfGUI();
+		GUI::contextOfGUI(camera, renderFlags);
 		{
-			ImGui::Begin("Performance:");
-			
-			if (ImGui::Checkbox("Point Light", &renderFlags.isPointLight)) {
-				if (renderFlags.isPointLight) {
-					renderFlags.isDirectionalLight = false;
-					renderFlags.isPointLightReducingOnDistance = true;
-					renderFlags.isPhong = false;
-					renderFlags.isBlinnPhong = true;
-					globalMaterial.ambientStrenght = 0.5f;
-				}
-			}
-
-			if (ImGui::Checkbox("Direction Light", &renderFlags.isDirectionalLight)) {
-				if (renderFlags.isDirectionalLight) {
-					renderFlags.isPointLight = false;
-					renderFlags.isPointLightReducingOnDistance = false;
-					renderFlags.isPhong = true;
-					renderFlags.isBlinnPhong = false;
-					globalMaterial.ambientStrenght = 0.2f;
-				}
-			}
-
-			ImGui::Text("Position of camera: %.2f, %.2f, %.2f", camera.Position.x, camera.Position.y, camera.Position.z);
-			ImGui::Text("Orientation of camera: %.2f, %.2f, %.2f", camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
-			ImGui::Text("Up of camera: %.2f, %.2f, %.2f", camera.Up.x, camera.Up.y, camera.Up.z);
-			ImGui::End();
-		}
-		{
-
 			ImGui::Begin("Light source");
 			if (ImGui::CollapsingHeader("Color and position of light source", ImGuiTreeNodeFlags_DefaultOpen)) {
 
@@ -476,7 +433,7 @@ int main()
 			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 				ImGui::SeparatorText("State on/off:"); ImGui::Spacing();
-				ImGui::Checkbox("Is Point Light Reducing On Distance", &renderFlags.isPointLightReducingOnDistance);
+				ImGui::Checkbox("Is Point Light Reducing On Distance", &renderFlags.getSpecificValueReference("isPointLightReducingOnDistance"));
 
 				ImGui::SeparatorText("Control of variables MANUEL:");
 				ImGui::SliderFloat("Exponent for distance:", &pointLight.setPointLightParams().exponentForPointLight, -64, 256); ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { pointLight.setPointLightParams().exponentForPointLight = 2.0f; }; ImGui::Spacing();
@@ -489,11 +446,11 @@ int main()
 					pointLight.setPointLightParams().linearTerm_Kl = 0.7f;
 					pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f;
 					pointLight.setPointLightParams().constantTerm_Kc = 1.0f;
-				};  ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set manuel active")) { renderFlags.isManuelLuminosity = true; renderFlags.isAutomaticLuminosity = false; };
+				};  ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set manuel active")) { renderFlags.setValueToBoolRenderFlag("isManuelLuminosity", true); renderFlags.setValueToBoolRenderFlag("isAutomaticLuminosity", false); };
 
 				ImGui::SeparatorText("Control of variables AUTOMATIC:"); ImGui::Spacing();
 				ImGui::SliderFloat("Overall Light Brightness:", &pointLight.setPointLightParams().overallLightBrightness, 0, 1); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0")) { pointLight.setPointLightParams().overallLightBrightness = 1.0f; }; ImGui::Spacing();
-				ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set automatic active")) { renderFlags.isManuelLuminosity = false; renderFlags.isAutomaticLuminosity = true; };
+				ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set automatic active")) { renderFlags.setValueToBoolRenderFlag("isManuelLuminosity", false); renderFlags.setValueToBoolRenderFlag("isAutomaticLuminosity", true); };
 
 				ImGui::SeparatorText("Bref explanation:"); ImGui::Spacing();
 				ImGui::BulletText("To reduce the intensity of point light over the distance");
@@ -505,19 +462,19 @@ int main()
 			if (ImGui::CollapsingHeader("Model of light reflection", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 				ImGui::SeparatorText("State of specular reflection on/off"); ImGui::Spacing();
-				if (ImGui::Checkbox("Phong", &renderFlags.isPhong)) {
-					if (renderFlags.isPhong) {
-						renderFlags.isBlinnPhong = false;
+				if (ImGui::Checkbox("Phong", &renderFlags.getSpecificValueReference("isPhong"))) {
+					if (renderFlags.getSpecificValueReference("isPhong")) {
+						renderFlags.setValueToBoolRenderFlag("isBlinnPhong", false);
 					}
 				}
 
-				if (ImGui::Checkbox("Blinn-Phong", &renderFlags.isBlinnPhong)) {
-					if (renderFlags.isBlinnPhong) {
-						renderFlags.isPhong = false;
+				if (ImGui::Checkbox("Blinn-Phong", &renderFlags.getSpecificValueReference("isBlinnPhong"))) {
+					if (renderFlags.getSpecificValueReference("isBlinnPhong")) {
+						renderFlags.setValueToBoolRenderFlag("isPhong", false);
 					}
 				}
 				ImGui::Separator(); ImGui::Spacing();
-				ImGui::Checkbox("Specular Map", &renderFlags.isSpecularMap);
+				ImGui::Checkbox("Specular Map", &renderFlags.getSpecificValueReference("isSpecularMap"));
 
 				ImGui::SeparatorText("Control of variables:"); ImGui::Spacing();
 				ImGui::SliderFloat("Ambient Strenght:", &globalMaterial.ambientStrenght, 0.0f, 32.0f); ImGui::SameLine(0, 0);if(ImGui::SmallButton("0.6f")){ globalMaterial.ambientStrenght = 0.6f; }; ImGui::Spacing();
@@ -537,7 +494,6 @@ int main()
 			ImGui::End();
 		}
 
-
 		// Setting rendering mode to line
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Specify the color of the background
@@ -546,106 +502,14 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handling input to move camera, light positon ond light color
-		camera.Inputs(window, lampMaterial.objectColor, renderFlags.isBlinnPhong, renderFlags.isPhong, renderFlags.isSpecularMap);
+		camera.Inputs(window, lampMaterial.objectColor, renderFlags.getSpecificValueReference("isBlinnPhong"), renderFlags.getSpecificValueReference("isPhong"), renderFlags.getSpecificValueReference("isSpecularMap"));
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
 
 		// Tell OpenGL which Shader Program we want to use 
 		shaderProgramForObjects.Activate();
 
-		/*unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(shaderProgramForObjects.ID, "ControlsOfState");
-		glUniformBlockBinding(shaderProgramForObjects.ID, uniformBlockIndexRed, 0);
-
-		unsigned int renderFlagsUnifformObject;
-		glGenBuffers(1, &renderFlagsUnifformObject);
-
-		glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
-		glBufferData(GL_UNIFORM_BUFFER, 8 * sizeof(int), NULL, GL_STATIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-		glBindBufferRange(GL_UNIFORM_BUFFER, 0, renderFlagsUnifformObject, 0, 8 * sizeof(int));
-
-		int renderFlagsInt[8] = {
-			renderFlags.isPointLightReducingOnDistance ? 1 : 0,
-			renderFlags.isPhong ? 1 : 0,
-			renderFlags.isBlinnPhong ? 1 : 0,
-			renderFlags.isSpecularMap ? 1 : 0,
-			renderFlags.isDirectionalLight ? 1 : 0,
-			renderFlags.isPointLight ? 1 : 0,
-			renderFlags.isAutomaticLuminosity ? 1 : 0,
-			renderFlags.isManuelLuminosity ? 1 : 0,
-		};
-
-		glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(renderFlagsInt), &renderFlagsInt);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
-
-		/*glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUnifformObject);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, 8 * 4, &renderFlagsShader.isPointLightReducingOnDistance);
-		glBufferSubData(GL_UNIFORM_BUFFER, 4, 8 * 4, &renderFlagsShader.isPhong);
-		glBufferSubData(GL_UNIFORM_BUFFER, 8, 8 * 4, &renderFlagsShader.isBlinnPhong);
-		glBufferSubData(GL_UNIFORM_BUFFER, 12, 8 * 4, &renderFlagsShader.isSpecularMap);
-		glBufferSubData(GL_UNIFORM_BUFFER, 16, 8 * 4, &renderFlagsShader.isDirectionalLight);
-		glBufferSubData(GL_UNIFORM_BUFFER, 20, 8 * 4, &renderFlagsShader.isPointLight);
-		glBufferSubData(GL_UNIFORM_BUFFER, 24, 8 * 4, &renderFlagsShader.isAutomaticLuminosity);
-		glBufferSubData(GL_UNIFORM_BUFFER, 28, 8 * 4, &renderFlagsShader.isManuelLuminosity);
-
-		/*		bool isPointLightReducingOnDistance = true;
-		bool isPhong = false;
-		bool isBlinnPhong = true;
-		bool isSpecularMap = true;
-
-		bool isDirectionalLight = false; // Light
-		bool isPointLight = true; // Lights
-
-		bool isAutomaticLuminosity = false; // Light
-		bool isManuelLuminosity = true; // Light*/
-
-		std::vector<std::string> insertOrder;
-		//insertOrder.resize(8);
-		std::unordered_map<std::string, bool> flags;
-
-		flags.insert(std::pair<std::string, bool>("isPointLightReducingOnDistance", renderFlags.isPointLightReducingOnDistance));
-		insertOrder.push_back("isPointLightReducingOnDistance");
-
-		flags.insert(std::pair<std::string, bool>("isPhong", renderFlags.isPhong));
-		insertOrder.push_back("isPhong");
-
-		flags.insert(std::pair<std::string, bool>("isBlinnPhong", renderFlags.isBlinnPhong));
-		insertOrder.push_back("isBlinnPhong");
-
-		flags.insert(std::pair<std::string, bool>("isSpecularMap", renderFlags.isSpecularMap));
-		insertOrder.push_back("isSpecularMap");
-
-		flags.insert(std::pair<std::string, bool>("isDirectionalLight", renderFlags.isDirectionalLight));
-		insertOrder.push_back("isDirectionalLight");
-
-		flags.insert(std::pair<std::string, bool>("isPointLight", renderFlags.isPointLight));
-		insertOrder.push_back("isPointLight");
-
-		flags.insert(std::pair<std::string, bool>("isAutomaticLuminosity", renderFlags.isAutomaticLuminosity));
-		insertOrder.push_back("isAutomaticLuminosity");
-
-		flags.insert(std::pair<std::string, bool>("isManuelLuminosity", renderFlags.isManuelLuminosity));
-		insertOrder.push_back("isManuelLuminosity");
-
-
-		/*std::vector<int> boolsToSend;
-		boolsToSend.resize(8);
-		boolsToSend[0] = flags["isPointLightReducingOnDistance"];
-		boolsToSend[1] = flags["isPhong"];
-		boolsToSend[2] = flags["isBlinnPhong"];
-		boolsToSend[3] = flags["isSpecularMap"];
-		boolsToSend[4] = flags["isDirectionalLight"];
-		boolsToSend[5] = flags["isPointLight"];
-		boolsToSend[6] = flags["isAutomaticLuminosity"];
-		boolsToSend[7] = flags["isManuelLuminosity"];*/
-
-
-		//UnifformBufferObject::prepareVectorToSendFromUnordered_map(flags);
-		UnifformBufferObject::sendBoolsUniformToShader("ControlsOfState", UnifformBufferObject::prepareVectorToSendFromUnordered_Map(flags, insertOrder), shaderProgramForObjects.ID);
-		
-		//shaderProgramForObjects.sendUniformBufferStructBool("ControlsOfState", 8, renderFlags);
+		UnifformBufferObject::sendBoolsUniformToShader("ControlsOfState", UnifformBufferObject::prepareFlags(renderFlags), shaderProgramForObjects.ID);
 
 		// Export state in shader in order to dynamicly change during runtime
 		//shaderProgramForObjects.sendBool("control.isPhong", renderFlags.isPhong);																// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPhong"), renderFlags.isPhong);
@@ -764,13 +628,13 @@ int main()
 			// Activating shader that is used only for lightSource
 			lightSourceShader.Activate();
 
-			if (renderFlags.isDirectionalLight) {
+			if (renderFlags.getSpecificValueReference("isDirectionalLight")) {
 
 				lampObject.m_transform->setPosition(lampTransform.transformParams().m_objectPos);
 				lampObject.m_transform->setScale(lampTransform.transformParams().m_objectScale);
 				lampObject.m_transform->setRotateEuler(lampTransform.transformParams().m_objectRotEuler);
 			}
-			else if(renderFlags.isPointLight)
+			else if(renderFlags.getSpecificValueReference("isPointLight"))
 			{
 				lampObject.m_transform->setPosition(lampObject.m_transform->transformParams().m_objectPos);
 				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);

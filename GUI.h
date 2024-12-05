@@ -5,14 +5,17 @@
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 
+#include "Camera.h"
+#include "RenderFlags.h"
+
 class GUI
 {
 public:
 	GUI(GLFWwindow* window);
 	static void startGUIframe(bool enabledDemo);
 
-	static void contextOfGUI();
-	static void Light();
+	static void contextOfGUI(Camera& _camera, RenderFlags& _renderFlags);
+	static void Stats(Camera& _camera, RenderFlags& _renderFlags);
 
 	static void renderGUI();
 	static void clearGUI();
