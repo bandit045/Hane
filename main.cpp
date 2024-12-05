@@ -27,6 +27,7 @@
 #include "Importer.h"
 #include "UnifformBufferObject.h"
 #include "RenderFlags.h"
+#include "Material.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -312,19 +313,10 @@ int main()
 	LIGHT_SOURCE_VAO.Unbind();
 	LIGHT_SOURCE_VBO.Unbind();
 //-------------------------------------------------------------------------------------------------------------------------
-
-	struct MaterialStruct
-	{
-		glm::vec4 objectColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		float ambientStrenght = 0.6f;
-		float diffuseStrenght = 1.9f;
-		float specularStrength = 0.5f;
-		float shininessStrenght = 16.0f;
-	};
-	MaterialStruct lampMaterial;
-	MaterialStruct cubeMaterial;
-	MaterialStruct pyramideMaterial;
-	MaterialStruct globalMaterial;
+	Material lampMaterial;
+	Material cubeMaterial;
+	Material pyramideMaterial;
+	Material globalMaterial;
 
 	Light directionalLight(TypeOfLight::DIRECTIONAL_LIGHT);
 	Light pointLight(TypeOfLight::POINT_LIGHT);
@@ -332,15 +324,15 @@ int main()
 	// Serve as bool value that is send to shader in UBO Buffer to control different state on/off effect etc.
 	RenderFlags renderFlags;
 	renderFlags.addRenderFlag("isPointLightReducingOnDistance", true);
-	renderFlags.addRenderFlag("isPhong", false);
-	renderFlags.addRenderFlag("isBlinnPhong", true);
-	renderFlags.addRenderFlag("isSpecularMap", true);
-
-	renderFlags.addRenderFlag("isDirectionalLight", false);
-	renderFlags.addRenderFlag("isPointLight", true);
-
-	renderFlags.addRenderFlag("isAutomaticLuminosity", false);
-	renderFlags.addRenderFlag("isManuelLuminosity", true);
+	renderFlags.addRenderFlag("isPhong",                        false);
+	renderFlags.addRenderFlag("isBlinnPhong",                   true);
+	renderFlags.addRenderFlag("isSpecularMap",                  true);
+													            
+	renderFlags.addRenderFlag("isDirectionalLight",             false);
+	renderFlags.addRenderFlag("isPointLight",                   true);
+													            
+	renderFlags.addRenderFlag("isAutomaticLuminosity",          false);
+	renderFlags.addRenderFlag("isManuelLuminosity",             true);
 
 //-----------------------------------------------------------------------------------------------------------------
 	// Textures
@@ -407,92 +399,7 @@ int main()
 		lampObject.m_transform->inputs(window);
 
 		GUI::startGUIframe(true);
-		GUI::contextOfGUI(camera, renderFlags);
-		{
-			ImGui::Begin("Light source");
-			if (ImGui::CollapsingHeader("Color and position of light source", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-				ImGui::SeparatorText("Color for light source:"); ImGui::Spacing();
-				ImGui::SliderFloat3("Color", &lampMaterial.objectColor.x, 0.0f, 1.0f);
-				ImGui::Separator();
-				ImGui::DragFloat3("Position for point light", &lampObject.m_transform->transformParams().m_objectPos.x, 0.1f);
-				ImGui::SliderFloat3("Rotation vector of point light", &lampObject.m_transform->transformParams().m_objectRotEuler.x, -180.0f, 180.0f);
-				ImGui::DragFloat4("Quaternion orbit of lightource", &lampObject.m_transform->transformParams().m_objectRotQuat.x, 64.0f, 720.0f);
-				ImGui::SliderFloat3("Scale factor of light", &lampObject.m_transform->transformParams().m_objectScale.x, 0.0f, 64.0f);
-				ImGui::Separator();
-				ImGui::SliderFloat3("Direction vector of light", &directionalLight.setDirectionLightParams().lightDirection.x, -0.5f, 0.5f);
-
-				ImGui::SeparatorText("Position and color of light source:"); ImGui::Spacing();
-				ImGui::Text("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff, A: %.2ff", lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
-				ImGui::Separator();
-				ImGui::Text("Position of the point light source: %.2f, %.2f, %.2f", lampObject.m_transform->transformParams().m_objectPos.x, lampObject.m_transform->transformParams().m_objectPos.y, lampObject.m_transform->transformParams().m_objectPos.z);
-				ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f", lampObject.m_transform->transformParams().m_objectRotEuler.x, lampObject.m_transform->transformParams().m_objectRotEuler.y, lampObject.m_transform->transformParams().m_objectRotEuler.z);
-				ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f", lampObject.m_transform->transformParams().m_objectRotQuat.x, lampObject.m_transform->transformParams().m_objectRotQuat.y, lampObject.m_transform->transformParams().m_objectRotQuat.z, lampObject.m_transform->transformParams().m_objectRotQuat.w);
-				ImGui::Text("Vector of the directional light source: %.2f, %.2f, %.2f", directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
-			}
-			if (ImGui::CollapsingHeader("Attenuation the light equation", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-				ImGui::SeparatorText("State on/off:"); ImGui::Spacing();
-				ImGui::Checkbox("Is Point Light Reducing On Distance", &renderFlags.getSpecificValueReference("isPointLightReducingOnDistance"));
-
-				ImGui::SeparatorText("Control of variables MANUEL:");
-				ImGui::SliderFloat("Exponent for distance:", &pointLight.setPointLightParams().exponentForPointLight, -64, 256); ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { pointLight.setPointLightParams().exponentForPointLight = 2.0f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Linear Term Kl:", &pointLight.setPointLightParams().linearTerm_Kl, -2.683f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.7f")) { pointLight.setPointLightParams().linearTerm_Kl = 0.7f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Quadratic Term Kq:", &pointLight.setPointLightParams().quadraticTerm_Kq, -64.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.8f")) { pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Constant Term Kc:", &pointLight.setPointLightParams().constantTerm_Kc, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0f")) { pointLight.setPointLightParams().constantTerm_Kc = 1.0f; }; ImGui::Spacing();
-
-				if (ImGui::Button("RESET EQUATION", ImVec2(120, 40))) {
-					pointLight.setPointLightParams().exponentForPointLight = 2.0f;
-					pointLight.setPointLightParams().linearTerm_Kl = 0.7f;
-					pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f;
-					pointLight.setPointLightParams().constantTerm_Kc = 1.0f;
-				};  ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set manuel active")) { renderFlags.setValueToBoolRenderFlag("isManuelLuminosity", true); renderFlags.setValueToBoolRenderFlag("isAutomaticLuminosity", false); };
-
-				ImGui::SeparatorText("Control of variables AUTOMATIC:"); ImGui::Spacing();
-				ImGui::SliderFloat("Overall Light Brightness:", &pointLight.setPointLightParams().overallLightBrightness, 0, 1); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0")) { pointLight.setPointLightParams().overallLightBrightness = 1.0f; }; ImGui::Spacing();
-				ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set automatic active")) { renderFlags.setValueToBoolRenderFlag("isManuelLuminosity", false); renderFlags.setValueToBoolRenderFlag("isAutomaticLuminosity", true); };
-
-				ImGui::SeparatorText("Bref explanation:"); ImGui::Spacing();
-				ImGui::BulletText("To reduce the intensity of point light over the distance");
-
-				ImGui::BulletText("More about it: ");
-				ImGui::SameLine(0, 4);
-				ImGui::TextLinkOpenURL("https://learnopengl.com/Lighting/Light-casters");
-			}
-			if (ImGui::CollapsingHeader("Model of light reflection", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-				ImGui::SeparatorText("State of specular reflection on/off"); ImGui::Spacing();
-				if (ImGui::Checkbox("Phong", &renderFlags.getSpecificValueReference("isPhong"))) {
-					if (renderFlags.getSpecificValueReference("isPhong")) {
-						renderFlags.setValueToBoolRenderFlag("isBlinnPhong", false);
-					}
-				}
-
-				if (ImGui::Checkbox("Blinn-Phong", &renderFlags.getSpecificValueReference("isBlinnPhong"))) {
-					if (renderFlags.getSpecificValueReference("isBlinnPhong")) {
-						renderFlags.setValueToBoolRenderFlag("isPhong", false);
-					}
-				}
-				ImGui::Separator(); ImGui::Spacing();
-				ImGui::Checkbox("Specular Map", &renderFlags.getSpecificValueReference("isSpecularMap"));
-
-				ImGui::SeparatorText("Control of variables:"); ImGui::Spacing();
-				ImGui::SliderFloat("Ambient Strenght:", &globalMaterial.ambientStrenght, 0.0f, 32.0f); ImGui::SameLine(0, 0);if(ImGui::SmallButton("0.6f")){ globalMaterial.ambientStrenght = 0.6f; }; ImGui::Spacing();
-				ImGui::SliderFloat("Diffuse Strenght:", &globalMaterial.diffuseStrenght, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.9f")) { globalMaterial.diffuseStrenght = 1.9f; };  ImGui::Spacing();
-				ImGui::SliderFloat("Specular Strength:", &globalMaterial.specularStrength, 0.0f, 64.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.5f")) { globalMaterial.specularStrength = 0.5f; };  ImGui::Spacing();
-				ImGui::SliderFloat("Shininess Strength:", &globalMaterial.shininessStrenght, 0.0f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("16.0f")) { globalMaterial.shininessStrenght = 16.0f; };  ImGui::Spacing();
-
-				if (ImGui::Button("RESET STRENGHT", ImVec2(120, 40))) {
-					globalMaterial.ambientStrenght = 0.6f;
-					globalMaterial.diffuseStrenght = 1.9f;
-					globalMaterial.specularStrength = 0.5f;
-					globalMaterial.shininessStrenght = 16.0f;
-				};
-				//ImGui::ArrowButton("Up", ImGuiDir_Up);
-				ImGui::Separator();
-			}
-			ImGui::End();
-		}
+		GUI::contextOfGUI(camera, renderFlags, lampObject, lampMaterial, globalMaterial, directionalLight, pointLight);
 
 		// Setting rendering mode to line
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -502,7 +409,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handling input to move camera, light positon ond light color
-		camera.Inputs(window, lampMaterial.objectColor, renderFlags.getSpecificValueReference("isBlinnPhong"), renderFlags.getSpecificValueReference("isPhong"), renderFlags.getSpecificValueReference("isSpecularMap"));
+		camera.Inputs(window, lampMaterial.getObjectColor(), renderFlags.getSpecificValueReference("isBlinnPhong"), renderFlags.getSpecificValueReference("isPhong"), renderFlags.getSpecificValueReference("isSpecularMap"));
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
 
@@ -530,12 +437,12 @@ int main()
 		// Exprort light position for dynamic light
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampObject.m_transform->transformParams().m_objectPos.x, lampObject.m_transform->transformParams().m_objectPos.y, lampObject.m_transform->transformParams().m_objectPos.z);
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
-		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
+		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lampMaterial.getObjectColor().r, lampMaterial.getObjectColor().g, lampMaterial.getObjectColor().b, lampMaterial.getObjectColor().a);
 		// Export uniforms to shader for different material and component strenght
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalMaterial.ambientStrenght);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalMaterial.diffuseStrenght);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalMaterial.specularStrength);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessStrenght"), globalMaterial.shininessStrenght);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalMaterial.getAmbientStrenght());
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalMaterial.getDiffuseStrenght());
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalMaterial.getSpecularStrenght());
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessStrenght"), globalMaterial.getShininessStrenght());
 
 		shaderProgramForObjects.Deactivate();
 
@@ -549,7 +456,7 @@ int main()
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			// Export uniforms to shader for different material
-			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), pyramideMaterial.objectColor.r, pyramideMaterial.objectColor.g, pyramideMaterial.objectColor.b, pyramideMaterial.objectColor.a);
+			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), pyramideMaterial.getObjectColor().r, pyramideMaterial.getObjectColor().g, pyramideMaterial.getObjectColor().b, pyramideMaterial.getObjectColor().a);
 
 			// Binding texture so its appear at render
 			planks.Bind();
@@ -580,7 +487,7 @@ int main()
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			// Export uniforms to shader for different material and component strenght
-			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), cubeMaterial.objectColor.r, cubeMaterial.objectColor.g, cubeMaterial.objectColor.b, cubeMaterial.objectColor.a);
+			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), cubeMaterial.getObjectColor().r, cubeMaterial.getObjectColor().g, cubeMaterial.getObjectColor().b, cubeMaterial.getObjectColor().a);
 
 			// Binding texture so its appear at render
 			planks.Bind();
@@ -645,7 +552,7 @@ int main()
 			camera.sendCamMatrixToShader(lightSourceShader, "camMatrix");
 
 			// Sending color of light-cube to light shader so when we change color this change also
-			glUniform4f(glGetUniformLocation(lightSourceShader.ID, "lightColor"), lampMaterial.objectColor.r, lampMaterial.objectColor.g, lampMaterial.objectColor.b, lampMaterial.objectColor.a);
+			glUniform4f(glGetUniformLocation(lightSourceShader.ID, "lightColor"), lampMaterial.getObjectColor().r, lampMaterial.getObjectColor().g, lampMaterial.getObjectColor().b, lampMaterial.getObjectColor().a);
 
 			// Binding light source vao in order to draws it
 			LIGHT_SOURCE_VAO.Bind();
