@@ -83,7 +83,7 @@ glm::vec3 Camera::getOrientation()
 	return Camera::Orientation;
 }
 
-void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, bool& blinnPhong_switch, bool&phong_switch, bool& specularMap_Switch)
+void Camera::Inputs(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -102,14 +102,15 @@ void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, bool& blinnPhong_
 		Position += speed * glm::normalize(glm::cross(Orientation, Up));
 	}
 
+	if (ImGui::GetIO().MouseWheel)
+	{
+		Position += ImGui::GetIO().MouseWheel * m_mouseScrollSpeed * Orientation;
+	}
+
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
 		Position += speed * Up;
 	}
-	/*if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-	{
-		Position += speed * -Up;
-	}*/
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
 		speed = 0.4f;
@@ -119,7 +120,7 @@ void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, bool& blinnPhong_
 		speed = 0.1f;
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) != GLFW_PRESS)
+	if (!ImGui::GetIO().WantCaptureMouse)
 	{
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 		{
@@ -155,73 +156,5 @@ void Camera::Inputs(GLFWwindow* window, glm::vec4& lightColor, bool& blinnPhong_
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		firstClick = true;
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-	{
-		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		{
-			if (lightColor.r < 1.0f)
-			{
-				lightColor.r += 0.01f;
-			}
-		}
-		else if(lightColor.r > 0.01f)
-		{
-			lightColor.r -= 0.01f;
-		}
-	}
-	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-	{
-		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		{
-			if (lightColor.g < 1.0f)
-			{
-				lightColor.g += 0.01f;
-			}
-		}
-		else if(lightColor.g > 0.01f)
-		{
-			lightColor.g -= 0.01f;
-		}
-	}
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-	{
-		if (!glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		{
-			if (lightColor.b < 1.0f) {
-				lightColor.b += 0.01f;
-			}
-		}
-		else if (lightColor.b > 0.01f)
-		{
-			lightColor.b -= 0.01f;
-		}
-	}
-
-	// Phong switch
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-	{
-		blinnPhong_switch = false;
-		phong_switch = true;
-	}
-
-	// Blinn-Phong switch
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
-	{
-		blinnPhong_switch = true;
-		phong_switch = false;
-	}
-
-	// Specular Map switch
-	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
-	{
-		specularMap_Switch = true;
-	}
-
-	// Specular Map switch
-	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
-	{
-		specularMap_Switch = false;
 	}
 }

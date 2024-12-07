@@ -17,7 +17,7 @@ bool& RenderFlags::getSpecificValueReference(const std::string& nameToValueFromM
 	return renderFlagsWithOrder.flags[nameToValueFromMap];
 }
 
-DataToReturn& RenderFlags::getAllValue()
+RenderFlags::DataToReturn& RenderFlags::getAllValue()
 {
 	return renderFlagsWithOrder;
 }

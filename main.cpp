@@ -409,7 +409,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handling input to move camera, light positon ond light color
-		camera.Inputs(window, lampMaterial.getObjectColor(), renderFlags.getSpecificValueReference("isBlinnPhong"), renderFlags.getSpecificValueReference("isPhong"), renderFlags.getSpecificValueReference("isSpecularMap"));
+		camera.Inputs(window);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateCameraMatrix(45.0f, 0.1f, 100.0f);
 

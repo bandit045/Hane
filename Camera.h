@@ -9,6 +9,11 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
+// For to disable camera while selecting GUI
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+
 #include "Shader.h"
 
 class Camera
@@ -29,6 +34,7 @@ public:
 	int height;
 
 	float speed = 0.001f;
+	float m_mouseScrollSpeed = 0.5f;
 	float sensitivity = 80.0f;
 
 	// Camera constructor to set up variables and initialization
@@ -43,7 +49,7 @@ public:
 	// Translate object
 	void translateObjectWithModelMatrih(glm::vec3 newPosition, glm::mat4 model);
 	// Handles camera inputs
-	void Inputs(GLFWwindow* window, glm::vec4& lightColor, bool& blinnPhong_switch, bool& phong_switch, bool& specularMap_Switch);
+	void Inputs(GLFWwindow* window);
 	// To set desire orientation of camera
 	void setOrientation(glm::vec3 newOrientation);
 	// To set desire position of camera
