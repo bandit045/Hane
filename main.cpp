@@ -333,6 +333,7 @@ int main()
 													            
 	renderFlags.addRenderFlag("isAutomaticLuminosity",          false);
 	renderFlags.addRenderFlag("isManuelLuminosity",             true);
+	renderFlags.addRenderFlag("isLightTurnOff",                 false);
 
 //-----------------------------------------------------------------------------------------------------------------
 	// Textures

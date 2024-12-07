@@ -34,6 +34,7 @@ layout (std140) uniform ControlsOfState{
 	bool isPointLight;
 	bool isAutomaticLuminosity;
 	bool isManuelLuminosity;
+	bool isLightTurnOff;
 } control;
 
 out vec4 FragColor;

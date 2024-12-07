@@ -39,18 +39,32 @@ void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
 	ImGui::Begin("Stats: ");
 		if (ImGui::Checkbox("Point Light", &_renderFlags.getSpecificValueReference("isPointLight")))
 		{
+			_renderFlags.setValueToBoolRenderFlag("isPointLight",                   true);
 			_renderFlags.setValueToBoolRenderFlag("isDirectionalLight",             false);
 			_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", true);
 			_renderFlags.setValueToBoolRenderFlag("isPhong",                        false);
 			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong",                   true);
+			_renderFlags.setValueToBoolRenderFlag("isLightTurnOff",                 false);
 		}
 
 		if (ImGui::Checkbox("Direction Light", &_renderFlags.getSpecificValueReference("isDirectionalLight")))
 		{
+			_renderFlags.setValueToBoolRenderFlag("isDirectionalLight",             true);
 			_renderFlags.setValueToBoolRenderFlag("isPointLight",                   false);
 			_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", false);
 			_renderFlags.setValueToBoolRenderFlag("isPhong",                        false);
 			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong",                   false);
+			_renderFlags.setValueToBoolRenderFlag("isLightTurnOff",                 false);
+		}
+
+		if (ImGui::Checkbox("Turn off light", &_renderFlags.getSpecificValueReference("isLightTurnOff")))
+		{
+			_renderFlags.setValueToBoolRenderFlag("isDirectionalLight",             false);
+			_renderFlags.setValueToBoolRenderFlag("isPointLight",                   false);
+			_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", false);
+			_renderFlags.setValueToBoolRenderFlag("isPhong",                        false);
+			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong",                   false);
+			_renderFlags.setValueToBoolRenderFlag("isLightTurnOff",                 true);
 		}
 
 		// Different stats: 
@@ -88,7 +102,10 @@ void GUI::LightSource(Object& _lampObject, Material& _lampMaterial, Material& _g
 
 		/*---------------------------------------------------*/ImGui::SeparatorText("State on/off:");/*----------------------------------------------------------------*/
 		
-		ImGui::Checkbox("Is Point Light Reducing On Distance", &_renderFlags.getSpecificValueReference("isPointLightReducingOnDistance"));
+		if (ImGui::Checkbox("Is Point Light Reducing On Distance", &_renderFlags.getSpecificValueReference("isPointLightReducingOnDistance")) && (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
+		{
+			_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", false);
+		};
 
 		/*---------------------------------------------------*/ImGui::SeparatorText("Control of variables MANUEL:");/*-------------------------------------------------*/
 
@@ -117,13 +134,13 @@ void GUI::LightSource(Object& _lampObject, Material& _lampMaterial, Material& _g
 
 		ImGui::SeparatorText("State of specular reflection on/off");
 
-		if (ImGui::Checkbox("Phong", &_renderFlags.getSpecificValueReference("isPhong")))
+		if (ImGui::Checkbox("Phong", &_renderFlags.getSpecificValueReference("isPhong")) || (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
 		{
 			_renderFlags.setValueToBoolRenderFlag("isPhong", true);
 			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong", false);
 		}
 
-		if (ImGui::Checkbox("Blinn-Phong", &_renderFlags.getSpecificValueReference("isBlinnPhong")))
+		if (ImGui::Checkbox("Blinn-Phong", &_renderFlags.getSpecificValueReference("isBlinnPhong")) || (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
 		{
 			_renderFlags.setValueToBoolRenderFlag("isPhong", false);
 			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong", true);
