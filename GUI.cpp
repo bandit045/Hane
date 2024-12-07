@@ -85,11 +85,14 @@ void GUI::LightSource(Object& _lampObject, Material& _lampMaterial, Material& _g
 
 		ImGui::DragFloat3("  Position for point light",       &_lampObject.m_transform->transformParams().m_objectPos.x,       0.1f          );
 		ImGui::SliderFloat3("Rotation vector of point light", &_lampObject.m_transform->transformParams().m_objectRotEuler.x, -180.0f, 180.0f);
-		ImGui::DragFloat4("  Quaternion orbit of lightource", &_lampObject.m_transform->transformParams().m_objectRotQuat.x,   64.0f         );
-		ImGui::DragFloat3("  Scale factor of light",          &_lampObject.m_transform->transformParams().m_objectScale.x,     64.0f         );
+		ImGui::DragFloat4("  Quaternion orbit of lightource", &_lampObject.m_transform->transformParams().m_objectRotQuat.x,   0.1f         );
+		ImGui::DragFloat3("  Scale factor of light",          &_lampObject.m_transform->transformParams().m_objectScale.x,     0.1f         );
 
 		ImGui::Separator(); //-----------------------------------------------------------------------------------------------------------------
+
+		if (!_renderFlags.getSpecificValueReference("isDirectionalLight")) ImGui::BeginDisabled();
 		ImGui::SliderFloat3("Direction vector of light", &_directionalLight.setDirectionLightParams().lightDirection.x, -0.5f, 0.5f);
+		if (!_renderFlags.getSpecificValueReference("isDirectionalLight")) ImGui::EndDisabled();
 
 		/*----------------------*/ImGui::SeparatorText("Position and color of light source:");/*----------------------------------------------*/
 		ImGui::TextWrapped("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff", _lampMaterial.getObjectColor().r, _lampMaterial.getObjectColor().g, _lampMaterial.getObjectColor().b);
