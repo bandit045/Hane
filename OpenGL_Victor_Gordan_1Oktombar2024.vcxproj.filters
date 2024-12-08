@@ -131,9 +131,6 @@
     <None Include="default.vert">
       <Filter>Resource Files\Shaders\Object</Filter>
     </None>
-    <None Include="default.frag">
-      <Filter>Resource Files\Shaders\Object</Filter>
-    </None>
     <None Include="ClassDiagram.cd" />
     <None Include="default_obj.vert">
       <Filter>Resource Files\Shaders</Filter>
@@ -234,5 +231,10 @@
     <Natvis Include="imgui.natvis">
       <Filter>GUI</Filter>
     </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="default.frag">
+      <Filter>Resource Files\Shaders\Object</Filter>
+    </Text>
   </ItemGroup>
 </Project>

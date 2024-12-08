@@ -201,7 +201,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <None Include="default.frag" />
+    <Text Include="default.frag">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </Text>
     <None Include="default.vert" />
     <None Include="default_obj.frag" />
     <None Include="default_obj.vert" />

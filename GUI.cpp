@@ -29,10 +29,11 @@ void GUI::startGUIframe(bool _enabledDemo)// This is executing for evry frame
 		ImGui::ShowDemoWindow(); // Show demo window! :)
 }
 
-void GUI::contextOfGUI(Camera& _camera, RenderFlags& _renderFlags, Object& _lampObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight)
+void GUI::contextOfGUI(Camera& _camera, RenderFlags& _renderFlags, Object& _lampObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, Light& _spotLight)
 {
 	Stats(_camera, _renderFlags);
-	LightSource(_lampObject, _lampMaterial, _globalMaterial, _directionalLight, _pointLight, _renderFlags);
+	LightSource(_lampObject, _lampMaterial, _globalMaterial, _directionalLight, _pointLight, _renderFlags, _pointLight);
+	SpotLight(_spotLight);
 }
 void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
 {
@@ -45,6 +46,7 @@ void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
 			_renderFlags.setValueToBoolRenderFlag("isPhong",                        false);
 			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong",                   true);
 			_renderFlags.setValueToBoolRenderFlag("isLightTurnOff",                 false);
+			_renderFlags.setValueToBoolRenderFlag("isSpotLight",					false);
 		}
 
 		if (ImGui::Checkbox("Direction Light", &_renderFlags.getSpecificValueReference("isDirectionalLight")))
@@ -54,7 +56,19 @@ void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
 			_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", false);
 			_renderFlags.setValueToBoolRenderFlag("isPhong",                        false);
 			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong",                   false);
+			_renderFlags.setValueToBoolRenderFlag("isSpotLight",					false);
 			_renderFlags.setValueToBoolRenderFlag("isLightTurnOff",                 false);
+		}
+
+		if (ImGui::Checkbox("Spot Light", &_renderFlags.getSpecificValueReference("isSpotLight")))
+		{
+			_renderFlags.setValueToBoolRenderFlag("isDirectionalLight",             false);
+			_renderFlags.setValueToBoolRenderFlag("isPointLight",                   false);
+			_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", true);
+			_renderFlags.setValueToBoolRenderFlag("isPhong",                        false);
+			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong",                   false);
+			_renderFlags.setValueToBoolRenderFlag("isLightTurnOff",                 false);
+			_renderFlags.setValueToBoolRenderFlag("isSpotLight",                    true);
 		}
 
 		if (ImGui::Checkbox("Turn off light", &_renderFlags.getSpecificValueReference("isLightTurnOff")))
@@ -64,6 +78,7 @@ void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
 			_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", false);
 			_renderFlags.setValueToBoolRenderFlag("isPhong",                        false);
 			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong",                   false);
+			_renderFlags.setValueToBoolRenderFlag("isSpotLight",					false);
 			_renderFlags.setValueToBoolRenderFlag("isLightTurnOff",                 true);
 		}
 
@@ -73,7 +88,7 @@ void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
 		ImGui::Text("Up of camera: %.2f, %.2f, %.2f",           _camera.Up.x,          _camera.Up.y,          _camera.Up.z);
 	ImGui::End();
 }
-void GUI::LightSource(Object& _lampObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, RenderFlags& _renderFlags)
+void GUI::LightSource(Object& _lampObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, RenderFlags& _renderFlags, Light& _spotLight)
 {
 	ImGui::Begin("Light source", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
 
@@ -171,9 +186,15 @@ void GUI::LightSource(Object& _lampObject, Material& _lampMaterial, Material& _g
 	ImGui::End();
 }
 
-void GUI::TransformComponent()
+void GUI::SpotLight(Light& _spotLight)
 {
+	ImGui::Begin("Spot Light", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove);
 
+	ImGui::SliderFloat3("Spot Direction", &_spotLight.setSpotLightParams().spotLightDirection.x, -8.5f, 8.5f);
+	ImGui::SliderFloat("Inner Cutoff",    &_spotLight.setSpotLightParams().innerCutOff,           0.0f, 90.0f);
+	ImGui::SliderFloat("Outer Cutoff",    &_spotLight.setSpotLightParams().outerCutOff,           0.0f, 90.0f);
+
+	ImGui::End();
 }
 
 void GUI::renderGUI()

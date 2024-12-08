@@ -27,17 +27,26 @@ private:
 		glm::vec3 lightDirection = glm::vec3(-0.2f, 0.5f, 0.4f);
 	};
 	DirectionalLightParameters directionalLightParameters;
+	struct SpotLightParameters {
+		float cutOff = 12.5f;
+		glm::vec3 spotLightDirection = glm::vec3(0.0f, -1.0f, 0.0f);
+		float innerCutOff = 40.0f;
+		float outerCutOff = 46.00f;
+	};
+	SpotLightParameters spotLightParameters;
 
-	std::variant<PointLightParameters, DirectionalLightParameters> parameters;
+	std::variant<PointLightParameters, DirectionalLightParameters, SpotLightParameters> parameters;
 public:
 	int activeLight = -1;
 	Light(TypeOfLight typeOfLight);
 
 	PointLightParameters& setPointLightParams();
 	DirectionalLightParameters& setDirectionLightParams();
+	SpotLightParameters& setSpotLightParams();
 
 	const PointLightParameters& getPointLightParams() const; 
 	const DirectionalLightParameters& getDirectionLightParams() const;
+	const SpotLightParameters& getSpotLightParams() const;
 };
 
 #endif // !LIGHT_H

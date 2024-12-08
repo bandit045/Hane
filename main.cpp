@@ -320,6 +320,7 @@ int main()
 
 	Light directionalLight(TypeOfLight::DIRECTIONAL_LIGHT);
 	Light pointLight(TypeOfLight::POINT_LIGHT);
+	Light spotLight(TypeOfLight::SPOT_LIGHT);
 
 	// Serve as bool value that is send to shader in UBO Buffer to control different state on/off effect etc.
 	RenderFlags renderFlags;
@@ -334,6 +335,7 @@ int main()
 	renderFlags.addRenderFlag("isAutomaticLuminosity",          false);
 	renderFlags.addRenderFlag("isManuelLuminosity",             true);
 	renderFlags.addRenderFlag("isLightTurnOff",                 false);
+	renderFlags.addRenderFlag("isSpotLight",                    false);
 
 //-----------------------------------------------------------------------------------------------------------------
 	// Textures
@@ -400,12 +402,12 @@ int main()
 		lampObject.m_transform->inputs(window);
 
 		GUI::startGUIframe(true);
-		GUI::contextOfGUI(camera, renderFlags, lampObject, lampMaterial, globalMaterial, directionalLight, pointLight);
+		GUI::contextOfGUI(camera, renderFlags, lampObject, lampMaterial, globalMaterial, directionalLight, pointLight, spotLight);
 
 		// Setting rendering mode to line
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		// Specify the color of the background
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.012f, 0.012f, 0.012f, 1.0f);
 		// Clean the back buffer and assign the new color to it
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -439,6 +441,11 @@ int main()
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampObject.m_transform->transformParams().m_objectPos.x, lampObject.m_transform->transformParams().m_objectPos.y, lampObject.m_transform->transformParams().m_objectPos.z);
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
 		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lampMaterial.getObjectColor().r, lampMaterial.getObjectColor().g, lampMaterial.getObjectColor().b, lampMaterial.getObjectColor().a);
+		// Light parameters for spotlight
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.cutOff"), glm::cos(glm::radians(spotLight.getSpotLightParams().cutOff)));
+		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.spotLightDirection"), spotLight.getSpotLightParams().spotLightDirection.x, spotLight.getSpotLightParams().spotLightDirection.y, spotLight.getSpotLightParams().spotLightDirection.z);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.innerCutOff"), spotLight.getSpotLightParams().innerCutOff);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.outerCutOff"), spotLight.getSpotLightParams().outerCutOff);
 		// Export uniforms to shader for different material and component strenght
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalMaterial.getAmbientStrenght());
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalMaterial.getDiffuseStrenght());
@@ -547,6 +554,12 @@ int main()
 				lampObject.m_transform->setPosition(lampObject.m_transform->transformParams().m_objectPos);
 				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);
 				lampObject.m_transform->setRotateQuat(lampObject.m_transform->transformParams().m_objectRotQuat);
+			}
+			else if (renderFlags.getSpecificValueReference("isSpotLight"))
+			{
+				lampObject.m_transform->setPosition(lampObject.m_transform->transformParams().m_objectPos);
+				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);
+				lampObject.m_transform->setRotateEuler(lampObject.m_transform->transformParams().m_objectRotEuler);
 			}
 
 			// Passing camMatrix uniform to lightSourceCube for projection matrix

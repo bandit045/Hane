@@ -24,6 +24,11 @@ struct Light{
 	float constantTerm_Kc; // For reducing light strenght becouse of distande of impact for point light
 
 	float overallLightBrightness; //  Lower the constant parameter towards 0.0 to increase overall brightness, but don’t make it negative since that would break the formula.
+
+	//float cutOff;
+	vec3 spotLightDirection;
+	float innerCutOff;
+	float outerCutOff;
 };
 layout (std140) uniform ControlsOfState{
 	bool isPointLightReducingOnDistance;
@@ -35,6 +40,7 @@ layout (std140) uniform ControlsOfState{
 	bool isAutomaticLuminosity;
 	bool isManuelLuminosity;
 	bool isLightTurnOff;
+	bool isSpotLight;
 } control;
 
 out vec4 FragColor;
@@ -53,7 +59,7 @@ uniform Light light;
 uniform Texture textures;
 
 float specAmount(vec3 viewDirection, vec3 lightDirection, vec3 normal);
-float luminosityCalculation(bool isPointLightReducingOnDistance, bool isAutomaticLuminosity, bool isManuelLuminosity, float overallLightBrightness);
+float luminosityCalculation(bool isPointLightReducingOnDistance);
 vec3 directionLightOrPointLight();
 vec4 finalFragColor(float diffuse, float ambientStrenght, float specular);
 
@@ -76,32 +82,42 @@ void main()
 	float specular = specAmount * specularStrength;
 
 	// Calculating final result
-	FragColor = finalFragColor(diffuse, ambientStrenght, specular);
+	if(control.isSpotLight)
+	{
+		vec3 lightDir = normalize(light.lightPos - crntPos);
+		float theta = dot(lightDir, normalize(light.spotLightDirection));
+		float thetaSmothEdge = dot(normalize(-light.spotLightDirection), lightDir);
+		if(thetaSmothEdge > cos(radians(light.innerCutOff)))
+		{       
+			//FragColor = texture(textures.baseTexture, texCoord) * (ambientStrenght*3 + diffuse + texture(textures.specularMap, texCoord).r * specular) * light.lightColor * luminosityCalculation(control.isPointLightReducingOnDistance);
+			float intensity = smoothstep(thetaSmothEdge, cos(radians(light.outerCutOff)), cos(radians(light.innerCutOff)));
+			FragColor = texture(textures.baseTexture, texCoord) * (ambientStrenght + (intensity/1.20) * (diffuseStrenght + specularStrength)) * light.lightColor;
+		}
+		else
+		{
+			FragColor = texture(textures.baseTexture, texCoord) * ambientStrenght;
+		}
+	}
+	else
+	{
+		FragColor = finalFragColor(diffuse, ambientStrenght, specular);
+	}
 }
 
-float luminosityCalculation(bool isPointLightReducingOnDistance, bool isAutomaticLuminosity, bool isManuelLuminosity, float overallLightBrightness){
+float luminosityCalculation(bool isPointLightReducingOnDistance){
 	if(!isPointLightReducingOnDistance){return 1.0f;};
 	float distanceLightSourceToFragment = length(light.lightPos - crntPos);
 
 	float constantTerm_Kc;
 	float linearTerm_Kl;
 	float quadraticTerm_Kq;
-	if(isAutomaticLuminosity)
-	{
-		constantTerm_Kc = 1.0;   
-		linearTerm_Kl = 4.5/distanceLightSourceToFragment; 
-		quadraticTerm_Kq = 75.0 / sqrt(distanceLightSourceToFragment);
-		return 1.0f / ((constantTerm_Kc * max(0, overallLightBrightness)) + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, 2));
-	}
-	else if(isManuelLuminosity)
-	{
-		constantTerm_Kc = light.constantTerm_Kc;
-		linearTerm_Kl = light.linearTerm_Kl;
-		quadraticTerm_Kq = light.quadraticTerm_Kq;
-		return 1.0f / (constantTerm_Kc + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, light.exponentForPointLight));
-	}
-};
 
+	constantTerm_Kc = light.constantTerm_Kc;
+	linearTerm_Kl = light.linearTerm_Kl;
+	quadraticTerm_Kq = light.quadraticTerm_Kq;
+	return 1.0f / (constantTerm_Kc + linearTerm_Kl * distanceLightSourceToFragment + quadraticTerm_Kq * pow(distanceLightSourceToFragment, light.exponentForPointLight));
+	
+};
 vec3 directionLightOrPointLight(){
 	if(control.isDirectionalLight && !control.isPointLight){
 		return normalize(light.lightDirection);
@@ -111,11 +127,11 @@ vec3 directionLightOrPointLight(){
 	};
 };
 vec4 finalFragColor(float diffuse, float ambientStrenght, float specular){
-	if (control.isSpecularMap){ // Can be switched on M - N key
-		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + texture(textures.specularMap, texCoord).r * specular) * light.lightColor * luminosityCalculation(control.isPointLightReducingOnDistance, control.isAutomaticLuminosity, control.isManuelLuminosity, light.overallLightBrightness);
+	if (control.isSpecularMap){
+		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + texture(textures.specularMap, texCoord).r * specular) * light.lightColor * luminosityCalculation(control.isPointLightReducingOnDistance);
 	}
 	else{
-		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + specular) * light.lightColor * luminosityCalculation(control.isPointLightReducingOnDistance, control.isAutomaticLuminosity, control.isManuelLuminosity, light.overallLightBrightness);
+		return texture(textures.baseTexture, texCoord) * (ambientStrenght + diffuse + specular) * light.lightColor * luminosityCalculation(control.isPointLightReducingOnDistance);
 	}
 }
 float specAmount(vec3 viewDirection, vec3 lightDirection, vec3 normal){
