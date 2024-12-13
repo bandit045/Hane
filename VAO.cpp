@@ -10,22 +10,22 @@ VAO::VAO()
 void VAO::LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
 {
 	VBO.Bind();
-	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, static_cast<GLsizei>(stride), offset);
-	glEnableVertexAttribArray(layout);
+	GLCall(glVertexAttribPointer(layout, numComponents, type, GL_FALSE, static_cast<GLsizei>(stride), offset));
+	GLCall(glEnableVertexAttribArray(layout));
 	VBO.Unbind();
 }
 
 void VAO::Bind()
 {
-	glBindVertexArray(ID);
+	GLCall(glBindVertexArray(ID));
 }
 
 void VAO::Unbind()
 {
-	glBindVertexArray(0);
+	GLCall(glBindVertexArray(0));
 }
 
 void VAO::Delete()
 {
-	glDeleteVertexArrays(1, &ID);
+	GLCall(glDeleteVertexArrays(1, &ID));
 }

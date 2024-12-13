@@ -3,20 +3,12 @@
 GLuint* MenageShaders::m_defaultShaderForObjectsID = 0;
 GLuint* MenageShaders::m_defaultShaderForLightID = 0;
 
-//Shader* MenageShaders::m_defaultShaderForObjectsProgram = new Shader();
-//Shader* MenageShaders::m_defaultShaderForLightProgram = new Shader();
-
-void MenageShaders::setDefaultShadersForAllID(GLuint& defaultShaderForObjectsID, GLuint& defaultShaderForLightsID)
+// This static function serve as seter at program start up to set default shaders for various type of objects
+void MenageShaders::setDefaultShadersForAllID(GLuint& _defaultShaderForObjectsID, GLuint& _defaultShaderForLightsID)
 {
-	m_defaultShaderForObjectsID = &defaultShaderForObjectsID;
-	m_defaultShaderForLightID = &defaultShaderForLightsID;
+	m_defaultShaderForObjectsID = &_defaultShaderForObjectsID;
+	m_defaultShaderForLightID = &_defaultShaderForLightsID;
 };
-
-/*void MenageShaders::setDefaultShadersForAllProgram(Shader& defaultShaderForObjectsProgram, Shader& defaultShaderForLightsProgram)
-{
-	m_defaultShaderForObjectsProgram = &defaultShaderForObjectsProgram;
-	m_defaultShaderForLightProgram = &defaultShaderForLightsProgram;
-};*/
 
 GLuint& MenageShaders::getDefaultShaderID(DefaultShader defaultShader)
 {
@@ -30,24 +22,10 @@ GLuint& MenageShaders::getDefaultShaderID(DefaultShader defaultShader)
 	}
 	else
 	{
-		std::cout << "Wrong parameter";
-		throw std::runtime_error("Wrong parameter!");
+#ifdef _DEBUG
+		throw std::runtime_error("Wrong parameter passed in static function getDefaultShaderID(DefaultShader defaultShader)");
+#else
+		std::cout << "Wrong parameter passed in static function getDefaultShaderID(DefaultShader defaultShader)" << "\n";
+#endif // _DEBUG
 	}
 }
-
-/*Shader& MenageShaders::getDefaultShaderProgram(DefaultShader defaultShader)
-{
-	if (DefaultShader::FOR_OBJECTS == defaultShader)
-	{
-		return *m_defaultShaderForObjectsProgram;
-	}
-	else if (DefaultShader::FOR_LIGHT == defaultShader)
-	{
-		return *m_defaultShaderForLightProgram;
-	}
-	else
-	{
-		std::cout << "Wrong parameter";
-		throw std::runtime_error("Wrong parameter!");
-	}
-}*/

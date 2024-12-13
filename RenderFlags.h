@@ -6,6 +6,7 @@
 class RenderFlags//For different state insade the fragment shader, or other shaders using std::unordered_map and std::vector
 {
 public:
+
 	struct DataToReturn {
 		std::vector<std::string> insertOrder;
 		std::unordered_map<std::string, bool> flags;

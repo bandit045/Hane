@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <vector>
+#include "GLErrorHandle.h"
 
 class EBO
 {

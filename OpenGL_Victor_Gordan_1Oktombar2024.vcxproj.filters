@@ -40,6 +40,12 @@
     <Filter Include="Header Files\Buffers Objects Header">
       <UniqueIdentifier>{ad696b4b-5be3-436a-9403-0cdbb94c7041}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Singleton One Instance">
+      <UniqueIdentifier>{f21a8399-9bb5-4d41-abcb-76a7f92e92bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Singleton One Instance">
+      <UniqueIdentifier>{71f9ef84-010e-43df-8a9c-523828cbc84f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -117,6 +123,12 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GLPolygoneModeAppRenderAll.cpp">
+      <Filter>Source Files\Singleton One Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="GLErrorHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="lightingSourceShader.vert">
@@ -183,6 +195,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GLPolygoneModeAppRenderAll.h">
+      <Filter>Header Files\Singleton One Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="GLErrorHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -37,109 +37,111 @@ void Shader::constructShaderProgram(const char* vertexFile, const char* fragment
 	// Create Vertex Shader Object and get its reference
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	// Attach Vertex Shader source to the Vertex Shader Object
-	glShaderSource(vertexShader, 1, &vertexSource, NULL);
+	GLCall(glShaderSource(vertexShader, 1, &vertexSource, NULL));
 	// Compile the Vertex Shader into machine code
-	glCompileShader(vertexShader);
+	GLCall(glCompileShader(vertexShader));
 	compileErrors(vertexShader, "VERTEX");
 
 	// Create Fragment Shader Object and get its reference
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	// Attach Fragment Shader source to the Fragment Shader Object
-	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+	GLCall(glShaderSource(fragmentShader, 1, &fragmentSource, NULL));
 	// Compile the Vertex Shader into machine code
-	glCompileShader(fragmentShader);
-	compileErrors(vertexShader, "FRAGMENT");
+	GLCall(glCompileShader(fragmentShader));
+	compileErrors(fragmentShader, "FRAGMENT");
 
 	// Create Shader Program Object and get its reference
 	ID = glCreateProgram();
 	// Attach the Vertex and Fragment Shaders to th Shader Program
-	glAttachShader(ID, vertexShader);
-	glAttachShader(ID, fragmentShader);
+	GLCall(glAttachShader(ID, vertexShader));
+	GLCall(glAttachShader(ID, fragmentShader));
 	// Wrap-up/Link all the shaders together into the Shader Program
-	glLinkProgram(ID);
+	GLCall(glLinkProgram(ID));
 	compileErrors(ID, "PROGRAM");
 
 	// Delete the now useless Vertex and Fragment Shader objects
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	GLCall(glDeleteShader(vertexShader));
+	GLCall(glDeleteShader(fragmentShader));
 }
 
 // Activates the Shader Program
 void Shader::Activate()
 {
-	glUseProgram(ID);
+	GLCall(glUseProgram(ID)); // CHECK CONSOLE FOR SHADER ERROR!!!!!!!!!!
 }
 
 // Deactivate the shader
 void Shader::Deactivate()
 {
-	glUseProgram(0);
+	GLCall(glUseProgram(0));
 }
 
 // Deletes the Shader Program
 void Shader::Delete()
 {
-	glDeleteProgram(ID);
+	GLCall(glDeleteProgram(ID));
 }
 
 void Shader::sendBool(const std::string& varName, const bool& boolValue)
 {
-	glUniform1i(glGetUniformLocation(ID, varName.c_str()), boolValue);
+	GLCall(glUniform1i(glGetUniformLocation(ID, varName.c_str()), boolValue));
 }
 
 void Shader::sendVec3f(const std::string& varName,const glm::vec3& vec3)
 {
-	glUniform3f(glGetUniformLocation(ID, varName.c_str()), vec3.x, vec3.y, vec3.z);
+	GLCall(glUniform3f(glGetUniformLocation(ID, varName.c_str()), vec3.x, vec3.y, vec3.z));
 }
 void Shader::sendVec3f(const std::string& varName, const float& x, const float& y, const float& z)
 {
-	glUniform3f(glGetUniformLocation(ID, varName.c_str()), x, y, z);
+	GLCall(glUniform3f(glGetUniformLocation(ID, varName.c_str()), x, y, z));
 }
 
 void Shader::sendVec2f(const std::string& varName, const glm::vec2& vec2)
 {
-	glUniform2f(glGetUniformLocation(ID, varName.c_str()), vec2.x, vec2.y);
+	GLCall(glUniform2f(glGetUniformLocation(ID, varName.c_str()), vec2.x, vec2.y));
 }
 void Shader::sendVec2f(const std::string& varName, const float& x, const float& y)
 {
-	glUniform2f(glGetUniformLocation(ID, varName.c_str()), x, y);
+	GLCall(glUniform2f(glGetUniformLocation(ID, varName.c_str()), x, y));
 }
 
-void Shader::sendVec1f(const std::string& varName, const float& x)
+void Shader::sendFloat(const std::string& varName, const float& x)
 {
-	glUniform1f(glGetUniformLocation(ID, varName.c_str()), x);
+	GLCall(glUniform1f(glGetUniformLocation(ID, varName.c_str()), x));
 }
 
 void Shader::sendMatrix3x3f(const std::string& varName, const glm::mat3& matrix)
 {
-	glUniformMatrix3fv(glGetUniformLocation(ID, varName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+	GLCall(glUniformMatrix3fv(glGetUniformLocation(ID, varName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 void Shader::sendMatrix4x4f(const std::string& varName, const glm::mat4& matrix)
 {
-	glUniformMatrix4fv(glGetUniformLocation(ID, varName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+	GLCall(glUniformMatrix4fv(glGetUniformLocation(ID, varName.c_str()), 1, GL_FALSE, glm::value_ptr(matrix)));
 }
 
 // This metod is private
 void Shader::compileErrors(unsigned int shader, const char* type)
 {
 	GLint hasCompiled;
-	char infoLog[1024];
+	char infoLog[2048];
 	if (type != "PROGRAM")
 	{
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled);
+		GLCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &hasCompiled));
 		if (hasCompiled == GL_FALSE)
 		{
-			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-			std::cout << "SHADER_COMPILATION_ERROR for:" << type << "\n" << std::endl;
+			GLCall(glGetShaderInfoLog(shader, 2048, NULL, infoLog));
+			std::cout << "SHADER_COMPILATION_ERROR for:" << type << "\n";
+			std::cout << infoLog << std::endl;
 		}
 	}
 	else
 	{
-		glGetProgramiv(shader, GL_LINK_STATUS, &hasCompiled);
+		GLCall(glGetProgramiv(shader, GL_LINK_STATUS, &hasCompiled));
 		if (hasCompiled == GL_FALSE)
 		{
-			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-			std::cout << "SHADER_LINKING_ERROR for:" << type << "\n" << std::endl;
+			GLCall(glGetProgramInfoLog(shader, 2048, NULL, infoLog));
+			std::cout << "SHADER_LINKING_ERROR for:" << type << "\n";
+			std::cout << infoLog << std::endl;
 		}
 	}
 }

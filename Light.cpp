@@ -61,6 +61,15 @@ Light::SpotLightParameters& Light::setSpotLightParams()
 	}
 }
 
+Light::SpotLightParameters& Light::setSpotLightParams(bool _limitInnerCuttOffToBeSmaller)
+{
+	if (spotLightParameters.innerCutOff >= spotLightParameters.outerCutOff)
+	{
+		spotLightParameters.innerCutOff = spotLightParameters.outerCutOff;
+	}
+	return spotLightParameters;
+}
+
 const Light::PointLightParameters& Light::getPointLightParams() const
 {
 	if (activeLight == (int)TypeOfLight::POINT_LIGHT)

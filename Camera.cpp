@@ -24,7 +24,7 @@ void Camera::updateCameraMatrix(float FOVdeg, float nearPlane, float farPlane)
 void Camera::sendCamMatrixToShader(Shader& shader, const char* uniform)
 {
 	// Exports camera matrix to shader
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	GLCall(glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix)));
 }
 
 // Works only in centre 0,0,0

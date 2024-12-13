@@ -1,85 +1,73 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
   <Class Name="Camera">
-    <Position X="7.25" Y="0.75" Width="1.5" />
+    <Position X="16" Y="0.5" Width="3" />
     <TypeIdentifier>
       <HashCode>BACDIAAEEQAAAEQgQEAAAAADEAAAAQAgEAABAAAgAAI=</HashCode>
       <FileName>Camera.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="GUI">
-    <Position X="5.75" Y="0.75" Width="1.5" />
+    <Position X="5.25" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>ABAAAAAAQEAAAAAAAAAAQgAIBAAAAAAAEBAAAAAAAAA=</HashCode>
+      <HashCode>ABAAAAAAQABAAAAAAAAAQgAIBAAAAAAAEBAAAAAAAAA=</HashCode>
       <FileName>GUI.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Light">
-    <Position X="8.75" Y="0.75" Width="2.5" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
+    <Position X="9.75" Y="0.5" Width="6" />
     <NestedTypes>
-      <Struct Name="Light::PointLightParameters">
+      <Struct Name="Light::PointLightParameters" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Light.h</NewMemberFileName>
         </TypeIdentifier>
       </Struct>
-      <Struct Name="Light::DirectionalLightParameters">
+      <Struct Name="Light::DirectionalLightParameters" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Light.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Light::SpotLightParameters" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Light.h</NewMemberFileName>
         </TypeIdentifier>
       </Struct>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAEAAAACAAACACAAAAAAgAAAIAgBAAAAAAAAACAAAA=</HashCode>
+      <HashCode>AAAEAAAAKAAACACAAAAAAgAAAIAgDAAAAgAAAACAAAA=</HashCode>
       <FileName>Light.h</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Material">
+    <Position X="19.25" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AEAIAAAAAAAQIAECQAAAAAAAAAAAAAAAgAAAABBAAQA=</HashCode>
+      <FileName>Material.h</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="MenageShaders">
-    <Position X="11.25" Y="3.5" Width="2.25" />
+    <Position X="1.75" Y="5.5" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAEAQAAAgAAAAAAAEAAAAAAA=</HashCode>
       <FileName>MenageShaders.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Importer">
-    <Position X="13.75" Y="7" Width="1.5" />
+    <Position X="5.25" Y="6.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Importer.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Object">
-    <Position X="11.25" Y="0.75" Width="2" />
+    <Position X="22.5" Y="0.5" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAIAAAAAAAgABAAAAAAAAAIAIAAAAAAAABKAAA=</HashCode>
       <FileName>Object.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Shader">
-    <Position X="15.5" Y="0.75" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>SBAAAAAAACBAgADAAAAAAAAAAAEAAAAAIgBgAAAAAAA=</HashCode>
-      <FileName>Shader.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Texture">
-    <Position X="12.25" Y="5.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQAgAAAAAAggAAAAAAAAAAAAAEBAAAAAAIEAAAAAAA=</HashCode>
-      <FileName>Texture.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Transform">
-    <Position X="15.5" Y="4.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AACAAABAAAAAACAACAACAEZCAAAAABACAACAAABAAAA=</HashCode>
-      <FileName>Transform.h</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="RenderFlags">
-    <Position X="1.75" Y="2.25" Width="2.5" />
+    <Position X="1.75" Y="7.5" Width="3.25" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -95,64 +83,78 @@
       <FileName>RenderFlags.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Material">
-    <Position X="13.5" Y="0.75" Width="1.75" />
+  <Class Name="Shader">
+    <Position X="1.75" Y="0.5" Width="3.25" />
     <TypeIdentifier>
-      <HashCode>AEAIAAAAAAAQIAECQAAAAAAAAAAAAAAAgAAAABBAAQA=</HashCode>
-      <FileName>Material.h</FileName>
+      <HashCode>SBAAAAAAACBAgADAAAAAAAAAAAEAAAAAIgBgAAAAAAA=</HashCode>
+      <FileName>Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Texture">
+    <Position X="5.25" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAgAAAAAAggAAAAAAAAAAAAAEBAAAAAAIEAAAAAAA=</HashCode>
+      <FileName>Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Transform">
+    <Position X="22.5" Y="3.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AACAAABAAAAAACAACAACAEZCAAAAABACAACAAABAAAA=</HashCode>
+      <FileName>Transform.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="EBO">
-    <Position X="6.5" Y="6.25" Width="1.75" />
+    <Position X="7.5" Y="5.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAgAAAAAAAgAAAAAAAAAAAAAEAAAAAAAAEAAAAACA=</HashCode>
       <FileName>EBO.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="UnifformBufferObject">
-    <Position X="1.25" Y="0.75" Width="3" />
+    <Position X="9.75" Y="4.5" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAAAAQQAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
       <FileName>UnifformBufferObject.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="VAO">
-    <Position X="13.75" Y="4.5" Width="1.5" />
+    <Position X="7.5" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAggAAAAAAgAAAAAAAAAAAAAEAAAAAAAAEAACAAAA=</HashCode>
       <FileName>VAO.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="VBO">
-    <Position X="4.25" Y="0.75" Width="1.5" />
+    <Position X="7.5" Y="3" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAgAAAAAAAgAAAAAAAAAAAAAEAAAAAAAAEAAAEAAA=</HashCode>
       <FileName>VBO.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Struct Name="TransformParameters">
-    <Position X="4.25" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAABAAEAIAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Transform.h</FileName>
-    </TypeIdentifier>
-  </Struct>
   <Struct Name="DefaultParametersForMaterial">
-    <Position X="4.25" Y="4.75" Width="1.5" />
+    <Position X="19.25" Y="4.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAEAIAAAAAAAAAAAAAEAAAAAAAAAAACAAAAAAAQ=</HashCode>
       <FileName>Material.h</FileName>
     </TypeIdentifier>
   </Struct>
+  <Struct Name="TransformParameters">
+    <Position X="22.5" Y="7.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAEAIAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transform.h</FileName>
+    </TypeIdentifier>
+  </Struct>
   <Enum Name="TypeOfLight">
-    <Position X="9.5" Y="7.25" Width="1.5" />
+    <Position X="14" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAAAAAAACAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
       <FileName>Light.h</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="DefaultShader">
-    <Position X="5.75" Y="3.75" Width="1.5" />
+    <Position X="1.75" Y="4.25" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
       <FileName>MenageShaders.h</FileName>

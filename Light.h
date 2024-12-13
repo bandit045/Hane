@@ -32,6 +32,8 @@ private:
 		glm::vec3 spotLightDirection = glm::vec3(0.0f, -1.0f, 0.0f);
 		float innerCutOff = 40.0f;
 		float outerCutOff = 46.00f;
+		float intensityMultiplayer = 1.0f;
+		float thetaMultiplayer = 1.0f;
 	};
 	SpotLightParameters spotLightParameters;
 
@@ -43,6 +45,7 @@ public:
 	PointLightParameters& setPointLightParams();
 	DirectionalLightParameters& setDirectionLightParams();
 	SpotLightParameters& setSpotLightParams();
+	SpotLightParameters& setSpotLightParams(bool _limitInnerCuttOffToBeSmaller);
 
 	const PointLightParameters& getPointLightParams() const; 
 	const DirectionalLightParameters& getDirectionLightParams() const;

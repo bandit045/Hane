@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include "RenderFlags.h"
+#include "GLErrorHandle.h"
 
 class UnifformBufferObject
 {

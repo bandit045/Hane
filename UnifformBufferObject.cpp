@@ -3,23 +3,23 @@
 void UnifformBufferObject::sendBoolsUniformToShader(const char* nameOfUniformStructInShader, const std::vector<int>& vectorToSendToGPU, const GLuint& shaderProgramID)
 {
     unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(shaderProgramID, nameOfUniformStructInShader);
-    glUniformBlockBinding(shaderProgramID, uniformBlockIndexRed, 0);
+    GLCall(glUniformBlockBinding(shaderProgramID, uniformBlockIndexRed, 0));
 
     // Generate buffer
     GLuint renderFlagsUniformObject;
-    glGenBuffers(1, &renderFlagsUniformObject);
-    glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUniformObject);
+    GLCall(glGenBuffers(1, &renderFlagsUniformObject));
+    GLCall(glBindBuffer(GL_UNIFORM_BUFFER, renderFlagsUniformObject));
 
     // Allocate memory for the uniform buffer
-    glBufferData(GL_UNIFORM_BUFFER, vectorToSendToGPU.size() * sizeof(int), nullptr, GL_DYNAMIC_DRAW);
+    GLCall(glBufferData(GL_UNIFORM_BUFFER, vectorToSendToGPU.size() * sizeof(int), nullptr, GL_DYNAMIC_DRAW));
 
     // Bind buffer range (to match the shader uniform block)
-    glBindBufferRange(GL_UNIFORM_BUFFER, 0, renderFlagsUniformObject, 0, vectorToSendToGPU.size() * sizeof(int));
+    GLCall(glBindBufferRange(GL_UNIFORM_BUFFER, 0, renderFlagsUniformObject, 0, vectorToSendToGPU.size() * sizeof(int)));
 
     // Upload the data to the buffer
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, vectorToSendToGPU.size() * sizeof(int), vectorToSendToGPU.data());
+    GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, vectorToSendToGPU.size() * sizeof(int), vectorToSendToGPU.data()));
 
-    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 }
 
 std::vector<int> UnifformBufferObject::prepareVectorToSendFromUnordered_Map(const std::unordered_map<std::string, bool>& _mapToChange, const std::vector<std::string>& _insertOrder)

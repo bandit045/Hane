@@ -13,15 +13,11 @@ class MenageShaders
 {
 public:
 	static void setDefaultShadersForAllID(GLuint& defaultShaderForObjectsID, GLuint& defaultShaderForLightsID);
-	//static void setDefaultShadersForAllProgram(Shader& defaultShaderForObjectsProgram, Shader& defaultShaderForLightsProgram);
+	// This static function is used as geter to get default shader for diferent objects, it request ENUM "DefaultShader" argument
 	static GLuint& getDefaultShaderID(DefaultShader defaultShader);
-	//static Shader& getDefaultShaderProgram(DefaultShader defaultShader);
 private:
 	static GLuint* m_defaultShaderForObjectsID;
 	static GLuint* m_defaultShaderForLightID;
-
-	//static Shader* m_defaultShaderForObjectsProgram;
-	//static Shader* m_defaultShaderForLightProgram;
 };
 
 #endif // !MENAGE_SHADERS_H*/

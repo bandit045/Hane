@@ -13,6 +13,8 @@
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 
+#include "GLErrorHandle.h"
+
 #include "Texture.h"
 #include "Shader.h"
 #include "VBO.h"
@@ -74,43 +76,43 @@ GLuint indices_pyramide[] =
 // Vertices for cube
 GLfloat vertices_cube[] =
 {
-	// Positions     // Colors      // Texture-cordinates(x, y)    // Normals (x, y, z)
+	// Positions     // Normals      // Texture-cordinates(x, y)    // Colors
 
 	// Front face (z = 1.0)
-	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  0.0f,  0.0f,  1.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  0.0f,  0.0f,  1.0f,  // Top-right
-	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  0.0f,  0.0f,  1.0f,  // Top-left
+	-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
+	 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  2.0f,  0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
+	 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  2.0f,  2.0f,  1.0f,  0.0f,  0.0f,  // Top-right
+	-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  2.0f,  1.0f,  0.0f,  0.0f,  // Top-left
 
 	// Back face (z = -1.0)
-	-1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  0.0f, -1.0f,  // Bottom-left
-	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  0.0f,  0.0f, -1.0f,  // Bottom-right
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  0.0f,  0.0f, -1.0f,  // Top-right
-	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  0.0f,  0.0f, -1.0f,  // Top-left
+	-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
+	 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
+	 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-right
+	-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-left
 
 	// Left face (x = -1.0)
-	-1.0f, -1.0f, -1.0f, 1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,  // Bottom-left
-	-1.0f, -1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  -1.0f,  0.0f,  0.0f,  // Bottom-right
-	-1.0f,  1.0f,  1.0f, 1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  -1.0f,  0.0f,  0.0f,  // Top-right
-	-1.0f,  1.0f, -1.0f, 1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  -1.0f,  0.0f,  0.0f,  // Top-left
+	-1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,  0.0f, 0.0f, 1.0f,  0.0f,  0.0f,  // Bottom-left
+	-1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,  2.0f, 0.0f, 1.0f,  0.0f,  0.0f,  // Bottom-right
+	-1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,  2.0f, 2.0f, 1.0f,  0.0f,  0.0f,  // Top-right
+	-1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,  0.0f, 2.0f, 1.0f,  0.0f,  0.0f,  // Top-left
 
 	// Right face (x = 1.0)
 	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  1.0f,  0.0f,  0.0f,  // Top-right
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  1.0f,  0.0f,  0.0f,  // Top-left
+	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
+	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-right
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-left
 
 	// Top face (y = 1.0)
-	-1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube_top,  0.0f,  1.0f,  0.0f,  // Top-left
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube_top, repeat_time_cube_top,  0.0f,  1.0f,  0.0f,  // Top-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube_top, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-right
-	-1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f,  1.0f,  0.0f,  // Bottom-left
+	-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f, 8.0f,  1.0f,  0.0f,  0.0f,  // Top-left
+	 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,  8.0f, 8.0f,  1.0f,  0.0f,  0.0f,  // Top-right
+	 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  8.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
+	-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
 
 	// Bottom face (y = -1.0)
-	-1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  0.0f, -1.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, 0.0f,  0.0f, -1.0f,  0.0f,  // Bottom-right
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  repeat_time_cube, repeat_time_cube,  0.0f, -1.0f,  0.0f,  // Top-right
-	-1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, repeat_time_cube,  0.0f, -1.0f,  0.0f   // Top-left
+	-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
+	 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
+	 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-right
+	-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-left
 };
 
 // Indices for cube
@@ -120,16 +122,16 @@ GLuint indices_cube[] =
 	0, 1, 2,  2, 3, 0,
 
 	// Back face
-	4, 5, 6,  6, 7, 4,
+	5, 4, 6,  7, 6, 4,
 
 	// Left face
 	8, 9, 10,  10, 11, 8,
 
 	// Right face
-	12, 13, 14,  14, 15, 12,
+	12, 14, 13,  15, 14, 12,
 
 	// Top face
-	16, 17, 18,  18, 19, 16,
+	17, 16, 18,  18, 16, 19,
 
 	// Bottom face
 	20, 21, 22,  22, 23, 20
@@ -139,52 +141,58 @@ GLuint indices_cube[] =
 // Vertices for Light source  
 GLfloat vertices_lightSource[] =
 {
-	// Prednja strana
+	 // Prednja strana
 		-0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
 		 0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
 		 0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
+
 		 0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
 		-0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
 		-0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
 
 		// Zadnja strana
 		-0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
+		 0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
 		 0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
+
 		 0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
-		 0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
-		-0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
 		-0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
+		-0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
 
 		// Leva strana
 		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
 		-0.01f,  0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
 		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
+
 		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
 		-0.01f, -0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
 		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
 
 		// Desna strana
 		 0.01f,  0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
+		 0.01f, -0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
 		 0.01f,  0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
+
 		 0.01f, -0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
-		 0.01f, -0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
-		 0.01f, -0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
 		 0.01f,  0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
+		 0.01f, -0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
 
 		 // Donja strana
 		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
 		  0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
 		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
+
 		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
 		 -0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
 		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
 
 		 // Gornja strana
 		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
+		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
 		  0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
-		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
-		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
+
 		 -0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
+		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
 		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f
 };
 
@@ -201,6 +209,9 @@ int main()
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
+	//glfwWindowHint(GLFW_DECORATED, GLFW_FALSE); // Disable Window Decorations
+	//glfwWindowHint(GLFW_FLOATING, GLFW_TRUE); // Allow Floating Behavior
+	//glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE); // Set Transparent Background
 
 	// Create a GLFWwindow object of 1920 by 1080 pixels, naming it "Hello World!"
 	GLFWwindow* window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
@@ -211,6 +222,7 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
+
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
 
@@ -219,18 +231,19 @@ int main()
 	//Load GLAD so it configures OpenGL
 	gladLoadGL();
 //-----------------------------------------------------------------------------------------------
-	GUI guiWindow = GUI(window);
+	// Inicialize the GUI
+	GUI guiWindow = GUI(window); 
 //-----------------------------------------------------------------------------------------------
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 1920, y = 1080
-	glViewport(0,0, width, height);
+	GLCall(glViewport(0,0, width, height));
 
 	// Generates Shader object using shaders defualt.vert and default.frag
 	Shader shaderProgramForObjects("default.vert", "default.frag");
 	Shader lightSourceShader("lightingSourceShader.vert", "lightingSourceShader.frag");
 	MenageShaders::setDefaultShadersForAllID(shaderProgramForObjects.ID, lightSourceShader.ID);
-	std::cout << "Light Source Shader(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT);
-	std::cout << "\nShader Program For Objects(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS) << "\n";
+	//std::cout << "Light Source Shader(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT);
+	//std::cout << "\nShader Program For Objects(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS) << "\n";
 //------------------------------------------------------------------------------------------------
 	// Generates Vertex Array Object and binds it
 	VAO TRIANGLE_SHAPE_VAO;
@@ -242,10 +255,10 @@ int main()
 	EBO TRIANGLE_SHAPE_EBO(indices_pyramide, sizeof(indices_pyramide));
 
 	// Links VBO attributes such as cordinates and colors to VAO
-	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);                   // Cordinates
+	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float))); // Color
+	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float))); // Texture cords
+	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float))); // Normals
 	// Unbind all to prevent accidentally modifying them
 	TRIANGLE_SHAPE_VAO.Unbind();
 	TRIANGLE_SHAPE_VBO.Unbind();
@@ -258,8 +271,11 @@ int main()
 	// Used for storing EBO cordinates
 	std::vector<unsigned int> importCubeIndex;
 
+	// Normal buffer for storing EBO normals
+	std::vector<unsigned int> importCubeIndexNormal;
+
 	// We import our vertex model cordinates, uv, normals inside variable that are passed by reference
-	Importer::loadOBJ("ff.obj", importVerticesCube, importUvsCube, importNormalsCube, importCubeIndex); // Cordinates, Texture-cords, Normals, EBO
+	Importer::parseOBJ("mesh.obj", importVerticesCube, importUvsCube, importNormalsCube, importCubeIndex, importCubeIndexNormal); // Cordinates, Texture-cords, Normals, EBO
 
 	// Generates Vertex Array Object for file from import and binds it
 	VAO IMPORT_CUBE_SHAPE_VAO;
@@ -267,18 +283,29 @@ int main()
 
 	// Generates Vertex Buffer Object for impport object cube and links it to vertices
 	VBO IMPORT_CUBE_SHAPE_VBO_CORDINATES(importVerticesCube, importVerticesCube.size() * sizeof(glm::vec3));
-	VBO IMPORT_CUBE_SHAPE_VBO_NORMALS(importNormalsCube, importNormalsCube.size() * sizeof(glm::vec3));
-	VBO IMPORT_CUBE_SHAPE_VBO_UV(importUvsCube, importUvsCube.size() * sizeof(glm::vec2));
+	VBO IMPORT_CUBE_SHAPE_VBO_NORMALS(   importNormalsCube,  importNormalsCube.size() * sizeof(glm::vec3));
+	VBO IMPORT_CUBE_SHAPE_VBO_UV(		 importUvsCube,      importUvsCube.size() * sizeof(glm::vec2));
 	// Generates Element Buffer Object for imported cube and links it to indices
-	EBO IMPORT_CUBE_SHAPE_EBO(importCubeIndex, importCubeIndex.size() * sizeof(unsigned int));
+	EBO IMPORT_CUBE_SHAPE_CORDINATE_EBO(importCubeIndex, importCubeIndex.size() * sizeof(unsigned int));
+	
+	IMPORT_CUBE_SHAPE_VBO_CORDINATES.Bind();
+	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_CORDINATES,  0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0); // Cordinates
+	IMPORT_CUBE_SHAPE_VBO_CORDINATES.Unbind();
 
-	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_CORDINATES, 0 , 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_NORMALS, 1 , 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_UV, 2 , 2, GL_FLOAT, 2 * sizeof(float), (void*)0);
+	IMPORT_CUBE_SHAPE_VBO_NORMALS.Bind();
+	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_NORMALS,     1, 3, GL_FLOAT, 3 * sizeof(float), (void*)0); // Normals
+	IMPORT_CUBE_SHAPE_VBO_NORMALS.Unbind();
+
+	IMPORT_CUBE_SHAPE_VBO_UV.Bind();
+	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_UV,          2, 2, GL_FLOAT, 2 * sizeof(float), (void*)0); // Texture cords
+	IMPORT_CUBE_SHAPE_VBO_UV.Unbind();
+
 	// Unbind all to prevent accidentally modifying them
 	IMPORT_CUBE_SHAPE_VAO.Unbind();
 	IMPORT_CUBE_SHAPE_VBO_CORDINATES.Unbind();
-	IMPORT_CUBE_SHAPE_EBO.Unbind();
+	IMPORT_CUBE_SHAPE_VBO_UV.Unbind();
+	IMPORT_CUBE_SHAPE_VBO_NORMALS.Unbind();
+	IMPORT_CUBE_SHAPE_CORDINATE_EBO.Unbind();
 //----------------------------------------------------------------------------------------------------------------------------------------
 	// Generates Vertex Array Object and binds it
 	VAO CUBE_SHAPE_VAO;
@@ -290,10 +317,10 @@ int main()
 	EBO CUBE_SHAPE_EBO(indices_cube, sizeof(indices_cube));
 
 	// Links VBO attributes such as cordinates and colors to VAO
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0); // Cordinates
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float))); // Normals
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float))); // Uv texture
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float))); // Color
 	// Unbind all to prevent accidentally modifying them
 	CUBE_SHAPE_VAO.Unbind();
 	CUBE_SHAPE_VBO_VERTICES.Unbind();
@@ -313,6 +340,7 @@ int main()
 	LIGHT_SOURCE_VAO.Unbind();
 	LIGHT_SOURCE_VBO.Unbind();
 //-------------------------------------------------------------------------------------------------------------------------
+
 	Material lampMaterial;
 	Material cubeMaterial;
 	Material pyramideMaterial;
@@ -323,6 +351,7 @@ int main()
 	Light spotLight(TypeOfLight::SPOT_LIGHT);
 
 	// Serve as bool value that is send to shader in UBO Buffer to control different state on/off effect etc.
+	
 	RenderFlags renderFlags;
 	renderFlags.addRenderFlag("isPointLightReducingOnDistance", true);
 	renderFlags.addRenderFlag("isPhong",                        false);
@@ -336,6 +365,8 @@ int main()
 	renderFlags.addRenderFlag("isManuelLuminosity",             true);
 	renderFlags.addRenderFlag("isLightTurnOff",                 false);
 	renderFlags.addRenderFlag("isSpotLight",                    false);
+	renderFlags.addRenderFlag("isVisualiseNormal",              false);
+	renderFlags.addRenderFlag("isVisualiseUVCordinate",         false);
 
 //-----------------------------------------------------------------------------------------------------------------
 	// Textures
@@ -368,7 +399,7 @@ int main()
 	oakSpec.texUnit(shaderProgramForObjects, "textures.specularMap", 1);
 
 	// Enable the depth buffer
-	glEnable(GL_DEPTH_TEST);
+	GLCall(glEnable(GL_DEPTH_TEST));
 
 	// Makeing camera
 	Camera camera(width, height, glm::vec3(0.0f, 2.0f, 5.0f));
@@ -401,15 +432,16 @@ int main()
 	{	
 		lampObject.m_transform->inputs(window);
 
-		GUI::startGUIframe(true);
+		GUI::startGUIframe(false);
 		GUI::contextOfGUI(camera, renderFlags, lampObject, lampMaterial, globalMaterial, directionalLight, pointLight, spotLight);
 
 		// Setting rendering mode to line
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT, GL_LINE);
+		//glPolygonMode(GL_BACK, GL_FILL);
 		// Specify the color of the background
-		glClearColor(0.012f, 0.012f, 0.012f, 1.0f);
+		GLCall(glClearColor(0.012f, 0.012f, 0.012f, 1.0f));
 		// Clean the back buffer and assign the new color to it
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		// Handling input to move camera, light positon ond light color
 		camera.Inputs(window);
@@ -421,36 +453,31 @@ int main()
 
 		UnifformBufferObject::sendBoolsUniformToShader("ControlsOfState", UnifformBufferObject::prepareFlags(renderFlags), shaderProgramForObjects.ID);
 
-		// Export state in shader in order to dynamicly change during runtime
-		//shaderProgramForObjects.sendBool("control.isPhong", renderFlags.isPhong);																// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPhong"), renderFlags.isPhong);
-		//shaderProgramForObjects.sendBool("control.isBlinnPhong", renderFlags.isBlinnPhong);														// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isBlinnPhong"), renderFlags.isBlinnPhong);
-		//shaderProgramForObjects.sendBool("control.isSpecularMap", renderFlags.isSpecularMap);													// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isSpecularMap"), renderFlags.isSpecularMap);
-		//shaderProgramForObjects.sendBool("control.isPointLight", renderFlags.isPointLight);														// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLight"), renderFlags.isPointLight);
-		//shaderProgramForObjects.sendBool("control.isPointLightReducingOnDistance", renderFlags.isPointLightReducingOnDistance);					// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isPointLightReducingOnDistance"), renderFlags.isPointLightReducingOnDistance);
-		//shaderProgramForObjects.sendBool("control.isDirectionalLight", renderFlags.isDirectionalLight);											// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isDirectionalLight"), renderFlags.isDirectionalLight);
-		//shaderProgramForObjects.sendBool("control.isAutomaticLuminosity", renderFlags.isAutomaticLuminosity);									// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isAutomaticLuminosity"), renderFlags.isAutomaticLuminosity);
-		//shaderProgramForObjects.sendBool("control.isManuelLuminosity", renderFlags.isManuelLuminosity);											// glUniform1i(glGetUniformLocation(shaderProgramForObjects.ID, "control.isManuelLuminosity"), renderFlags.isManuelLuminosity);
 		// Export for reducing point light in propotional to distance, a constant term Kc, a linear term Kl, and a quadratic term Kq // https://learnopengl.com/Lighting/Light-casters
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.exponentForPointLight"), pointLight.getPointLightParams().exponentForPointLight);
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.linearTerm_Kl"), pointLight.getPointLightParams().linearTerm_Kl);
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.quadraticTerm_Kq"), pointLight.getPointLightParams().quadraticTerm_Kq);
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.constantTerm_Kc"), pointLight.getPointLightParams().constantTerm_Kc);
 
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.overallLightBrightness"), pointLight.getPointLightParams().overallLightBrightness);
-		// Exprort light position for dynamic light
+		// Exprort light position and color for dynamic light
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightPos"), lampObject.m_transform->transformParams().m_objectPos.x, lampObject.m_transform->transformParams().m_objectPos.y, lampObject.m_transform->transformParams().m_objectPos.z);
-		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
 		glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightColor"), lampMaterial.getObjectColor().r, lampMaterial.getObjectColor().g, lampMaterial.getObjectColor().b, lampMaterial.getObjectColor().a);
+		
+		// Light parameters for directional(Sun) light
+		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.lightDirection"), directionalLight.getDirectionLightParams().lightDirection.x, directionalLight.getDirectionLightParams().lightDirection.y, directionalLight.getDirectionLightParams().lightDirection.z);
+		
 		// Light parameters for spotlight
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.cutOff"), glm::cos(glm::radians(spotLight.getSpotLightParams().cutOff)));
 		glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "light.spotLightDirection"), spotLight.getSpotLightParams().spotLightDirection.x, spotLight.getSpotLightParams().spotLightDirection.y, spotLight.getSpotLightParams().spotLightDirection.z);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.innerCutOff"), spotLight.getSpotLightParams().innerCutOff);
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.outerCutOff"), spotLight.getSpotLightParams().outerCutOff);
-		// Export uniforms to shader for different material and component strenght
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.ambientStrenght"), globalMaterial.getAmbientStrenght());
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.diffuseStrenght"), globalMaterial.getDiffuseStrenght());
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.specularStrength"), globalMaterial.getSpecularStrenght());
-		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "material.shininessStrenght"), globalMaterial.getShininessStrenght());
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.innerCutOff"), glm::cos(glm::radians(spotLight.getSpotLightParams().innerCutOff)));
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.outerCutOff"), glm::cos(glm::radians(spotLight.getSpotLightParams().outerCutOff)));
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.intensityMultiplayer"), spotLight.getSpotLightParams().intensityMultiplayer);
+		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.thetaMultiplayer"), spotLight.getSpotLightParams().thetaMultiplayer);
+		
+		// Export global matrials to shader for different material and component strenght
+		shaderProgramForObjects.sendFloat("material.ambientStrenght", globalMaterial.getAmbientStrenght()); // TODO : send vec3f to shader insted 1f
+		shaderProgramForObjects.sendFloat("material.diffuseStrenght", globalMaterial.getDiffuseStrenght());
+		shaderProgramForObjects.sendFloat("material.specularStrength", globalMaterial.getSpecularStrenght());
+		shaderProgramForObjects.sendFloat("material.shininessStrenght", globalMaterial.getShininessStrenght());
 
 		shaderProgramForObjects.Deactivate();
 
@@ -459,12 +486,12 @@ int main()
 			shaderProgramForObjects.Activate();
 
 			// Exports the camera Position to the Fragment Shader for specular lighting calculation
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+			GLCall(glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
 			// Export the camMatrix to the Vertex Shader of the pyramid
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			// Export uniforms to shader for different material
-			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), pyramideMaterial.getObjectColor().r, pyramideMaterial.getObjectColor().g, pyramideMaterial.getObjectColor().b, pyramideMaterial.getObjectColor().a);
+			GLCall(glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), pyramideMaterial.getObjectColor().r, pyramideMaterial.getObjectColor().g, pyramideMaterial.getObjectColor().b, pyramideMaterial.getObjectColor().a));
 
 			// Binding texture so its appear at render
 			planks.Bind();
@@ -478,7 +505,7 @@ int main()
 			// Bind the VAO so OpenGL knows to use it
 			TRIANGLE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
-			glDrawElements(GL_TRIANGLES, sizeof(indices_pyramide) / sizeof(int), GL_UNSIGNED_INT, 0);
+			GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices_pyramide) / sizeof(int), GL_UNSIGNED_INT, 0));
 			// Unbind texture and VAO and deactivate shader program
 			planks.Unbind();
 			planksSpec.Unbind();
@@ -490,12 +517,12 @@ int main()
 			shaderProgramForObjects.Activate();
 
 			// Exports the camera Position to the Fragment Shader for specular lighting calculation
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+			GLCall(glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
 			// Export the camMatrix to the Vertex Shader of the cube
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			// Export uniforms to shader for different material and component strenght
-			glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), cubeMaterial.getObjectColor().r, cubeMaterial.getObjectColor().g, cubeMaterial.getObjectColor().b, cubeMaterial.getObjectColor().a);
+			GLCall(glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), cubeMaterial.getObjectColor().r, cubeMaterial.getObjectColor().g, cubeMaterial.getObjectColor().b, cubeMaterial.getObjectColor().a));
 
 			// Binding texture so its appear at render
 			planks.Bind();
@@ -509,7 +536,7 @@ int main()
 			// Bind the VAO so OpenGL knows to use it
 			CUBE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
-			glDrawElements(GL_TRIANGLES, sizeof(indices_cube) / sizeof(int), GL_UNSIGNED_INT, 0);
+			GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices_cube) / sizeof(int), GL_UNSIGNED_INT, 0));
 			// Unbind texture and VAO and deactivate shader program
 			planks.Unbind();
 			planksSpec.Unbind();
@@ -521,7 +548,7 @@ int main()
 			shaderProgramForObjects.Activate();
 
 			// Exports the camera Position to the Fragment Shader for specular lighting calculation
-			glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+			GLCall(glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
 			// Passing camMatrix uniform to lightSourceCube for projection matrix
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
@@ -530,14 +557,13 @@ int main()
 			importedMeshObject.m_transform->setScale(importedMeshTransform.transformParams().m_objectScale);
 			importedMeshObject.m_transform->setRotateEuler(importedMeshTransform.transformParams().m_objectRotEuler);
 
-			oak.Bind();
-			oakSpec.Bind();
+			wood.Bind();
 		    IMPORT_CUBE_SHAPE_VAO.Bind();
-			glDrawElements(GL_TRIANGLES, importCubeIndex.size(), GL_UNSIGNED_INT, 0);
+			GLCall(glDrawElements(GL_TRIANGLES, importCubeIndex.size(), GL_UNSIGNED_INT, 0));
+			
 			IMPORT_CUBE_SHAPE_VAO.Unbind();
 			shaderProgramForObjects.Deactivate();
-			oak.Unbind();
-			oakSpec.Unbind();
+			wood.Unbind();
 		}
 		{ // LIGHT CUBE SOURCE
 			// Activating shader that is used only for lightSource
@@ -561,17 +587,23 @@ int main()
 				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);
 				lampObject.m_transform->setRotateEuler(lampObject.m_transform->transformParams().m_objectRotEuler);
 			}
+			else if (renderFlags.getSpecificValueReference("isLightTurnOff"))
+			{
+				lampObject.m_transform->setPosition(lampObject.m_transform->transformParams().m_objectPos);
+				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);
+				lampObject.m_transform->setRotateEuler(lampObject.m_transform->transformParams().m_objectRotEuler);
+			}
 
 			// Passing camMatrix uniform to lightSourceCube for projection matrix
 			camera.sendCamMatrixToShader(lightSourceShader, "camMatrix");
 
 			// Sending color of light-cube to light shader so when we change color this change also
-			glUniform4f(glGetUniformLocation(lightSourceShader.ID, "lightColor"), lampMaterial.getObjectColor().r, lampMaterial.getObjectColor().g, lampMaterial.getObjectColor().b, lampMaterial.getObjectColor().a);
+			GLCall(glUniform4f(glGetUniformLocation(lightSourceShader.ID, "lightColor"), lampMaterial.getObjectColor().r, lampMaterial.getObjectColor().g, lampMaterial.getObjectColor().b, lampMaterial.getObjectColor().a));
 
 			// Binding light source vao in order to draws it
 			LIGHT_SOURCE_VAO.Bind();
 			// Draw light source cube using DrawArrays no-index(EBO)
-			glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices_lightSource) / sizeof(float));
+			GLCall(glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices_lightSource) / sizeof(float)));
 			// Unbind VAO that we just drawn and deactivate shader program
 			LIGHT_SOURCE_VAO.Unbind();
 			lightSourceShader.Deactivate();
@@ -593,7 +625,7 @@ int main()
 	IMPORT_CUBE_SHAPE_VBO_CORDINATES.Delete();
 	IMPORT_CUBE_SHAPE_VBO_NORMALS.Delete();
 	IMPORT_CUBE_SHAPE_VBO_UV.Delete();
-	IMPORT_CUBE_SHAPE_EBO.Delete();
+	IMPORT_CUBE_SHAPE_CORDINATE_EBO.Delete();
 	CUBE_SHAPE_VAO.Delete();
 	CUBE_SHAPE_VBO_VERTICES.Delete();
 	CUBE_SHAPE_EBO.Delete();

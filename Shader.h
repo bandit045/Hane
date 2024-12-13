@@ -13,6 +13,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Transform.h"
+#include "GLErrorHandle.h"
 
 std::string get_file_contents(const char* filename);
 
@@ -36,7 +37,7 @@ class Shader
 		void sendVec3f(const std::string& varName, const float& x, const float& y, const float& z);
 		void sendVec2f(const std::string& varName, const glm::vec2& vec2);
 		void sendVec2f(const std::string& varName, const float& x, const float& y);
-		void sendVec1f(const std::string& varName, const float& x);
+		void sendFloat(const std::string& varName, const float& x);
 		void sendMatrix4x4f(const std::string& varName, const glm::mat4& matrix);
 		void sendMatrix3x3f(const std::string& varName, const glm::mat3& matrix);
 	private:

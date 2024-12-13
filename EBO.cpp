@@ -2,29 +2,29 @@
 
 EBO::EBO(GLuint* indices, GLsizeiptr size)
 {
-	glGenBuffers(1, &ID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+	GLCall(glGenBuffers(1, &ID));
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID));
+	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW));
 }
 
 EBO::EBO(std::vector<unsigned int> indices, GLsizeiptr size)
 {
-	glGenBuffers(1, &ID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices.data(), GL_STATIC_DRAW);  //!!!!!!!!!!!!!!!!!!
+	GLCall(glGenBuffers(1, &ID));
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID));
+	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices.data(), GL_STATIC_DRAW));  //!!!!!!!!!!!!!!!!!!
 }
 
 void EBO::Bind()
 {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID));
 }
 
 void EBO::Unbind()
 {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
 
 void EBO::Delete()
 {
-	glDeleteBuffers(1, &ID);
+	GLCall(glDeleteBuffers(1, &ID));
 }
