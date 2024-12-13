@@ -275,7 +275,7 @@ int main()
 	std::vector<unsigned int> importCubeIndexNormal;
 
 	// We import our vertex model cordinates, uv, normals inside variable that are passed by reference
-	Importer::parseOBJ("mesh.obj", importVerticesCube, importUvsCube, importNormalsCube, importCubeIndex, importCubeIndexNormal); // Cordinates, Texture-cords, Normals, EBO
+	Importer::loadOBJ("mesh.obj", importVerticesCube, importUvsCube, importNormalsCube, importCubeIndex, importCubeIndexNormal); // Cordinates, Texture-cords, Normals, EBO
 
 	// Generates Vertex Array Object for file from import and binds it
 	VAO IMPORT_CUBE_SHAPE_VAO;
@@ -560,7 +560,6 @@ int main()
 			wood.Bind();
 		    IMPORT_CUBE_SHAPE_VAO.Bind();
 			GLCall(glDrawElements(GL_TRIANGLES, importCubeIndex.size(), GL_UNSIGNED_INT, 0));
-			
 			IMPORT_CUBE_SHAPE_VAO.Unbind();
 			shaderProgramForObjects.Deactivate();
 			wood.Unbind();
@@ -569,30 +568,9 @@ int main()
 			// Activating shader that is used only for lightSource
 			lightSourceShader.Activate();
 
-			if (renderFlags.getSpecificValueReference("isDirectionalLight")) {
-
-				lampObject.m_transform->setPosition(lampTransform.transformParams().m_objectPos);
-				lampObject.m_transform->setScale(lampTransform.transformParams().m_objectScale);
-				lampObject.m_transform->setRotateEuler(lampTransform.transformParams().m_objectRotEuler);
-			}
-			else if(renderFlags.getSpecificValueReference("isPointLight"))
-			{
-				lampObject.m_transform->setPosition(lampObject.m_transform->transformParams().m_objectPos);
-				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);
-				lampObject.m_transform->setRotateQuat(lampObject.m_transform->transformParams().m_objectRotQuat);
-			}
-			else if (renderFlags.getSpecificValueReference("isSpotLight"))
-			{
-				lampObject.m_transform->setPosition(lampObject.m_transform->transformParams().m_objectPos);
-				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);
-				lampObject.m_transform->setRotateEuler(lampObject.m_transform->transformParams().m_objectRotEuler);
-			}
-			else if (renderFlags.getSpecificValueReference("isLightTurnOff"))
-			{
-				lampObject.m_transform->setPosition(lampObject.m_transform->transformParams().m_objectPos);
-				lampObject.m_transform->setScale(lampObject.m_transform->transformParams().m_objectScale);
-				lampObject.m_transform->setRotateEuler(lampObject.m_transform->transformParams().m_objectRotEuler);
-			}
+			lampObject.m_transform->setPosition(lampTransform.transformParams().m_objectPos);
+			lampObject.m_transform->setScale(lampTransform.transformParams().m_objectScale);
+			lampObject.m_transform->setRotateEuler(lampTransform.transformParams().m_objectRotEuler); // lampObject.m_transform->setRotateQuat(lampObject.m_transform->transformParams().m_objectRotQuat);
 
 			// Passing camMatrix uniform to lightSourceCube for projection matrix
 			camera.sendCamMatrixToShader(lightSourceShader, "camMatrix");

@@ -37,8 +37,8 @@ void main()
 	// Passing data to fragment shader
 	color = aColor;
 	texCoord = aTex;
-	//Normal = mat3(transpose(inverse( modelPos * modelRotate * modelScale ))) * aNormal;;
-	Normal = aNormal;
+	Normal = mat3(transpose(inverse( modelPos * modelRotate * modelScale ))) * aNormal;;
+	//Normal = aNormal;
 
 	vertNormal = normalize(crntPos- vec3(3.0f, 1.0f, 1.0f) + aNormal);
 }
