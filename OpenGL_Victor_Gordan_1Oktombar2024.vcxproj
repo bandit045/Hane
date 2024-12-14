@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
+    <ClCompile Include="FaceTriangle.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GLErrorHandle.cpp" />
     <ClCompile Include="GLPolygoneModeAppRenderAll.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MenageShaders.cpp" />
     <ClCompile Include="Importer.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="RenderFlags.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -200,6 +202,7 @@
     <ClCompile Include="UnifformBufferObject.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
@@ -218,6 +221,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EBO.h" />
+    <ClInclude Include="FaceTriangle.h" />
     <ClInclude Include="GLErrorHandle.h" />
     <ClInclude Include="GLPolygoneModeAppRenderAll.h" />
     <ClInclude Include="GUI.h" />
@@ -225,6 +229,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="MenageShaders.h" />
     <ClInclude Include="Importer.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="RenderFlags.h" />
     <ClInclude Include="Shader.h" />
@@ -233,6 +238,7 @@
     <ClInclude Include="UnifformBufferObject.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\awesomeface.png" />

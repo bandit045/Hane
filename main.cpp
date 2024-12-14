@@ -30,6 +30,8 @@
 #include "UnifformBufferObject.h"
 #include "RenderFlags.h"
 #include "Material.h"
+#include "FaceTriangle.h" // Only triangle
+#include "Mesh.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
@@ -79,63 +81,62 @@ GLfloat vertices_cube[] =
 	// Positions     // Normals      // Texture-cordinates(x, y)    // Colors
 
 	// Front face (z = 1.0)
-	-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  2.0f,  0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  2.0f,  2.0f,  1.0f,  0.0f,  0.0f,  // Top-right
-	-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  2.0f,  1.0f,  0.0f,  0.0f,  // Top-left
-
-	// Back face (z = -1.0)
-	-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
-	 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-right
-	-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-left
-
-	// Left face (x = -1.0)
-	-1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,  0.0f, 0.0f, 1.0f,  0.0f,  0.0f,  // Bottom-left
-	-1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,  2.0f, 0.0f, 1.0f,  0.0f,  0.0f,  // Bottom-right
-	-1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,  2.0f, 2.0f, 1.0f,  0.0f,  0.0f,  // Top-right
-	-1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,  0.0f, 2.0f, 1.0f,  0.0f,  0.0f,  // Top-left
-
-	// Right face (x = 1.0)
-	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-right
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-left
-
-	// Top face (y = 1.0)
-	-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f, 8.0f,  1.0f,  0.0f,  0.0f,  // Top-left
-	 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,  8.0f, 8.0f,  1.0f,  0.0f,  0.0f,  // Top-right
-	 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  8.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
-	-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
-
-	// Bottom face (y = -1.0)
-	-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-left
-	 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f,  // Bottom-right
-	 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-right
-	-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f,  // Top-left
+	-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,  // Bottom-left
+	 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  2.0f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,  // Bottom-right
+	 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  2.0f,  2.0f,  1.0f,  0.0f,  0.0f, 1.0f,  // Top-right
+	-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  2.0f,  1.0f,  0.0f,  0.0f, 1.0f,  // Top-left
+																				
+	// Back face (z = -1.0)														
+	-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
+	 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
+	 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-right
+	-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-left
+																				
+	// Left face (x = -1.0)														
+	-1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,  0.0f, 0.0f, 1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
+	-1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,  2.0f, 0.0f, 1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
+	-1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,  2.0f, 2.0f, 1.0f,  0.0f,  0.0f, 1.0f, // Top-right
+	-1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,  0.0f, 2.0f, 1.0f,  0.0f,  0.0f, 1.0f, // Top-left
+																				
+	// Right face (x = 1.0)														
+	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
+	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
+	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-right
+	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-left
+																				
+	// Top face (y = 1.0)														
+	-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f, 8.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-left
+	 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,  8.0f, 8.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-right
+	 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  8.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
+	-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
+																				
+	// Bottom face (y = -1.0)													
+	-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
+	 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
+	 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-right
+	-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-left
 };
 
 // Indices for cube
-GLuint indices_cube[] =
+std::vector<EBO::OrderOfRendering> indices_cube=
 {
 	// Front face
-	0, 1, 2,  2, 3, 0,
-
+	EBO::OrderOfRendering{0, 1, 2},  EBO::OrderOfRendering{2, 3, 0},
+	
 	// Back face
-	5, 4, 6,  7, 6, 4,
-
+	EBO::OrderOfRendering{5, 4, 6},  EBO::OrderOfRendering{7, 6, 4},
+	
 	// Left face
-	8, 9, 10,  10, 11, 8,
-
+	EBO::OrderOfRendering{8, 9, 10},  EBO::OrderOfRendering{10, 11, 8},
+	
 	// Right face
-	12, 14, 13,  15, 14, 12,
-
+	EBO::OrderOfRendering{12, 14, 13}, EBO::OrderOfRendering{15, 14, 12},
+	
 	// Top face
-	17, 16, 18,  18, 16, 19,
-
+	EBO::OrderOfRendering{17, 16, 18},  EBO::OrderOfRendering{18, 16, 19},
+	
 	// Bottom face
-	20, 21, 22,  22, 23, 20
-
+	EBO::OrderOfRendering{20, 21, 22},  EBO::OrderOfRendering{22, 23, 20}
 };
 
 // Vertices for Light source  
@@ -161,12 +162,12 @@ GLfloat vertices_lightSource[] =
 
 		// Leva strana
 		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
-		-0.01f,  0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
 		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f,  0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
 
 		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
-		-0.01f, -0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
 		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f, -0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
 
 		// Desna strana
 		 0.01f,  0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
@@ -179,21 +180,28 @@ GLfloat vertices_lightSource[] =
 
 		 // Donja strana
 		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
-		  0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
 		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
+		  0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
 
 		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
-		 -0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
 		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
+		 -0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
 
 		 // Gornja strana
-		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
+		 
 		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
 		  0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
+		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
 
 		 -0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
 		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
-		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f
+		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
+};
+
+std::vector<EBO::OrderOfRendering> indices_class_cube =
+{
+	// Front face
+	EBO::OrderOfRendering{0, 2, 1}
 };
 
 int main()
@@ -307,6 +315,66 @@ int main()
 	IMPORT_CUBE_SHAPE_VBO_NORMALS.Unbind();
 	IMPORT_CUBE_SHAPE_CORDINATE_EBO.Unbind();
 //----------------------------------------------------------------------------------------------------------------------------------------
+
+	Vertex top_left;
+	top_left.setCordinate() = glm::vec3(-1.0f, 1.0f, -1.0f);
+	//top_left.setNormal() = glm::vec3(0.0f, 0.0f, 0.0f);
+	top_left.setUVCord() = glm::vec2(0.0f, 8.0f);
+	top_left.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	Vertex top_right;
+	top_right.setCordinate() = glm::vec3(1.0f, 1.0f, -1.0f);
+	//top_right.setNormal() = glm::vec3(0.0f, 0.0f, 0.0f);
+	top_right.setUVCord() = glm::vec2(8.0f, 8.0f);
+	top_right.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	Vertex bottom_left;
+	bottom_left.setCordinate() = glm::vec3(-1.0f, 1.0f, 1.0f);
+	//bottom_left.setNormal() = glm::vec3(0.0f, 0.0f, 0.0f);
+	bottom_left.setUVCord() = glm::vec2(0.0f, 0.0f);
+	bottom_left.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	Face topFace(top_left, top_right, bottom_left);
+	topFace.setNormalDirectionPositive(true); // Working!!!!!!!!!!!! ALSO and automatic normal calculation
+
+	VAO CUBE_SHAPE_CLASS_VAO;
+	CUBE_SHAPE_CLASS_VAO.Bind();
+
+	// Generates Vertex Buffer Object and links it to vertices
+	VBO CUBE_SHAPE_CLASS_VBO(topFace.getVertexData().data(), sizeof(float) * 36);
+	// Generates Element Buffer Object and links it to indices
+	EBO CUBE_SHAPE_CLASS_EBO(indices_class_cube, (indices_class_cube.size() * sizeof(EBO::OrderOfRendering) * sizeof(unsigned int)));
+
+	// Links VBO attributes such as cordinates and colors to VAO
+	CUBE_SHAPE_CLASS_VAO.LinkAttrib(CUBE_SHAPE_CLASS_VBO, 0, 3, GL_FLOAT, 12 * sizeof(float), (void*)0); // Cordinates
+	CUBE_SHAPE_CLASS_VAO.LinkAttrib(CUBE_SHAPE_CLASS_VBO, 1, 3, GL_FLOAT, 12 * sizeof(float), (void*)(3 * sizeof(float))); // Normals
+	CUBE_SHAPE_CLASS_VAO.LinkAttrib(CUBE_SHAPE_CLASS_VBO, 2, 2, GL_FLOAT, 12 * sizeof(float), (void*)(6 * sizeof(float))); // Uv texture
+	CUBE_SHAPE_CLASS_VAO.LinkAttrib(CUBE_SHAPE_CLASS_VBO, 3, 3, GL_FLOAT, 12 * sizeof(float), (void*)(8 * sizeof(float))); // Color
+	// Unbind all to prevent accidentally modifying them
+	CUBE_SHAPE_CLASS_VAO.Unbind();
+	CUBE_SHAPE_CLASS_VBO.Unbind();
+	CUBE_SHAPE_CLASS_EBO.Unbind();
+  /*Mesh meshClass(2);
+	std::cout << "Mesh class size: " << sizeof(meshClass) << "\n";
+	std::cout << "Number of allocated vertex: " << meshClass.getNumberOfVerticesAllocated() << "\n";
+	std::cout << "Number of added vertex: " << meshClass.getNumberOfAddedVertices() << "\n";
+	meshClass.addVertexToMesh(top_left);
+	std::cout << "Mesh class size: " << sizeof(meshClass) << "\n";
+	std::cout << "Number of allocated vertex: " << meshClass.getNumberOfVerticesAllocated() << "\n";
+	std::cout << "Number of added vertex: " << meshClass.getNumberOfAddedVertices() << "\n";
+	meshClass.addVertexToMesh(top_right);
+	std::cout << "Mesh class size: " << sizeof(meshClass) << "\n";
+	std::cout << "Number of allocated vertex: " << meshClass.getNumberOfVerticesAllocated() << "\n";
+	std::cout << "Number of added vertex: " << meshClass.getNumberOfAddedVertices() << "\n";*/
+
+	std::vector<float> facePrint;
+	facePrint = topFace.getVertexData();
+	for (int i = 0; i < 36; i++)
+	{
+		std::cout << "Print: " << facePrint[i] << "\n";
+	}
+
+//---------------------------------------------------------------------------------------------------------------------------------------- 
 	// Generates Vertex Array Object and binds it
 	VAO CUBE_SHAPE_VAO;
 	CUBE_SHAPE_VAO.Bind();
@@ -314,19 +382,18 @@ int main()
 	// Generates Vertex Buffer Object and links it to vertices
 	VBO CUBE_SHAPE_VBO_VERTICES(vertices_cube, sizeof(vertices_cube));
 	// Generates Element Buffer Object and links it to indices
-	EBO CUBE_SHAPE_EBO(indices_cube, sizeof(indices_cube));
+	EBO CUBE_SHAPE_EBO(indices_cube, (indices_cube.size() * sizeof(EBO::OrderOfRendering) * sizeof(unsigned int)));
 
 	// Links VBO attributes such as cordinates and colors to VAO
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0); // Cordinates
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float))); // Normals
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float))); // Uv texture
-	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float))); // Color
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 0, 3, GL_FLOAT, 12 * sizeof(float), (void*)0); // Cordinates
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 1, 3, GL_FLOAT, 12 * sizeof(float), (void*)(3 * sizeof(float))); // Normals
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 2, 2, GL_FLOAT, 12 * sizeof(float), (void*)(6 * sizeof(float))); // Uv texture
+	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 3, 3, GL_FLOAT, 12 * sizeof(float), (void*)(8 * sizeof(float))); // Color
 	// Unbind all to prevent accidentally modifying them
 	CUBE_SHAPE_VAO.Unbind();
 	CUBE_SHAPE_VBO_VERTICES.Unbind();
 	CUBE_SHAPE_EBO.Unbind();
 //----------------------------------------------------------------------------------------------------------------------------------------
-
 	// Generates Vertex Array Object and binds it
 	VAO LIGHT_SOURCE_VAO;
 	LIGHT_SOURCE_VAO.Bind();
@@ -335,7 +402,7 @@ int main()
 
 	// Links VBO attributes such as cordinates to VAO
 	LIGHT_SOURCE_VAO.LinkAttrib(LIGHT_SOURCE_VBO, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-	LIGHT_SOURCE_VAO.LinkAttrib(LIGHT_SOURCE_VBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
+	LIGHT_SOURCE_VAO.LinkAttrib(LIGHT_SOURCE_VBO, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	// Unbind all to prevent accidentally modifying them
 	LIGHT_SOURCE_VAO.Unbind();
 	LIGHT_SOURCE_VBO.Unbind();
@@ -433,7 +500,7 @@ int main()
 		lampObject.m_transform->inputs(window);
 
 		GUI::startGUIframe(false);
-		GUI::contextOfGUI(camera, renderFlags, lampObject, lampMaterial, globalMaterial, directionalLight, pointLight, spotLight);
+		GUI::contextOfGUI(camera, renderFlags, lampObject, cubeObject, lampMaterial, globalMaterial, directionalLight, pointLight, spotLight);
 
 		// Setting rendering mode to line
 		//glPolygonMode(GL_FRONT, GL_LINE);
@@ -474,7 +541,7 @@ int main()
 		glUniform1f(glGetUniformLocation(shaderProgramForObjects.ID, "light.thetaMultiplayer"), spotLight.getSpotLightParams().thetaMultiplayer);
 		
 		// Export global matrials to shader for different material and component strenght
-		shaderProgramForObjects.sendFloat("material.ambientStrenght", globalMaterial.getAmbientStrenght()); // TODO : send vec3f to shader insted 1f
+		shaderProgramForObjects.sendFloat("material.ambientStrenght", globalMaterial.getAmbientStrenght()); // TODO : send vec4f to shader insted 1f
 		shaderProgramForObjects.sendFloat("material.diffuseStrenght", globalMaterial.getDiffuseStrenght());
 		shaderProgramForObjects.sendFloat("material.specularStrength", globalMaterial.getSpecularStrenght());
 		shaderProgramForObjects.sendFloat("material.shininessStrenght", globalMaterial.getShininessStrenght());
@@ -536,7 +603,7 @@ int main()
 			// Bind the VAO so OpenGL knows to use it
 			CUBE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
-			GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices_cube) / sizeof(int), GL_UNSIGNED_INT, 0));
+			GLCall(glDrawElements(GL_TRIANGLES, (indices_cube.size() * sizeof(EBO::OrderOfRendering)) / sizeof(unsigned int), GL_UNSIGNED_INT, 0));
 			// Unbind texture and VAO and deactivate shader program
 			planks.Unbind();
 			planksSpec.Unbind();
@@ -586,6 +653,27 @@ int main()
 			LIGHT_SOURCE_VAO.Unbind();
 			lightSourceShader.Deactivate();
 		}
+		{ // dEFINED MESH CLASS
+			shaderProgramForObjects.Activate();
+
+			// Exports the camera Position to the Fragment Shader for specular lighting calculation
+			GLCall(glUniform3f(glGetUniformLocation(shaderProgramForObjects.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
+			// Passing camMatrix uniform to lightSourceCube for projection matrix
+			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
+
+			shaderProgramForObjects.sendBool("useCustomTransform", false); // If is true it will use modelRotate modelPos modelScale for gl_Position
+			// Kreiraj lokalnu model matricu za kocku
+			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
+			cubeModel = glm::translate(cubeModel, glm::vec3(1.0f, 0.0f, 0.0f)); // Transplantacija kocke
+			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel)); // Pošalji model matricu u shader
+			
+			wood.Bind();
+			CUBE_SHAPE_CLASS_VAO.Bind();
+			GLCall(glDrawElements(GL_TRIANGLES, (indices_class_cube.size() * sizeof(EBO::OrderOfRendering)) / sizeof(unsigned int), GL_UNSIGNED_INT, 0));
+			CUBE_SHAPE_CLASS_VAO.Unbind();
+			wood.Unbind();
+			shaderProgramForObjects.Deactivate();
+		}
 
 		GUI::renderGUI();
 
@@ -609,6 +697,9 @@ int main()
 	CUBE_SHAPE_EBO.Delete();
 	LIGHT_SOURCE_VAO.Delete();
 	LIGHT_SOURCE_VBO.Delete();
+	CUBE_SHAPE_CLASS_VAO.Delete();
+	CUBE_SHAPE_CLASS_VBO.Delete();
+	CUBE_SHAPE_CLASS_EBO.Delete();
 	popCat.Delete();
 	DiJej.Delete();
 	skenons.Delete();

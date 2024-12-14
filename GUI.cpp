@@ -29,11 +29,12 @@ void GUI::startGUIframe(bool _enabledDemo)// This is executing for evry frame
 		ImGui::ShowDemoWindow(); // Show demo window! :)
 }
 
-void GUI::contextOfGUI(Camera& _camera, RenderFlags& _renderFlags, Object& _lampObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, Light& _spotLight)
+void GUI::contextOfGUI(Camera& _camera, RenderFlags& _renderFlags, Object& _lampObject, Object& _cubeObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, Light& _spotLight)
 {
 	Stats(_camera, _renderFlags);
 	LightSource(_lampObject, _lampMaterial, _globalMaterial, _directionalLight, _pointLight, _renderFlags, _pointLight);
 	SpotLight(_spotLight);
+	TransformCube(_cubeObject);
 	GlPolygonMode();
 }
 void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
@@ -240,6 +241,15 @@ void GUI::SpotLight(Light& _spotLight)
 
 	ImGui::End();
 }
+
+void GUI::TransformCube(Object& _cubeObject)
+{
+	ImGui::Begin("Cube transform: ");
+		ImGui::DragFloat3  ("Position", &_cubeObject.m_transform->transformParams().m_objectPos.x,       0.1f          );
+		ImGui::SliderFloat3("Rotation", &_cubeObject.m_transform->transformParams().m_objectRotEuler.x, -180.0f, 180.0f);
+		ImGui::DragFloat3  ("Scale",    &_cubeObject.m_transform->transformParams().m_objectScale.x,     0.1f          );
+	ImGui::End();
+};
 
 void GUI::GlPolygonMode()
 {

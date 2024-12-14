@@ -7,7 +7,10 @@ uniform mat4 modelPos;
 uniform mat4 modelRotate;
 uniform mat4 modelScale;
 
+out vec3 Normal;
+
 void main()
 {
 	gl_Position = camMatrix * modelPos * modelRotate * modelScale * vec4(aPos, 1.0);
+	Normal = aNormal;
 }

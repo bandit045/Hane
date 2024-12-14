@@ -20,12 +20,13 @@ public:
 	GUI(GLFWwindow* window);
 	static void startGUIframe(bool _enabledDemo);
 
-	static void contextOfGUI(Camera& _camera, RenderFlags& _renderFlags, Object& _lampObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, Light& _spotLight);
+	static void contextOfGUI(Camera& _camera, RenderFlags& _renderFlags, Object& _lampObject, Object& _pyramideObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, Light& _spotLight);
 	static void Stats(Camera& _camera, RenderFlags& _renderFlags);
 	static void LightSource(Object& _lampObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, RenderFlags& _renderFlags, Light& _spotLight);
 
 	static void SpotLight(Light& _spotLight);
 	static void GlPolygonMode();
+	static void TransformCube(Object& _pyramideObject);
 
 	static void renderGUI();
 	static void clearGUI();

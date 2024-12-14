@@ -23,15 +23,15 @@ uniform mat4 modelScale;
 void main()
 {
 	// In case we only send Model matrix to shader without separete components (Position-Rotate-Scale)
-	if(!useCustomTransform) 
-	{
-		gl_Position = camMatrix * model * vec4(aPos, 1.0);
-		crntPos = vec3(model * vec4(aPos, 1.0));
-	}
-	else if (useCustomTransform)
+	if(useCustomTransform) 
 	{
 		gl_Position =  camMatrix * modelPos * modelRotate * modelScale * vec4(aPos, 1.0);
 		crntPos = vec3(modelPos * modelRotate * modelScale * vec4(aPos, 1.0));
+	}
+	else
+	{
+		gl_Position = camMatrix * model * vec4(aPos, 1.0);
+		crntPos = vec3(model * vec4(aPos, 1.0));
 	};
 
 	// Passing data to fragment shader
