@@ -11,7 +11,7 @@ class EBO
 public:
 	struct OrderOfRendering
 	{
-		unsigned int x, y, z;
+		uint32_t x, y, z;
 	};
 
 	// ID reference of Elements Buffer Object

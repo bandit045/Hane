@@ -2,18 +2,20 @@
 #define VERTEX_H
 
 #include <iostream>
-#include <vector>
+#include <array>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/vec2.hpp>
 
+// This vertex class is used like single vertex in much bigger structure like mesh
+// It can be in FaceTriangle, Mesh(Defined mesh by specifying all vertex on by one), Mesh(defined by faceTriangle)
 class Vertex
 {
 private:
-	glm::vec3 m_cordinate;
-	glm::vec3 m_normal;
-	glm::vec2 m_uvcord;
-	glm::vec4 m_color;
+	mutable glm::vec3 m_cordinate;
+	mutable glm::vec3 m_normal;
+	mutable glm::vec2 m_uvcord;
+	mutable glm::vec4 m_color;
 
 	bool m_isVertexDefaultValue;
 
@@ -23,9 +25,10 @@ private:
 	bool m_isVertexDefaultValue_color;
 public:
 	Vertex();
+	~Vertex();
 
 	// This value is m_cordinate + m_normal + m_uvcord + m_color which is 3+3+2+4 = 12
-	static const int m_numberOfAllSingleValueInVertex = 12;
+	static const int s_offsetOfBufferLayout = 12;
 
 	// This method return true if the vertex has all default value, which is bad :(
 	bool getIfVertHasAllDefaultValue();
@@ -42,7 +45,7 @@ public:
     const glm::vec4& getColor() const;
 	glm::vec4& setColor();
 
-	// This method is used to get data and can be send to GPU with vector.data() 
-	std::vector<float> getVertexData();
+	// This method is used to get data and can be send to GPU with array.data() 
+	std::array<float, 12> getVertexData();
 };
 #endif // !VERTEX_H

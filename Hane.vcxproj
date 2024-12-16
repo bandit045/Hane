@@ -175,7 +175,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
-    <ClCompile Include="FaceTriangle.cpp" />
+    <ClCompile Include="Face.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GLErrorHandle.cpp" />
     <ClCompile Include="GLPolygoneModeAppRenderAll.cpp" />
@@ -221,7 +221,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EBO.h" />
-    <ClInclude Include="FaceTriangle.h" />
+    <ClInclude Include="Face.h" />
     <ClInclude Include="GLErrorHandle.h" />
     <ClInclude Include="GLPolygoneModeAppRenderAll.h" />
     <ClInclude Include="GUI.h" />

@@ -10,10 +10,10 @@ GUI::GUI(GLFWwindow* window)
 	style.Colors[ImGuiCol_Header] = ImVec4(0.52f, 0.06f, 0.63f, 1.0f);
 	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.73f, 0.18f, 0.86f, 1.0f);
 
-	style.Colors[ImGuiCol_Button] = ImVec4(0.54, 0.17, 0.48, 1.0);
-	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.76, 0.42, 0.71, 1.0);
-	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.00, 1.00, 0.04, 1.0);
-	style.Colors[ImGuiCol_Text] = ImVec4(0.88, 0.90, 0.75, 1.0);
+	style.Colors[ImGuiCol_Button] = ImVec4(0.54f, 0.17f, 0.48f, 1.0f);
+	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.76f, 0.42f, 0.71f, 1.0f);
+	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.00f, 1.00f, 0.04f, 1.0f);
+	style.Colors[ImGuiCol_Text] = ImVec4(0.88f, 0.90f, 0.75f, 1.0f);
 
 	// Setup Platform/Renderer backends
 	ImGui_ImplGlfw_InitForOpenGL(window, true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones.

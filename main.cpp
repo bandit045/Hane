@@ -30,7 +30,7 @@
 #include "UnifformBufferObject.h"
 #include "RenderFlags.h"
 #include "Material.h"
-#include "FaceTriangle.h" // Only triangle
+#include "Face.h" // Only triangle
 #include "Mesh.h"
 
 const unsigned int width = 1920;
@@ -198,10 +198,10 @@ GLfloat vertices_lightSource[] =
 		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
 };
 
-std::vector<EBO::OrderOfRendering> indices_class_cube =
+std::vector<EBO::OrderOfRendering> indices_class_cube = // This is only GL_TRIANGLE
 {
 	// Front face
-	EBO::OrderOfRendering{0, 2, 1}
+	EBO::OrderOfRendering{1, 0, 2}, EBO::OrderOfRendering{3, 5, 4},/* EBO::OrderOfRendering{1, 2, 3}*/
 };
 
 int main()
@@ -296,15 +296,8 @@ int main()
 	// Generates Element Buffer Object for imported cube and links it to indices
 	EBO IMPORT_CUBE_SHAPE_CORDINATE_EBO(importCubeIndex, importCubeIndex.size() * sizeof(unsigned int));
 	
-	IMPORT_CUBE_SHAPE_VBO_CORDINATES.Bind();
 	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_CORDINATES,  0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0); // Cordinates
-	IMPORT_CUBE_SHAPE_VBO_CORDINATES.Unbind();
-
-	IMPORT_CUBE_SHAPE_VBO_NORMALS.Bind();
 	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_NORMALS,     1, 3, GL_FLOAT, 3 * sizeof(float), (void*)0); // Normals
-	IMPORT_CUBE_SHAPE_VBO_NORMALS.Unbind();
-
-	IMPORT_CUBE_SHAPE_VBO_UV.Bind();
 	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_UV,          2, 2, GL_FLOAT, 2 * sizeof(float), (void*)0); // Texture cords
 	IMPORT_CUBE_SHAPE_VBO_UV.Unbind();
 
@@ -315,33 +308,65 @@ int main()
 	IMPORT_CUBE_SHAPE_VBO_NORMALS.Unbind();
 	IMPORT_CUBE_SHAPE_CORDINATE_EBO.Unbind();
 //----------------------------------------------------------------------------------------------------------------------------------------
-
 	Vertex top_left;
 	top_left.setCordinate() = glm::vec3(-1.0f, 1.0f, -1.0f);
-	//top_left.setNormal() = glm::vec3(0.0f, 0.0f, 0.0f);
+	//top_left.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
 	top_left.setUVCord() = glm::vec2(0.0f, 8.0f);
 	top_left.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	Vertex top_right;
 	top_right.setCordinate() = glm::vec3(1.0f, 1.0f, -1.0f);
-	//top_right.setNormal() = glm::vec3(0.0f, 0.0f, 0.0f);
+	//top_right.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
 	top_right.setUVCord() = glm::vec2(8.0f, 8.0f);
 	top_right.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	Vertex bottom_left;
 	bottom_left.setCordinate() = glm::vec3(-1.0f, 1.0f, 1.0f);
-	//bottom_left.setNormal() = glm::vec3(0.0f, 0.0f, 0.0f);
+	//bottom_left.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
 	bottom_left.setUVCord() = glm::vec2(0.0f, 0.0f);
 	bottom_left.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//----------------------------------------------------------------------------------------------------
+	Vertex bottom_right_second;
+	bottom_right_second.setCordinate() = glm::vec3(1.0f, 1.0f, 1.0f);
+	//bottom_right_second.setNormal() = glm::vec3(0.0f,  1.0f,  0.0f);
+	bottom_right_second.setUVCord() = glm::vec2(8.0f, 0.0f);
+	bottom_right_second.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	Face topFace(top_left, top_right, bottom_left);
-	topFace.setNormalDirectionPositive(true); // Working!!!!!!!!!!!! ALSO and automatic normal calculation
+	Vertex bottom_left_second;
+	bottom_left_second.setCordinate() = glm::vec3(-1.0f, 1.0f, 1.0f);
+	//bottom_left_second.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
+	bottom_left_second.setUVCord() = glm::vec2(0.0f, 0.0f);
+	bottom_left_second.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	Vertex top_right_second;
+	top_right_second.setCordinate() = glm::vec3(1.0f, 1.0f, -1.0f);
+	//top_right.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
+	top_right_second.setUVCord() = glm::vec2(8.0f, 8.0f);
+	top_right_second.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	Face topFaceOne(top_left, top_right, bottom_left);
+	Face topFaceTwo(bottom_right_second, bottom_left_second, top_right_second);
+	topFaceOne.calculateAutomaticNormal(true); // Parameter for flip direction of normal true positive
+	topFaceTwo.calculateAutomaticNormal(true); // Parameter for flip direction of normal true positive
+	topFaceOne.calculateFaceData();
+	topFaceTwo.calculateFaceData();
+
+	Mesh meshObject;
+	meshObject.addTriangleToMesh(topFaceOne);
+	meshObject.addTriangleToMesh(topFaceTwo);
+
+	meshObject.getTriangle(0).getVertex(1).setCordinate() = glm::vec3(21.0f, 05.0f, 1.0f);	
+
+
+	meshObject.calculateMeshData();
+	//meshObject.printMeshData(); // Debug
+//----------------------------------------------------------
 
 	VAO CUBE_SHAPE_CLASS_VAO;
 	CUBE_SHAPE_CLASS_VAO.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO CUBE_SHAPE_CLASS_VBO(topFace.getVertexData().data(), sizeof(float) * 36);
+	VBO CUBE_SHAPE_CLASS_VBO(meshObject.getMeshData().data(), sizeof(float) * Vertex::s_offsetOfBufferLayout * meshObject.getNumberOfVertices());
 	// Generates Element Buffer Object and links it to indices
 	EBO CUBE_SHAPE_CLASS_EBO(indices_class_cube, (indices_class_cube.size() * sizeof(EBO::OrderOfRendering) * sizeof(unsigned int)));
 
@@ -354,26 +379,6 @@ int main()
 	CUBE_SHAPE_CLASS_VAO.Unbind();
 	CUBE_SHAPE_CLASS_VBO.Unbind();
 	CUBE_SHAPE_CLASS_EBO.Unbind();
-  /*Mesh meshClass(2);
-	std::cout << "Mesh class size: " << sizeof(meshClass) << "\n";
-	std::cout << "Number of allocated vertex: " << meshClass.getNumberOfVerticesAllocated() << "\n";
-	std::cout << "Number of added vertex: " << meshClass.getNumberOfAddedVertices() << "\n";
-	meshClass.addVertexToMesh(top_left);
-	std::cout << "Mesh class size: " << sizeof(meshClass) << "\n";
-	std::cout << "Number of allocated vertex: " << meshClass.getNumberOfVerticesAllocated() << "\n";
-	std::cout << "Number of added vertex: " << meshClass.getNumberOfAddedVertices() << "\n";
-	meshClass.addVertexToMesh(top_right);
-	std::cout << "Mesh class size: " << sizeof(meshClass) << "\n";
-	std::cout << "Number of allocated vertex: " << meshClass.getNumberOfVerticesAllocated() << "\n";
-	std::cout << "Number of added vertex: " << meshClass.getNumberOfAddedVertices() << "\n";*/
-
-	std::vector<float> facePrint;
-	facePrint = topFace.getVertexData();
-	for (int i = 0; i < 36; i++)
-	{
-		std::cout << "Print: " << facePrint[i] << "\n";
-	}
-
 //---------------------------------------------------------------------------------------------------------------------------------------- 
 	// Generates Vertex Array Object and binds it
 	VAO CUBE_SHAPE_VAO;
@@ -572,7 +577,7 @@ int main()
 			// Bind the VAO so OpenGL knows to use it
 			TRIANGLE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
-			GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices_pyramide) / sizeof(int), GL_UNSIGNED_INT, 0));
+			GLCall(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(sizeof(indices_pyramide) / sizeof(int)), GL_UNSIGNED_INT, 0));
 			// Unbind texture and VAO and deactivate shader program
 			planks.Unbind();
 			planksSpec.Unbind();
@@ -603,7 +608,7 @@ int main()
 			// Bind the VAO so OpenGL knows to use it
 			CUBE_SHAPE_VAO.Bind();
 			// Draw the pyramid using the GL_TRIANGLES primitive
-			GLCall(glDrawElements(GL_TRIANGLES, (indices_cube.size() * sizeof(EBO::OrderOfRendering)) / sizeof(unsigned int), GL_UNSIGNED_INT, 0));
+			GLCall(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>((indices_cube.size() * sizeof(EBO::OrderOfRendering)) / sizeof(unsigned int)), GL_UNSIGNED_INT, 0));
 			// Unbind texture and VAO and deactivate shader program
 			planks.Unbind();
 			planksSpec.Unbind();
@@ -626,7 +631,7 @@ int main()
 
 			wood.Bind();
 		    IMPORT_CUBE_SHAPE_VAO.Bind();
-			GLCall(glDrawElements(GL_TRIANGLES, importCubeIndex.size(), GL_UNSIGNED_INT, 0));
+			GLCall(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(importCubeIndex.size()), GL_UNSIGNED_INT, 0));
 			IMPORT_CUBE_SHAPE_VAO.Unbind();
 			shaderProgramForObjects.Deactivate();
 			wood.Unbind();
@@ -653,7 +658,7 @@ int main()
 			LIGHT_SOURCE_VAO.Unbind();
 			lightSourceShader.Deactivate();
 		}
-		{ // dEFINED MESH CLASS
+		{ // DEFINE MESH CLASS
 			shaderProgramForObjects.Activate();
 
 			// Exports the camera Position to the Fragment Shader for specular lighting calculation
@@ -662,14 +667,14 @@ int main()
 			camera.sendCamMatrixToShader(shaderProgramForObjects, "camMatrix");
 
 			shaderProgramForObjects.sendBool("useCustomTransform", false); // If is true it will use modelRotate modelPos modelScale for gl_Position
-			// Kreiraj lokalnu model matricu za kocku
+			// Kreiraj lokalnu model matricu za triangle
 			glm::mat4 cubeModel = glm::mat4(1.0f);  // Resetovana matrica
-			cubeModel = glm::translate(cubeModel, glm::vec3(1.0f, 0.0f, 0.0f)); // Transplantacija kocke
+			cubeModel = glm::translate(cubeModel, glm::vec3(1.0f, 0.0f, 0.0f)); // Transplantacija triangla
 			glUniformMatrix4fv(glGetUniformLocation(shaderProgramForObjects.ID, "model"), 1, GL_FALSE, glm::value_ptr(cubeModel)); // Pošalji model matricu u shader
 			
 			wood.Bind();
 			CUBE_SHAPE_CLASS_VAO.Bind();
-			GLCall(glDrawElements(GL_TRIANGLES, (indices_class_cube.size() * sizeof(EBO::OrderOfRendering)) / sizeof(unsigned int), GL_UNSIGNED_INT, 0));
+			GLCall(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>((indices_class_cube.size() * sizeof(EBO::OrderOfRendering)) / sizeof(unsigned int)), GL_UNSIGNED_INT, 0));
 			CUBE_SHAPE_CLASS_VAO.Unbind();
 			wood.Unbind();
 			shaderProgramForObjects.Deactivate();
@@ -715,5 +720,6 @@ int main()
 	glfwDestroyWindow(window);
 	// Terminate GLFW before ending the program
 	glfwTerminate();
+
 	return 0;
 }

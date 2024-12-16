@@ -1,50 +1,56 @@
 #include "Mesh.h"
 
-Mesh::Mesh(int _numberOfVerticesToAllocate) : m_numberOfVerticesAllocated(_numberOfVerticesToAllocate)
+Mesh::Mesh()
 {
-	m_vertices.reserve(_numberOfVerticesToAllocate);
-	m_numberOfVerticesAdded = 0;
+	Mesh::m_numberOfTriangle = 0;
 }
 
-void Mesh::addVertexToMesh(Vertex _vertex)
+void Mesh::setEBOindices(const std::vector<EBO::OrderOfRendering>& _orderOfRenderingTriangles)
 {
-	m_vertices.emplace_back(_vertex);
-	m_numberOfVerticesAdded++;
+	
 }
 
-int Mesh::getNumberOfVerticesAllocated()
+void Mesh::addTriangleToMesh(Face& _faceTriangleToAdd)
 {
-	return m_numberOfVerticesAllocated;
+	Mesh::m_triangles.push_back(_faceTriangleToAdd);
+	Mesh::m_numberOfTriangle++;
 }
 
-int Mesh::getNumberOfAddedVertices()
+int Mesh::getNumberOfTriangle()
 {
-	return m_numberOfVerticesAdded;
+	return m_numberOfTriangle;
 }
 
-std::vector<float> Mesh::getMeshDataInVector()
+Face& Mesh::getTriangle(int _indexOfTriangleInsideMesh)
 {
-	std::vector<float> meshDataToReturn;
-	size_t meshDataSize = static_cast<size_t>(m_numberOfVerticesAdded) * Vertex::m_numberOfAllSingleValueInVertex;
-	meshDataToReturn.reserve(meshDataSize);
+	return Mesh::m_triangles[_indexOfTriangleInsideMesh];
+}
 
-	for (int i = 0; i < m_numberOfVerticesAdded; i++)
+int Mesh::getNumberOfVertices()
+{
+	return Mesh::m_numberOfTriangle * Face::s_numberOfVerticesInFace;
+}
+
+std::vector<float> Mesh::getMeshData()
+{
+	return Mesh::m_meshData;
+}
+
+void Mesh::calculateMeshData()
+{
+	for (auto i : Mesh::m_triangles)
 	{
-		meshDataToReturn.push_back(m_vertices[i].getCordinate().x);
-		meshDataToReturn.push_back(m_vertices[i].getCordinate().y);
-		meshDataToReturn.push_back(m_vertices[i].getCordinate().z);
-
-		meshDataToReturn.push_back(m_vertices[i].getNormal().x);
-		meshDataToReturn.push_back(m_vertices[i].getNormal().y);
-		meshDataToReturn.push_back(m_vertices[i].getNormal().z);
-
-		meshDataToReturn.push_back(m_vertices[i].getUVCord().x);
-		meshDataToReturn.push_back(m_vertices[i].getUVCord().y);
-
-		meshDataToReturn.push_back(m_vertices[i].getColor().r);
-		meshDataToReturn.push_back(m_vertices[i].getColor().g);
-		meshDataToReturn.push_back(m_vertices[i].getColor().b);
-		meshDataToReturn.push_back(m_vertices[i].getColor().a);
+		for (auto j : i.getFaceData())
+		{
+			m_meshData.push_back(j);
+		}
 	}
-	return meshDataToReturn;
+}
+
+// For debug
+void Mesh::printMeshData()
+{
+	for (float value : Mesh::m_meshData) {
+		std::cout << value << " \n";
+	}
 }
