@@ -3,7 +3,7 @@
 
 #include <glm\glm.hpp>
 #include <array>
-#include "Mesh/Vertex.h"
+#include "Vertex.h"
 
 class Face
 {

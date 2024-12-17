@@ -1,4 +1,4 @@
-#include "Mesh/Vertex.h"
+#include "Vertex.h"
 
 Vertex::Vertex()
 {

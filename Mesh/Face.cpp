@@ -1,4 +1,4 @@
-#include "Mesh/Face.h"
+#include "Face.h"
 
 Face::Face(Vertex& _vertexOne, Vertex& _vertexTwo, Vertex& _vertexThree)
 {

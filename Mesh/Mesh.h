@@ -2,7 +2,7 @@
 #define MESH_H
 
 #include "EBO.h"
-#include "Mesh/Face.h"
+#include "Face.h"
 #include <glm/glm.hpp>
 #include <vector>
 

@@ -30,8 +30,8 @@
 #include "UnifformBufferObject.h"
 #include "RenderFlags.h"
 #include "Material.h"
-#include "Face.h" // Only triangle
-#include "Mesh.h"
+#include "Mesh/Face.h" // Only triangle
+#include "Mesh/Mesh.h"
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
