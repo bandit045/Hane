@@ -1,7 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "EBO.h"
+#include "../EBO.h"
 #include "Face.h"
 #include <glm/glm.hpp>
 #include <vector>

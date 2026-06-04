@@ -138,13 +138,13 @@
     <ClCompile Include="src\GLErrorHandle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Face.cpp">
+    <ClCompile Include="src\Mesh\Face.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="src\Mesh\LiteralVertex.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mesh.cpp">
+    <ClCompile Include="src\Mesh\Mesh.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="src\MeshAssimp.cpp">
@@ -224,17 +224,17 @@
     <ClInclude Include="src\GLErrorHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Face.h">
-      <Filter>Header Files\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mesh.h">
-      <Filter>Header Files\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="src\MeshAssimp.h">
       <Filter>Header Files\MeshAssimp</Filter>
     </ClInclude>
     <ClInclude Include="src\Mesh\LiteralVertex.h">
       <Filter>Header Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\Face.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\Mesh.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
