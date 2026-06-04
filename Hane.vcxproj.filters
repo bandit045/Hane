@@ -52,18 +52,24 @@
     <Filter Include="Header Files\Mesh">
       <UniqueIdentifier>{3e11823a-d820-4d14-91b9-5f0ab14fc0f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\MeshAssimp">
+      <UniqueIdentifier>{971c25a9-a528-450c-9ff0-d60ad4577904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MeshAssimp">
+      <UniqueIdentifier>{3e31a0af-7853-4e49-8a5e-32dac9d3a8b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
+    <ClCompile Include="src\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
+    <ClCompile Include="src\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp">
@@ -87,144 +93,147 @@
     <ClCompile Include="imgui\imgui_tables.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
+    <ClCompile Include="src\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUI.cpp">
+    <ClCompile Include="src\GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Light.cpp">
+    <ClCompile Include="src\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Transform.cpp">
+    <ClCompile Include="src\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MenageShaders.cpp">
+    <ClCompile Include="src\MenageShaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Importer.cpp">
+    <ClCompile Include="src\Importer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>Outer</Filter>
     </ClCompile>
-    <ClCompile Include="stb.cpp">
-      <Filter>Outer</Filter>
-    </ClCompile>
-    <ClCompile Include="VBO.cpp">
+    <ClCompile Include="src\VBO.cpp">
       <Filter>Source Files\Buffers Objects Source</Filter>
     </ClCompile>
-    <ClCompile Include="VAO.cpp">
+    <ClCompile Include="src\VAO.cpp">
       <Filter>Source Files\Buffers Objects Source</Filter>
     </ClCompile>
-    <ClCompile Include="EBO.cpp">
+    <ClCompile Include="src\EBO.cpp">
       <Filter>Source Files\Buffers Objects Source</Filter>
     </ClCompile>
-    <ClCompile Include="UnifformBufferObject.cpp">
+    <ClCompile Include="src\UnifformBufferObject.cpp">
       <Filter>Source Files\Buffers Objects Source</Filter>
     </ClCompile>
-    <ClCompile Include="RenderFlags.cpp">
+    <ClCompile Include="src\RenderFlags.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Material.cpp">
+    <ClCompile Include="src\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GLPolygoneModeAppRenderAll.cpp">
+    <ClCompile Include="src\GLPolygoneModeAppRenderAll.cpp">
       <Filter>Source Files\Singleton One Instance</Filter>
     </ClCompile>
-    <ClCompile Include="GLErrorHandle.cpp">
+    <ClCompile Include="src\GLErrorHandle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Face.cpp">
+    <ClCompile Include="src\Face.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Vertex.cpp">
+    <ClCompile Include="src\Mesh\LiteralVertex.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="src\Mesh.cpp">
       <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshAssimp.cpp">
+      <Filter>Source Files\MeshAssimp</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\include\stb\stb.cpp">
+      <Filter>Outer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="lightingSourceShader.vert">
-      <Filter>Resource Files\Shaders\LightingSource</Filter>
-    </None>
-    <None Include="lightingSourceShader.frag">
-      <Filter>Resource Files\Shaders\LightingSource</Filter>
-    </None>
     <None Include="imgui.natstepfilter">
       <Filter>GUI</Filter>
     </None>
-    <None Include="default.vert">
+    <None Include="ClassDiagram.cd" />
+    <None Include="shaders\lightingSourceShader.frag">
+      <Filter>Resource Files\Shaders\LightingSource</Filter>
+    </None>
+    <None Include="shaders\lightingSourceShader.vert">
+      <Filter>Resource Files\Shaders\LightingSource</Filter>
+    </None>
+    <None Include="shaders\default.vert">
       <Filter>Resource Files\Shaders\Object</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
-    <None Include="default_obj.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="default_obj.frag">
-      <Filter>Resource Files\Shaders</Filter>
+    <None Include="shaders\default.frag">
+      <Filter>Resource Files\Shaders\Object</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="src\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
+    <ClInclude Include="src\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="src\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
+    <ClInclude Include="src\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
+    <ClInclude Include="src\GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
+    <ClInclude Include="src\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h">
+    <ClInclude Include="src\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MenageShaders.h">
+    <ClInclude Include="src\MenageShaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Importer.h">
+    <ClInclude Include="src\Importer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EBO.h">
+    <ClInclude Include="src\EBO.h">
       <Filter>Header Files\Buffers Objects Header</Filter>
     </ClInclude>
-    <ClInclude Include="VBO.h">
+    <ClInclude Include="src\VBO.h">
       <Filter>Header Files\Buffers Objects Header</Filter>
     </ClInclude>
-    <ClInclude Include="VAO.h">
+    <ClInclude Include="src\VAO.h">
       <Filter>Header Files\Buffers Objects Header</Filter>
     </ClInclude>
-    <ClInclude Include="UnifformBufferObject.h">
+    <ClInclude Include="src\UnifformBufferObject.h">
       <Filter>Header Files\Buffers Objects Header</Filter>
     </ClInclude>
-    <ClInclude Include="RenderFlags.h">
+    <ClInclude Include="src\RenderFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Material.h">
+    <ClInclude Include="src\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GLPolygoneModeAppRenderAll.h">
+    <ClInclude Include="src\GLPolygoneModeAppRenderAll.h">
       <Filter>Header Files\Singleton One Instance</Filter>
     </ClInclude>
-    <ClInclude Include="GLErrorHandle.h">
+    <ClInclude Include="src\GLErrorHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Face.h">
+    <ClInclude Include="src\Face.h">
       <Filter>Header Files\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.h">
+    <ClInclude Include="src\Mesh.h">
       <Filter>Header Files\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="src\MeshAssimp.h">
+      <Filter>Header Files\MeshAssimp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh\LiteralVertex.h">
       <Filter>Header Files\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
@@ -273,10 +282,5 @@
     <Natvis Include="imgui.natvis">
       <Filter>GUI</Filter>
     </Natvis>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="default.frag">
-      <Filter>Resource Files\Shaders\Object</Filter>
-    </Text>
   </ItemGroup>
 </Project>

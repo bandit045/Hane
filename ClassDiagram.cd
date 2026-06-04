@@ -1,62 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
-  <Class Name="EBO">
-    <Position X="14.25" Y="6.25" Width="1.75" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Struct Name="EBO::OrderOfRendering">
-        <TypeIdentifier>
-          <NewMemberFileName>EBO.h</NewMemberFileName>
-        </TypeIdentifier>
-      </Struct>
-    </NestedTypes>
+  <Class Name="Face">
+    <Position X="0.75" Y="1.25" Width="4.5" />
     <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAgAAAAAAAAAAAAAEAAAAAAAAEAAAAACA=</HashCode>
-      <FileName>EBO.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="VAO">
-    <Position X="14.25" Y="1" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAggAAAAAAgAAAAAAAAAAAAAEAAAAAAAAEAACAAAA=</HashCode>
-      <FileName>VAO.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="VBO">
-    <Position X="14.25" Y="3.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAgAAAAAAAAAAAAAEAAAAAAAAEAAAEAAA=</HashCode>
-      <FileName>VBO.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="FaceTriangle">
-    <Position X="4.25" Y="0.5" Width="6.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAABAABCAAAAAIAAAAAEAAAAAABAACAAAAAgAAgAA=</HashCode>
-      <FileName>FaceTriangle.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Importer">
-    <Position X="9.5" Y="5.75" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Importer.h</FileName>
+      <HashCode>AAEAABAABCABAACIAACABEAAAAAQBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Face.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Mesh">
-    <Position X="11" Y="0.5" Width="3" />
+    <Position X="5.5" Y="1.25" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAABAEAAAAACAAgAAAAQAIAAAAAAQEAAAAAAAA=</HashCode>
+      <HashCode>EAABAAAQEAAACAAAAiABAABAAAAAAAAAAQAEAAAAAQE=</HashCode>
       <FileName>Mesh.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Vertex">
-    <Position X="0.5" Y="0.5" Width="3.5" />
+  <Class Name="Hane::Vertex">
+    <Position X="10.75" Y="1.25" Width="4" />
     <TypeIdentifier>
-      <HashCode>IAAAAAAQAACBAAAAJAADIgESAAAABAAAEBBAgEgIAAA=</HashCode>
-      <FileName>Vertex.h</FileName>
+      <HashCode>IAAAAAAQAAABAgAAJAAhIgGTAAAABAABEBBAkEgKAAA=</HashCode>
+      <FileName>Mesh\Vertex.h</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

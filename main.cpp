@@ -2,9 +2,13 @@
 #include <vector>
 #include <unordered_map>
 #include <variant>
+
 #include <glad/glad.h>
+
 #include <GLFW/glfw3.h>
+
 #include <stb/stb_image.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -13,28 +17,28 @@
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 
-#include "GLErrorHandle.h"
+#include "src/GLErrorHandle.h"
 
-#include "Texture.h"
-#include "Shader.h"
-#include "VBO.h"
-#include "VAO.h"
-#include "EBO.h"
-#include "Camera.h"
-#include "Object.h"
-#include "GUI.h"
-#include "Light.h"
-#include "Transform.h"
-#include "MenageShaders.h"
-#include "Importer.h"
-#include "UnifformBufferObject.h"
-#include "RenderFlags.h"
-#include "Material.h"
-#include "Mesh/Face.h" // Only triangle
-#include "Mesh/Mesh.h"
+#include "src/Texture.h"
+#include "src/Shader.h"
+#include "src/VBO.h"
+#include "src/VAO.h"
+#include "src/EBO.h"
+#include "src/Camera.h"
+#include "src/Object.h"
+#include "src/GUI.h"
+#include "src/Light.h"
+#include "src/Transform.h"
+#include "src/MenageShaders.h"
+#include "src/Importer.h"
+#include "src/UnifformBufferObject.h"
+#include "src/RenderFlags.h"
+#include "src/Material.h"
+#include "src/Mesh/Face.h" // Only triangle
+#include "src/Mesh/Mesh.h"
 
-const unsigned int width = 1920;
-const unsigned int height = 1080;
+const uint32_t WINDOW_WIDTH = 1920;
+const uint32_t WINDOW_HEIGHT = 1080;
 
 float repeat_time_cube = 2.0f;
 float repeat_time_cube_top = 8.0f;
@@ -142,7 +146,7 @@ std::vector<EBO::OrderOfRendering> indices_cube=
 // Vertices for Light source  
 GLfloat vertices_lightSource[] =
 {
-	 // Prednja strana
+	     // Prednja strana
 		-0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
 		 0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
 		 0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
@@ -161,13 +165,13 @@ GLfloat vertices_lightSource[] =
 		-0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
 
 		// Leva strana
-		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
-		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
-		-0.01f,  0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f,  0.01f,  0.01f, -1.0f, +0.0f, +0.0f,
+		-0.01f,  0.01f, -0.01f, -1.0f, +0.0f, +0.0f,
+		-0.01f, -0.01f, -0.01f, -1.0f, +0.0f, +0.0f,
 
 		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
-		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
 		-0.01f, -0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
+		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
 
 		// Desna strana
 		 0.01f,  0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
@@ -175,20 +179,19 @@ GLfloat vertices_lightSource[] =
 		 0.01f,  0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
 
 		 0.01f, -0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
-		 0.01f,  0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
+		 0.01f,  0.01f,  0.01f , 1.0f, 0.0f, 0.0f,
 		 0.01f, -0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
 
 		 // Donja strana
 		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
-		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
 		  0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
+		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
 
 		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
+	     -0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
 		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
-		 -0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
 
 		 // Gornja strana
-		 
 		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
 		  0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
 		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
@@ -198,7 +201,7 @@ GLfloat vertices_lightSource[] =
 		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
 };
 
-std::vector<EBO::OrderOfRendering> indices_class_cube = // This is only GL_TRIANGLE
+std::vector<EBO::OrderOfRendering> indices_class_cube = // This is only GL_TRIANGLE // Plane
 {
 	// Front face
 	EBO::OrderOfRendering{1, 0, 2}, EBO::OrderOfRendering{3, 5, 4},/* EBO::OrderOfRendering{1, 2, 3}*/
@@ -211,8 +214,8 @@ int main()
 
 	// Tell GLFW what version of OpenGL we are using 
 	// In this case we are using OpenGL 3.3
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	// Tell GLFW we are using the CORE profile
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -222,7 +225,7 @@ int main()
 	//glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE); // Set Transparent Background
 
 	// Create a GLFWwindow object of 1920 by 1080 pixels, naming it "Hello World!"
-	GLFWwindow* window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello World!", NULL, NULL);
 	// Error check if the window fails to create
 	if (window == NULL) {
 
@@ -233,7 +236,7 @@ int main()
 
 	// Introduce the window into the current context
 	glfwMakeContextCurrent(window);
-
+	
 	glfwSwapInterval(1);
 
 	//Load GLAD so it configures OpenGL
@@ -244,11 +247,13 @@ int main()
 //-----------------------------------------------------------------------------------------------
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 1920, y = 1080
-	GLCall(glViewport(0,0, width, height));
+	GLCall(glViewport(0,0, WINDOW_WIDTH, WINDOW_HEIGHT));
+
+	std::cout << glGetString(GL_VERSION) << std::endl;
 
 	// Generates Shader object using shaders defualt.vert and default.frag
-	Shader shaderProgramForObjects("default.vert", "default.frag");
-	Shader lightSourceShader("lightingSourceShader.vert", "lightingSourceShader.frag");
+	Shader shaderProgramForObjects("shaders/default.vert", "shaders/default.frag");
+	Shader lightSourceShader("shaders/lightingSourceShader.vert", "shaders/lightingSourceShader.frag");
 	MenageShaders::setDefaultShadersForAllID(shaderProgramForObjects.ID, lightSourceShader.ID);
 	//std::cout << "Light Source Shader(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT);
 	//std::cout << "\nShader Program For Objects(how object look): " << MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS) << "\n";
@@ -264,9 +269,9 @@ int main()
 
 	// Links VBO attributes such as cordinates and colors to VAO
 	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);                   // Cordinates
-	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float))); // Color
-	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float))); // Texture cords
 	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float))); // Normals
+	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float))); // Texture cords
+	TRIANGLE_SHAPE_VAO.LinkAttrib(TRIANGLE_SHAPE_VBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float))); // Color
 	// Unbind all to prevent accidentally modifying them
 	TRIANGLE_SHAPE_VAO.Unbind();
 	TRIANGLE_SHAPE_VBO.Unbind();
@@ -277,13 +282,13 @@ int main()
 	std::vector< glm::vec3 > importNormalsCube;
 
 	// Used for storing EBO cordinates
-	std::vector<unsigned int> importCubeIndex;
+	std::vector<uint32_t> importCubeIndex;
 
 	// Normal buffer for storing EBO normals
-	std::vector<unsigned int> importCubeIndexNormal;
+	std::vector<uint32_t> importCubeIndexNormal;
 
 	// We import our vertex model cordinates, uv, normals inside variable that are passed by reference
-	Importer::loadOBJ("mesh.obj", importVerticesCube, importUvsCube, importNormalsCube, importCubeIndex, importCubeIndexNormal); // Cordinates, Texture-cords, Normals, EBO
+	Importer::loadOBJ("Resources/3D_Models/mesh.obj", importVerticesCube, importUvsCube, importNormalsCube, importCubeIndex, importCubeIndexNormal); // Cordinates, Texture-cords, Normals, EBO
 
 	// Generates Vertex Array Object for file from import and binds it
 	VAO IMPORT_CUBE_SHAPE_VAO;
@@ -294,7 +299,7 @@ int main()
 	VBO IMPORT_CUBE_SHAPE_VBO_NORMALS(   importNormalsCube,  importNormalsCube.size() * sizeof(glm::vec3));
 	VBO IMPORT_CUBE_SHAPE_VBO_UV(		 importUvsCube,      importUvsCube.size() * sizeof(glm::vec2));
 	// Generates Element Buffer Object for imported cube and links it to indices
-	EBO IMPORT_CUBE_SHAPE_CORDINATE_EBO(importCubeIndex, importCubeIndex.size() * sizeof(unsigned int));
+	EBO IMPORT_CUBE_SHAPE_CORDINATE_EBO(importCubeIndex, importCubeIndex.size() * sizeof(uint32_t));
 	
 	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_CORDINATES,  0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0); // Cordinates
 	IMPORT_CUBE_SHAPE_VAO.LinkAttrib(IMPORT_CUBE_SHAPE_VBO_NORMALS,     1, 3, GL_FLOAT, 3 * sizeof(float), (void*)0); // Normals
@@ -308,55 +313,52 @@ int main()
 	IMPORT_CUBE_SHAPE_VBO_NORMALS.Unbind();
 	IMPORT_CUBE_SHAPE_CORDINATE_EBO.Unbind();
 //----------------------------------------------------------------------------------------------------------------------------------------
-	Vertex top_left;
+	Hane::LiteralVertex top_left;
 	top_left.setCordinate() = glm::vec3(-1.0f, 1.0f, -1.0f);
 	//top_left.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
 	top_left.setUVCord() = glm::vec2(0.0f, 8.0f);
 	top_left.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	Vertex top_right;
+	Hane::LiteralVertex top_right;
 	top_right.setCordinate() = glm::vec3(1.0f, 1.0f, -1.0f);
 	//top_right.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
 	top_right.setUVCord() = glm::vec2(8.0f, 8.0f);
 	top_right.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	Vertex bottom_left;
+	Hane::LiteralVertex bottom_left;
 	bottom_left.setCordinate() = glm::vec3(-1.0f, 1.0f, 1.0f);
 	//bottom_left.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
 	bottom_left.setUVCord() = glm::vec2(0.0f, 0.0f);
 	bottom_left.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 //----------------------------------------------------------------------------------------------------
-	Vertex bottom_right_second;
+	Hane::LiteralVertex bottom_right_second;
 	bottom_right_second.setCordinate() = glm::vec3(1.0f, 1.0f, 1.0f);
 	//bottom_right_second.setNormal() = glm::vec3(0.0f,  1.0f,  0.0f);
 	bottom_right_second.setUVCord() = glm::vec2(8.0f, 0.0f);
 	bottom_right_second.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	Vertex bottom_left_second;
+	Hane::LiteralVertex bottom_left_second;
 	bottom_left_second.setCordinate() = glm::vec3(-1.0f, 1.0f, 1.0f);
 	//bottom_left_second.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
 	bottom_left_second.setUVCord() = glm::vec2(0.0f, 0.0f);
 	bottom_left_second.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	Vertex top_right_second;
+	Hane::LiteralVertex top_right_second;
 	top_right_second.setCordinate() = glm::vec3(1.0f, 1.0f, -1.0f);
 	//top_right.setNormal() = glm::vec3(0.0f, 1.0f, 0.0f);
 	top_right_second.setUVCord() = glm::vec2(8.0f, 8.0f);
 	top_right_second.setColor() = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	Face topFaceOne(top_left, top_right, bottom_left);
-	Face topFaceTwo(bottom_right_second, bottom_left_second, top_right_second);
+	Hane::Face topFaceOne { top_left, top_right, bottom_left };
+	Hane::Face topFaceTwo { bottom_right_second, bottom_left_second, top_right_second };
 	topFaceOne.calculateAutomaticNormal(true); // Parameter for flip direction of normal true positive
 	topFaceTwo.calculateAutomaticNormal(true); // Parameter for flip direction of normal true positive
 	topFaceOne.calculateFaceData();
 	topFaceTwo.calculateFaceData();
 
-	Mesh meshObject;
+	Hane::Mesh meshObject;
 	meshObject.addTriangleToMesh(topFaceOne);
-	meshObject.addTriangleToMesh(topFaceTwo);
-
-	meshObject.getTriangle(0).getVertex(1).setCordinate() = glm::vec3(21.0f, 05.0f, 1.0f);	
-
+	meshObject.addTriangleToMesh(topFaceTwo);	
 
 	meshObject.calculateMeshData();
 	//meshObject.printMeshData(); // Debug
@@ -366,9 +368,9 @@ int main()
 	CUBE_SHAPE_CLASS_VAO.Bind();
 
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO CUBE_SHAPE_CLASS_VBO(meshObject.getMeshData().data(), sizeof(float) * Vertex::s_offsetOfBufferLayout * meshObject.getNumberOfVertices());
+	VBO CUBE_SHAPE_CLASS_VBO(meshObject.getMeshData().data(), sizeof(float) * Hane::LiteralVertex::s_offsetOfBufferLayout * meshObject.getNumberOfVertices());
 	// Generates Element Buffer Object and links it to indices
-	EBO CUBE_SHAPE_CLASS_EBO(indices_class_cube, (indices_class_cube.size() * sizeof(EBO::OrderOfRendering) * sizeof(unsigned int)));
+	EBO CUBE_SHAPE_CLASS_EBO(indices_class_cube, (indices_class_cube.size() * sizeof(EBO::OrderOfRendering) * sizeof(uint32_t)));
 
 	// Links VBO attributes such as cordinates and colors to VAO
 	CUBE_SHAPE_CLASS_VAO.LinkAttrib(CUBE_SHAPE_CLASS_VBO, 0, 3, GL_FLOAT, 12 * sizeof(float), (void*)0); // Cordinates
@@ -387,7 +389,7 @@ int main()
 	// Generates Vertex Buffer Object and links it to vertices
 	VBO CUBE_SHAPE_VBO_VERTICES(vertices_cube, sizeof(vertices_cube));
 	// Generates Element Buffer Object and links it to indices
-	EBO CUBE_SHAPE_EBO(indices_cube, (indices_cube.size() * sizeof(EBO::OrderOfRendering) * sizeof(unsigned int)));
+	EBO CUBE_SHAPE_EBO(indices_cube, (indices_cube.size() * sizeof(EBO::OrderOfRendering) * sizeof(uint32_t)));
 
 	// Links VBO attributes such as cordinates and colors to VAO
 	CUBE_SHAPE_VAO.LinkAttrib(CUBE_SHAPE_VBO_VERTICES, 0, 3, GL_FLOAT, 12 * sizeof(float), (void*)0); // Cordinates
@@ -423,7 +425,6 @@ int main()
 	Light spotLight(TypeOfLight::SPOT_LIGHT);
 
 	// Serve as bool value that is send to shader in UBO Buffer to control different state on/off effect etc.
-	
 	RenderFlags renderFlags;
 	renderFlags.addRenderFlag("isPointLightReducingOnDistance", true);
 	renderFlags.addRenderFlag("isPhong",                        false);
@@ -473,14 +474,15 @@ int main()
 	// Enable the depth buffer
 	GLCall(glEnable(GL_DEPTH_TEST));
 
-	// Makeing camera
-	Camera camera(width, height, glm::vec3(0.0f, 2.0f, 5.0f));
-	camera.setPosition(glm::vec3(0.03f, 4.12f, 4.09));
+	// Makaing camera
+	Camera camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 2.0f, 5.0f));
+	camera.setPosition(glm::vec3(0.03f, 4.12f, 4.09)); 
 	camera.setOrientation(glm::vec3(0.39f, -0.53f, -0.74));
 
 	// Creating lamp transform
 	Transform lampTransform(MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT));
-	lampTransform.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position when program start
+	//lampTransform.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position when program start
+	lampTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f)); // Setting object position when program start
 
 	// Creating cube transform
 	Transform cubeTransform(MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS));

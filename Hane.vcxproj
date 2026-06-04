@@ -139,14 +139,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\include\assimp;$(ProjectDir)Libraries\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libraries\lib\assimp;$(ProjectDir)Libraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -173,13 +174,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="EBO.cpp" />
-    <ClCompile Include="Face.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\EBO.cpp" />
+    <ClCompile Include="src\Face.cpp" />
     <ClCompile Include="glad.c" />
-    <ClCompile Include="GLErrorHandle.cpp" />
-    <ClCompile Include="GLPolygoneModeAppRenderAll.cpp" />
-    <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="src\GLErrorHandle.cpp" />
+    <ClCompile Include="src\GLPolygoneModeAppRenderAll.cpp" />
+    <ClCompile Include="src\GUI.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -187,58 +188,54 @@
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="Libraries\include\stb\stb.cpp" />
+    <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="MenageShaders.cpp" />
-    <ClCompile Include="Importer.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="RenderFlags.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="stb.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="UnifformBufferObject.cpp" />
-    <ClCompile Include="VAO.cpp" />
-    <ClCompile Include="VBO.cpp" />
-    <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\MenageShaders.cpp" />
+    <ClCompile Include="src\Importer.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\MeshAssimp.cpp" />
+    <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\RenderFlags.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\UnifformBufferObject.cpp" />
+    <ClCompile Include="src\VAO.cpp" />
+    <ClCompile Include="src\VBO.cpp" />
+    <ClCompile Include="src\Mesh\LiteralVertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
-    <Text Include="default.frag">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">default.frag</DeploymentContent>
-    </Text>
-    <None Include="default.vert" />
-    <None Include="default_obj.frag" />
-    <None Include="default_obj.vert" />
+    <None Include="shaders\default.frag" />
+    <None Include="shaders\default.vert" />
+    <None Include="shaders\lightingSourceShader.frag" />
+    <None Include="shaders\lightingSourceShader.vert" />
     <None Include="imgui.natstepfilter" />
-    <None Include="lightingSourceShader.frag" />
-    <None Include="lightingSourceShader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="EBO.h" />
-    <ClInclude Include="Face.h" />
-    <ClInclude Include="GLErrorHandle.h" />
-    <ClInclude Include="GLPolygoneModeAppRenderAll.h" />
-    <ClInclude Include="GUI.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="MenageShaders.h" />
-    <ClInclude Include="Importer.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="RenderFlags.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="UnifformBufferObject.h" />
-    <ClInclude Include="VAO.h" />
-    <ClInclude Include="VBO.h" />
-    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\EBO.h" />
+    <ClInclude Include="src\Face.h" />
+    <ClInclude Include="src\GLErrorHandle.h" />
+    <ClInclude Include="src\GLPolygoneModeAppRenderAll.h" />
+    <ClInclude Include="src\GUI.h" />
+    <ClInclude Include="src\Light.h" />
+    <ClInclude Include="src\Material.h" />
+    <ClInclude Include="src\MenageShaders.h" />
+    <ClInclude Include="src\Importer.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\MeshAssimp.h" />
+    <ClInclude Include="src\Mesh\LiteralVertex.h" />
+    <ClInclude Include="src\Object.h" />
+    <ClInclude Include="src\RenderFlags.h" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\UnifformBufferObject.h" />
+    <ClInclude Include="src\VAO.h" />
+    <ClInclude Include="src\VBO.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\awesomeface.png" />
