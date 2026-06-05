@@ -27,12 +27,9 @@ void Object::setObjectName(std::string _newName)
 std::string Object::setDefaultObjectName() // This method serve as gurd if we dons specify name of object in constructor
 {
 	name_counter++;
-	return "New Object(" + std::to_string(name_counter) + ")";
+	return "Object_" + std::to_string(name_counter) + ")";
 }
-std::string Object::getObjectName(bool newLineChar)
+std::string Object::getObjectName() const
 {
-	if (newLineChar)
-		return m_objectName + "\n";
-	else
-		return m_objectName;
+	return m_objectName;
 }

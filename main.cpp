@@ -1,22 +1,25 @@
+// Standard kontajner data structures, and diff stuff
 #include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <variant>
+#include <memory>
 
+// Pointer-s ka funkcijama koje omogucava OpenGL
 #include <glad/glad.h>
 
+// Window biblioteka - A library for OpenGL, window and input
 #include <GLFW/glfw3.h>
 
+// Texture biblioteka - image loading/decoding from file/memory: JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC
 #include <stb/stb_image.h>
 
+// Math biblioteka
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "imgui/imgui.h"
-#include "imgui/backends/imgui_impl_glfw.h"
-#include "imgui/backends/imgui_impl_opengl3.h"
-
+// Hane engine core 
 #include "src/GLErrorHandle.h"
 
 #include "src/Texture.h"
@@ -40,165 +43,167 @@
 const uint32_t WINDOW_WIDTH = 1920;
 const uint32_t WINDOW_HEIGHT = 1080;
 
-float repeat_time_cube = 2.0f;
-float repeat_time_cube_top = 8.0f;
+#pragma region DEFINED_SHAPE
 
 // Vertices coordinates
 GLfloat vertices_pyramide[] =
-{ //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
-	-0.5f, 0.0f,  0.5f,     1.00f, 0.00f, 0.00f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	-0.5f, 0.0f, -0.5f,     0.83f, 1.00f, 0.00f,	 0.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	 0.5f, 0.0f, -0.5f,     0.00f, 0.00f, 1.00f,	 5.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	 0.5f, 0.0f,  0.5f,     1.00f, 1.00f, 0.00f,	 5.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-
-	-0.5f, 0.0f,  0.5f,     0.83f, 1.70f, 0.00f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.00f, 0.44f,	 5.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-	 0.0f, 0.8f,  0.0f,     0.00f, 0.86f, 0.76f,	 2.5f, 5.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-
-	-0.5f, 0.0f, -0.5f,     0.83f, 1.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-	 0.5f, 0.0f, -0.5f,     1.83f, 0.70f, 1.00f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-	 0.0f, 0.8f,  0.0f,     0.00f, 0.00f, 0.00f,	 2.5f, 5.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 1.00f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-	 0.5f, 0.0f,  0.5f,     1.00f, 0.00f, 0.44f,	 5.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.00f, 0.76f,	 2.5f, 5.0f,      0.8f, 0.5f,  0.0f, // Right side
-
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 1.00f,	 5.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-	-0.5f, 0.0f,  0.5f,     1.00f, 0.00f, 0.04f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.00f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f,  0.8f  // Facing side
+{ //     COORDINATES     /        COLORS          /    TexCoord    /        NORMALS       //
+	-0.5f,  0.0f,  0.5f,     1.00f, 0.00f, 0.00f,     0.0f, 0.0f,     0.0f, -1.0f,  0.0f, // Bottom side
+	-0.5f,  0.0f, -0.5f,     0.83f, 1.00f, 0.00f,     0.0f, 5.0f,     0.0f, -1.0f,  0.0f, // Bottom side
+	 0.5f,  0.0f, -0.5f,     0.00f, 0.00f, 1.00f,     5.0f, 5.0f,     0.0f, -1.0f,  0.0f, // Bottom side
+	 0.5f,  0.0f,  0.5f,     1.00f, 1.00f, 0.00f,     5.0f, 0.0f,     0.0f, -1.0f,  0.0f, // Bottom side
+		    									      
+	-0.5f,  0.0f,  0.5f,     0.83f, 1.70f, 0.00f,     0.0f, 0.0f,    -0.8f,  0.5f,  0.0f, // Left Side
+	-0.5f,  0.0f, -0.5f,     0.83f, 0.00f, 0.44f,     5.0f, 0.0f,    -0.8f,  0.5f,  0.0f, // Left Side
+	 0.0f,  0.8f,  0.0f,     0.00f, 0.86f, 0.76f,     2.5f, 5.0f,    -0.8f,  0.5f,  0.0f, // Left Side
+		    									      						 
+	-0.5f,  0.0f, -0.5f,     0.83f, 1.70f, 0.44f,     5.0f, 0.0f,     0.0f,  0.5f, -0.8f, // Non-facing side
+	 0.5f,  0.0f, -0.5f,     1.83f, 0.70f, 1.00f,     0.0f, 0.0f,     0.0f,  0.5f, -0.8f, // Non-facing side
+	 0.0f,  0.8f,  0.0f,     0.00f, 0.00f, 0.00f,     2.5f, 5.0f,     0.0f,  0.5f, -0.8f, // Non-facing side
+		    									      						 
+	 0.5f,  0.0f, -0.5f,     0.83f, 0.70f, 1.00f,     0.0f, 0.0f,     0.8f,  0.5f,  0.0f, // Right side
+	 0.5f,  0.0f,  0.5f,     1.00f, 0.00f, 0.44f,     5.0f, 0.0f,     0.8f,  0.5f,  0.0f, // Right side
+	 0.0f,  0.8f,  0.0f,     0.92f, 0.00f, 0.76f,     2.5f, 5.0f,     0.8f,  0.5f,  0.0f, // Right side
+		    									      						 
+	 0.5f,  0.0f,  0.5f,     0.83f, 0.70f, 1.00f,     5.0f, 0.0f,     0.0f,  0.5f,  0.8f, // Facing side
+	-0.5f,  0.0f,  0.5f,     1.00f, 0.00f, 0.04f,     0.0f, 0.0f,     0.0f,  0.5f,  0.8f, // Facing side
+	 0.0f,  0.8f,  0.0f,     0.92f, 0.00f, 0.76f,     2.5f, 5.0f,     0.0f,  0.5f,  0.8f  // Facing side
 };
 
 // Indices for vertices order
 GLuint indices_pyramide[] =
 {
-	0, 1, 2, // Bottom side
-	0, 2, 3, // Bottom side
-	4, 6, 5, // Left side
-	7, 9, 8, // Non-facing side
+	0,  1,  2, // Bottom side
+	0,  2,  3, // Bottom side
+	4,  6,  5, // Left side
+	7,  9,  8, // Non-facing side
 	10, 12, 11, // Right side
 	13, 15, 14 // Facing side
 };
 
+const float REPEAT_TIME_CUBE = 2.0f;
+const float REPEAT_TIME_CUBE_TOP = 4.0f;
+
 // Vertices for cube
 GLfloat vertices_cube[] =
 {
-	// Positions     // Normals      // Texture-cordinates(x, y)    // Colors
+	// Positions                // Normals        // Texture-cordinates(x, y)    // Colors - RGBW
 
 	// Front face (z = 1.0)
-	-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,  // Bottom-left
-	 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  2.0f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,  // Bottom-right
-	 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  2.0f,  2.0f,  1.0f,  0.0f,  0.0f, 1.0f,  // Top-right
-	-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  2.0f,  1.0f,  0.0f,  0.0f, 1.0f,  // Top-left
-																				
-	// Back face (z = -1.0)														
-	-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
-	 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
-	 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-right
-	-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-left
-																				
-	// Left face (x = -1.0)														
-	-1.0f, -1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,  0.0f, 0.0f, 1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
-	-1.0f, -1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,  2.0f, 0.0f, 1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
-	-1.0f,  1.0f,  1.0f,  -1.0f,  0.0f,  0.0f,  2.0f, 2.0f, 1.0f,  0.0f,  0.0f, 1.0f, // Top-right
-	-1.0f,  1.0f, -1.0f,  -1.0f,  0.0f,  0.0f,  0.0f, 2.0f, 1.0f,  0.0f,  0.0f, 1.0f, // Top-left
-																				
-	// Right face (x = 1.0)														
-	 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
-	 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
-	 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-right
-	 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-left
-																				
-	// Top face (y = 1.0)														
-	-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f, 8.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-left
-	 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f,  8.0f, 8.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-right
-	 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  8.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
-	-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
-																				
-	// Bottom face (y = -1.0)													
-	-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-left
-	 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f,  2.0f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Bottom-right
-	 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  2.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-right
-	-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  0.0f, 2.0f,  1.0f,  0.0f,  0.0f, 1.0f, // Top-left
+	-1.0f, -1.0f,  1.0f,     0.0f,  0.0f,  1.0f,     0.0f,                  0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-left
+	 1.0f, -1.0f,  1.0f,     0.0f,  0.0f,  1.0f,     REPEAT_TIME_CUBE,      0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-right
+	 1.0f,  1.0f,  1.0f,     0.0f,  0.0f,  1.0f,     REPEAT_TIME_CUBE,      REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-right
+	-1.0f,  1.0f,  1.0f,     0.0f,  0.0f,  1.0f,     0.0f,                  REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-left
+												  	 			 	  	       					     
+	// Back face (z = -1.0)						  	 			 	  	       					     
+	-1.0f, -1.0f, -1.0f,     0.0f,  0.0f, -1.0f,     0.0f,                  0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-left
+	 1.0f, -1.0f, -1.0f,     0.0f,  0.0f, -1.0f,     REPEAT_TIME_CUBE,      0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-right
+	 1.0f,  1.0f, -1.0f,     0.0f,  0.0f, -1.0f,     REPEAT_TIME_CUBE,      REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-right
+	-1.0f,  1.0f, -1.0f,     0.0f,  0.0f, -1.0f,     0.0f,                  REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-left
+												  	  			 	  	       					     
+	// Left face (x = -1.0)						  	  			 	  	       					     
+	-1.0f, -1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,     0.0f,                  0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-left
+	-1.0f, -1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,     REPEAT_TIME_CUBE,      0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-right
+	-1.0f,  1.0f,  1.0f,    -1.0f,  0.0f,  0.0f,     REPEAT_TIME_CUBE,      REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-right
+	-1.0f,  1.0f, -1.0f,    -1.0f,  0.0f,  0.0f,     0.0f,                  REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-left
+												  	  			 	  	       					     
+	// Right face (x = 1.0)						  	  			 	  	       					     
+	 1.0f, -1.0f, -1.0f,     1.0f,  0.0f,  0.0f,     0.0f,                  0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-left
+	 1.0f, -1.0f,  1.0f,     1.0f,  0.0f,  0.0f,     REPEAT_TIME_CUBE,      0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-right
+	 1.0f,  1.0f,  1.0f,     1.0f,  0.0f,  0.0f,     REPEAT_TIME_CUBE,      REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-right
+	 1.0f,  1.0f, -1.0f,     1.0f,  0.0f,  0.0f,     0.0f,                  REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-left
+												  	  			 	  	   
+	// Top face (y = 1.0)						  	  			 	  	   
+	-1.0f,  1.0f, -1.0f,     0.0f,  1.0f,  0.0f,     0.0f,                  REPEAT_TIME_CUBE_TOP,     1.0f, 0.0f, 0.0f, 1.0f, // Top-left
+	 1.0f,  1.0f, -1.0f,     0.0f,  1.0f,  0.0f,     REPEAT_TIME_CUBE_TOP,  REPEAT_TIME_CUBE_TOP,     1.0f, 0.0f, 0.0f, 1.0f, // Top-right
+	 1.0f,  1.0f,  1.0f,     0.0f,  1.0f,  0.0f,     REPEAT_TIME_CUBE_TOP,  0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-right
+	-1.0f,  1.0f,  1.0f,     0.0f,  1.0f,  0.0f,     0.0f,                  0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-left
+												  	 			 	  	   
+	// Bottom face (y = -1.0)					  	 			 	  	   
+	-1.0f, -1.0f, -1.0f,     0.0f, -1.0f,  0.0f,     0.0f,                  0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-left
+	 1.0f, -1.0f, -1.0f,     0.0f, -1.0f,  0.0f,     REPEAT_TIME_CUBE,      0.0f,                     1.0f, 0.0f, 0.0f, 1.0f, // Bottom-right
+	 1.0f, -1.0f,  1.0f,     0.0f, -1.0f,  0.0f,     REPEAT_TIME_CUBE,      REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f, // Top-right
+	-1.0f, -1.0f,  1.0f,     0.0f, -1.0f,  0.0f,     0.0f,                  REPEAT_TIME_CUBE,         1.0f, 0.0f, 0.0f, 1.0f  // Top-left
 };
 
 // Indices for cube
 std::vector<EBO::OrderOfRendering> indices_cube=
 {
 	// Front face
-	EBO::OrderOfRendering{0, 1, 2},  EBO::OrderOfRendering{2, 3, 0},
-	
-	// Back face
-	EBO::OrderOfRendering{5, 4, 6},  EBO::OrderOfRendering{7, 6, 4},
-	
-	// Left face
-	EBO::OrderOfRendering{8, 9, 10},  EBO::OrderOfRendering{10, 11, 8},
+	EBO::OrderOfRendering{0, 1, 2},    EBO::OrderOfRendering{2, 3, 0},
+									   
+	// Back face					   
+	EBO::OrderOfRendering{5, 4, 6},    EBO::OrderOfRendering{7, 6, 4},
+									   
+	// Left face					   
+	EBO::OrderOfRendering{8, 9, 10},   EBO::OrderOfRendering{10, 11, 8},
 	
 	// Right face
 	EBO::OrderOfRendering{12, 14, 13}, EBO::OrderOfRendering{15, 14, 12},
 	
 	// Top face
-	EBO::OrderOfRendering{17, 16, 18},  EBO::OrderOfRendering{18, 16, 19},
+	EBO::OrderOfRendering{17, 16, 18}, EBO::OrderOfRendering{18, 16, 19},
 	
 	// Bottom face
-	EBO::OrderOfRendering{20, 21, 22},  EBO::OrderOfRendering{22, 23, 20}
+	EBO::OrderOfRendering{20, 21, 22}, EBO::OrderOfRendering{22, 23, 20}
 };
 
 // Vertices for Light source  
 GLfloat vertices_lightSource[] =
 {
 	     // Prednja strana
-		-0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
-		 0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
-		 0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
-
-		 0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
-		-0.01f,  0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
-		-0.01f, -0.01f,  0.01f, 0.0f, 0.0f, 1.0f,
-
-		// Zadnja strana
-		-0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
-		 0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
-		 0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
-
-		 0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
-		-0.01f, -0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
-		-0.01f,  0.01f, -0.01f, 0.0f, 0.0f, -1.0f,
-
-		// Leva strana
-		-0.01f,  0.01f,  0.01f, -1.0f, +0.0f, +0.0f,
-		-0.01f,  0.01f, -0.01f, -1.0f, +0.0f, +0.0f,
-		-0.01f, -0.01f, -0.01f, -1.0f, +0.0f, +0.0f,
-
-		-0.01f, -0.01f, -0.01f, -1.0f, 0.0f, 0.0f,
-		-0.01f, -0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
-		-0.01f,  0.01f,  0.01f, -1.0f, 0.0f, 0.0f,
-
-		// Desna strana
-		 0.01f,  0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
-		 0.01f, -0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
-		 0.01f,  0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
-
-		 0.01f, -0.01f, -0.01f, 1.0f, 0.0f, 0.0f,
-		 0.01f,  0.01f,  0.01f , 1.0f, 0.0f, 0.0f,
-		 0.01f, -0.01f,  0.01f, 1.0f, 0.0f, 0.0f,
-
-		 // Donja strana
-		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
-		  0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
-		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
-
-		  0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
-	     -0.01f, -0.01f,  0.01f, 0.0f, 1.0f, 0.0f,
-		 -0.01f, -0.01f, -0.01f, 0.0f, 1.0f, 0.0f,
-
-		 // Gornja strana
-		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
-		  0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
-		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
-
-		 -0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
-		  0.01f,  0.01f,  0.01f, 0.0f, -1.0f, 0.0f,
-		 -0.01f,  0.01f, -0.01f, 0.0f, -1.0f, 0.0f,
+		-0.01f, -0.01f,  0.01f,     0.0f,  0.0f,  1.0f,
+		 0.01f, -0.01f,  0.01f,     0.0f,  0.0f,  1.0f,
+		 0.01f,  0.01f,  0.01f,     0.0f,  0.0f,  1.0f,
+							       		 	    
+		 0.01f,  0.01f,  0.01f,     0.0f,  0.0f,  1.0f,
+		-0.01f,  0.01f,  0.01f,     0.0f,  0.0f,  1.0f,
+		-0.01f, -0.01f,  0.01f,     0.0f,  0.0f,  1.0f,
+							       		 
+		// Zadnja strana	       		 
+		-0.01f, -0.01f, -0.01f,     0.0f,  0.0f, -1.0f,
+		 0.01f,  0.01f, -0.01f,     0.0f,  0.0f, -1.0f,
+		 0.01f, -0.01f, -0.01f,     0.0f,  0.0f, -1.0f,
+							       		 
+		 0.01f,  0.01f, -0.01f,     0.0f,  0.0f, -1.0f,
+		-0.01f, -0.01f, -0.01f,     0.0f,  0.0f, -1.0f,
+		-0.01f,  0.01f, -0.01f,     0.0f,  0.0f, -1.0f,
+							       
+		// Leva strana		       
+		-0.01f,  0.01f,  0.01f,    -1.0f,  0.0f,  0.0f,
+		-0.01f,  0.01f, -0.01f,    -1.0f,  0.0f,  0.0f,
+		-0.01f, -0.01f, -0.01f,    -1.0f,  0.0f,  0.0f,
+							       
+		-0.01f, -0.01f, -0.01f,    -1.0f,  0.0f,  0.0f,
+		-0.01f, -0.01f,  0.01f,    -1.0f,  0.0f,  0.0f,
+		-0.01f,  0.01f,  0.01f,    -1.0f,  0.0f,  0.0f,
+							       
+		// Desna strana		       
+		 0.01f,  0.01f,  0.01f,     1.0f,  0.0f,  0.0f,
+		 0.01f, -0.01f, -0.01f,     1.0f,  0.0f,  0.0f,
+		 0.01f,  0.01f, -0.01f,     1.0f,  0.0f,  0.0f,
+							       
+		 0.01f, -0.01f, -0.01f,     1.0f,  0.0f,  0.0f,
+		 0.01f,  0.01f,  0.01f,     1.0f,  0.0f,  0.0f,
+		 0.01f, -0.01f,  0.01f,     1.0f,  0.0f,  0.0f,
+							       
+		 // Donja strana	       
+		-0.01f, -0.01f, -0.01f,     0.0f,  1.0f,  0.0f,
+		 0.01f, -0.01f, -0.01f,     0.0f,  1.0f,  0.0f,
+		 0.01f, -0.01f,  0.01f,     0.0f,  1.0f,  0.0f,
+							       
+		 0.01f, -0.01f,  0.01f,     0.0f,  1.0f,  0.0f,
+	    -0.01f, -0.01f,  0.01f,     0.0f,  1.0f,  0.0f,
+		-0.01f, -0.01f, -0.01f,     0.0f,  1.0f,  0.0f,
+							       
+		 // Gornja strana	       
+		 0.01f,  0.01f,  0.01f,     0.0f, -1.0f,  0.0f,
+		 0.01f,  0.01f, -0.01f,     0.0f, -1.0f,  0.0f,
+		-0.01f,  0.01f, -0.01f,     0.0f, -1.0f,  0.0f,
+							       
+		 0.01f,  0.01f,  0.01f,     0.0f, -1.0f,  0.0f,
+		-0.01f,  0.01f, -0.01f,     0.0f, -1.0f,  0.0f,
+		-0.01f,  0.01f,  0.01f,     0.0f, -1.0f,  0.0f
 };
 
 std::vector<EBO::OrderOfRendering> indices_class_cube = // This is only GL_TRIANGLE // Plane
@@ -206,6 +211,7 @@ std::vector<EBO::OrderOfRendering> indices_class_cube = // This is only GL_TRIAN
 	// Front face
 	EBO::OrderOfRendering{1, 0, 2}, EBO::OrderOfRendering{3, 5, 4},/* EBO::OrderOfRendering{1, 2, 3}*/
 };
+#pragma endregion // TODO move to class
 
 int main()
 {
@@ -243,7 +249,7 @@ int main()
 	gladLoadGL();
 //-----------------------------------------------------------------------------------------------
 	// Inicialize the GUI
-	GUI guiWindow = GUI(window); 
+	GUI::initGUI(window);
 //-----------------------------------------------------------------------------------------------
 	// Specify the viewport of OpenGL in the Window
 	// In this case the viewport goes from x = 0, y = 0, to x = 1920, y = 1080
@@ -506,7 +512,9 @@ int main()
 	{	
 		lampObject.m_transform->inputs(window);
 
-		GUI::startGUIframe(false);
+		// Start the Dear ImGui frame
+		GUI::startGUIframe();
+		GUI::showDemoWindow(false);
 		GUI::contextOfGUI(camera, renderFlags, lampObject, cubeObject, lampMaterial, globalMaterial, directionalLight, pointLight, spotLight);
 
 		// Setting rendering mode to line
@@ -718,7 +726,7 @@ int main()
 
 	GUI::clearGUI();
 
-	// Delete window before ending the program
+	// Delete window before ending the program, also this free pointer in C
 	glfwDestroyWindow(window);
 	// Terminate GLFW before ending the program
 	glfwTerminate();

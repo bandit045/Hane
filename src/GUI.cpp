@@ -1,10 +1,11 @@
 #include "GUI.h"
 
-GUI::GUI(GLFWwindow* window)
-{ 
+void GUI::initGUI(GLFWwindow* window)
+{
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	GUI::io = ImGui::GetIO();
+	ImGuiIO& io = ImGui::GetIO();
+	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch TODO
 
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.Colors[ImGuiCol_Header] = ImVec4(0.52f, 0.06f, 0.63f, 1.0f);
@@ -19,12 +20,14 @@ GUI::GUI(GLFWwindow* window)
 	ImGui_ImplGlfw_InitForOpenGL(window, true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
 	ImGui_ImplOpenGL3_Init();
 }
-void GUI::startGUIframe(bool _enabledDemo)// This is executing for evry frame
+void GUI::startGUIframe()
 {
-	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+}
+void GUI::showDemoWindow(bool _enabledDemo)
+{
 	if (_enabledDemo)
 		ImGui::ShowDemoWindow(); // Show demo window! :)
 }
@@ -228,7 +231,6 @@ void GUI::LightSource(Object& _lampObject, Material& _lampMaterial, Material& _g
 
 	ImGui::End();
 }
-
 void GUI::SpotLight(Light& _spotLight)
 {
 	ImGui::Begin("Spot Light", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove);
@@ -241,7 +243,6 @@ void GUI::SpotLight(Light& _spotLight)
 
 	ImGui::End();
 }
-
 void GUI::TransformCube(Object& _cubeObject)
 {
 	ImGui::Begin("Cube transform: ");
@@ -250,7 +251,6 @@ void GUI::TransformCube(Object& _cubeObject)
 		ImGui::DragFloat3  ("Scale",    &_cubeObject.m_transform->transformParams().m_objectScale.x,     0.1f          );
 	ImGui::End();
 };
-
 void GUI::GlPolygonMode()
 {
 	ImGui::Begin("Mode render: ");
