@@ -23,18 +23,21 @@
 #include "src/GLErrorHandle.h"
 
 #include "src/Texture.h"
+
 #include "src/Shader.h"
+#include "src/MenageShaders.h"
+#include "src/UnifformBufferObject.h"
+
 #include "src/VBO.h"
 #include "src/VAO.h"
 #include "src/EBO.h"
-#include "src/Camera.h"
+
 #include "src/Object.h"
+#include "src/Camera.h"
 #include "src/GUI.h"
 #include "src/Light.h"
 #include "src/Transform.h"
-#include "src/MenageShaders.h"
 #include "src/Importer.h"
-#include "src/UnifformBufferObject.h"
 #include "src/RenderFlags.h"
 #include "src/Material.h"
 #include "src/Mesh/Face.h" // Only triangle
@@ -607,8 +610,8 @@ int main()
 			GLCall(glUniform4f(glGetUniformLocation(shaderProgramForObjects.ID, "material.objectColor"), cubeMaterial.getObjectColor().r, cubeMaterial.getObjectColor().g, cubeMaterial.getObjectColor().b, cubeMaterial.getObjectColor().a));
 
 			// Binding texture so its appear at render
-			planks.Bind();
-			planksSpec.Bind();
+			oak.Bind();
+			oakSpec.Bind();
 
 			shaderProgramForObjects.sendBool("useCustomTransform", true); // If is true it will use modelRotate modelPos modelScale for gl_Position
 			cubeObject.m_transform->setPosition(cubeTransform.transformParams().m_objectPos);
@@ -620,8 +623,8 @@ int main()
 			// Draw the pyramid using the GL_TRIANGLES primitive
 			GLCall(glDrawElements(GL_TRIANGLES, static_cast<GLsizei>((indices_cube.size() * sizeof(EBO::OrderOfRendering)) / sizeof(unsigned int)), GL_UNSIGNED_INT, 0));
 			// Unbind texture and VAO and deactivate shader program
-			planks.Unbind();
-			planksSpec.Unbind();
+			oak.Unbind();
+			oakSpec.Unbind();
 			CUBE_SHAPE_VAO.Unbind();
 			shaderProgramForObjects.Deactivate();
 		}

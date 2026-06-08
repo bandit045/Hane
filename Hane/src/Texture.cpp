@@ -1,13 +1,14 @@
 #include "Texture.h"
 
-Texture::Texture(const char* image, GLenum texType, GLuint slot, GLenum format, GLenum pixelType)
+Texture::Texture(const char* _texturePath, GLenum texType, GLuint slot, GLenum format, GLenum pixelType)
 {
+	// TODO ispistati putanju do ucitane teksture, kao i tip teksture
 	type = texType;
 
 	int widthImg, heightImg, numColCh;
 	// Becouse stb load image from bottom left corner
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
+	unsigned char* bytes = stbi_load(_texturePath, &widthImg, &heightImg, &numColCh, 0);
 
 	glGenTextures(1, &ID);
 	glActiveTexture(GL_TEXTURE0+ slot);

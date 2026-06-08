@@ -2,9 +2,9 @@
 #define GUI_CLASS
 
 // Dear ImGui biblioteka - no docking branch // TODO: docking branch
-#include <imgui.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
 
 #include <glad/glad.h>
 

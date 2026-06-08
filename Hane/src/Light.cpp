@@ -35,6 +35,7 @@ Light::DirectionalLightParameters& Light::setDirectionLightParams()
 		std::cout << "You can`t edit Directional Light Params, at object light that are not Directional Light Type!";
 		throw std::runtime_error("You can`t edit Directional Light Params, at object light that are not Directional Light Type");
 	}
+	// TODO return std::expected, std::unexpected ReWork
 }
 Light::PointLightParameters& Light::setPointLightParams() 
 {
