@@ -11,9 +11,9 @@
 #include <glm/gtx/vector_angle.hpp>
 
 // For to disable camera while selecting GUI
-#include <imgui.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+#include "imgui/backends/imgui_impl_glfw.h"
 
 #include "Shader.h"
 #include "GLErrorHandle.h"
