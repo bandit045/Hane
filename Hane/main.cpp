@@ -3,16 +3,12 @@
 #include <vector>
 #include <unordered_map>
 #include <variant>
-#include <memory>
 
 // Pointer-s ka funkcijama koje omogucava OpenGL
 #include <glad/glad.h>
 
 // Window biblioteka - A library for OpenGL, window and input
 #include <GLFW/glfw3.h>
-
-// Texture biblioteka - image loading/decoding from file/memory: JPG, PNG, TGA, BMP, PSD, GIF, HDR, PIC
-#include <stb/stb_image.h>
 
 // Math biblioteka
 #include <glm/glm.hpp>

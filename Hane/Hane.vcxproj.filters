@@ -72,25 +72,25 @@
     <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\backends\imgui_impl_glfw.cpp">
+    <ClCompile Include="vendor\include\imgui\backends\imgui_impl_glfw.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_widgets.cpp">
+    <ClCompile Include="vendor\include\imgui\imgui_widgets.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\backends\imgui_impl_opengl3.cpp">
+    <ClCompile Include="vendor\include\imgui\backends\imgui_impl_opengl3.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_draw.cpp">
+    <ClCompile Include="vendor\include\imgui\imgui_draw.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui.cpp">
+    <ClCompile Include="vendor\include\imgui\imgui.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_demo.cpp">
+    <ClCompile Include="vendor\include\imgui\imgui_demo.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_tables.cpp">
+    <ClCompile Include="vendor\include\imgui\imgui_tables.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
     <ClCompile Include="src\Object.cpp">
@@ -111,7 +111,7 @@
     <ClCompile Include="src\Importer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c">
+    <ClCompile Include="vendor\include\glad\glad.c">
       <Filter>Outer</Filter>
     </ClCompile>
     <ClCompile Include="src\VBO.cpp">
@@ -150,7 +150,7 @@
     <ClCompile Include="src\MeshAssimp.cpp">
       <Filter>Source Files\MeshAssimp</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\include\stb\stb.cpp">
+    <ClCompile Include="vendor\include\stb\stb.cpp">
       <Filter>Outer</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,7 +158,6 @@
     <None Include="imgui.natstepfilter">
       <Filter>GUI</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
     <None Include="shaders\lightingSourceShader.frag">
       <Filter>Resource Files\Shaders\LightingSource</Filter>
     </None>

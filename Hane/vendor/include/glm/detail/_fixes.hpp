@@ -3,7 +3,8 @@
 
 #include <cmath>
 
-//! Workaround for compatibility with other libraries
+//! Workaround for compatibility with other 
+//! 
 #ifdef max
 #undef max
 #endif

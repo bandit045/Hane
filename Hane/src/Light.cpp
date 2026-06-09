@@ -35,7 +35,7 @@ Light::DirectionalLightParameters& Light::setDirectionLightParams()
 		std::cout << "You can`t edit Directional Light Params, at object light that are not Directional Light Type!";
 		throw std::runtime_error("You can`t edit Directional Light Params, at object light that are not Directional Light Type");
 	}
-	// TODO return std::expected, std::unexpected ReWork
+	// TODO return std::expected, std::unexpected ReWork, dabi koristio std::expected on je u C++23 a VS19 maksimalno ima verziju C++20, tako da prvo PREMAKE
 }
 Light::PointLightParameters& Light::setPointLightParams() 
 {
