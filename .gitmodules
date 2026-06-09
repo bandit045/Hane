@@ -1,0 +1,3 @@
+[submodule "Hane/vendor/GLFW"]
+	path = Hane/vendor/GLFW
+	url = https://github.com/bandit045/glfw3_4.git
