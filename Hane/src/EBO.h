@@ -1,7 +1,7 @@
 #ifndef EBO_CLASS_H
 #define EBO_CLASS_H
 
-#include <glad.h>
+#include <glad/glad.h>
 #include <vector>
 #include <vec3.hpp>
 
