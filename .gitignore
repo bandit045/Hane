@@ -4,17 +4,18 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Binaries
-#bin/
-#**/bin/
-#bin-int/
+bin/
+bin-int/
+#**/bin/         mozda treba dodati u buducnost, ukoliko se stage bin fajlovi trecih strana, kao sto je GLFW submodule
+#**/bin-int/    
 
-# Visual Studio files and folder
-#.vs/
-#**.sln
-#**.vcxproj
-#**.vcxproj.filters
-#**.vcxproj.user
-#**.csproj
+# Visual Studio files and folder solution user filters - search help
+.vs/
+**.sln  
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+**.csproj
 
 # User-specific files
 *.rsuser
