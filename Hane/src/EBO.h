@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 #include <vector>
-#include <vec3.hpp>
+#include <glm/vec3.hpp>
 
 #include "GLErrorHandle.h"
 

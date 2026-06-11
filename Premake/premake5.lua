@@ -1,17 +1,22 @@
 IncludeDir = {}
 IncludeDir["GLFW"]    = "%{wks.location}/Hane/vendor/GLFW/include"
-IncludeDir["include"] = "%{wks.location}/Hane/vendor/include"
 IncludeDir["imgui"]   = "%{wks.location}/Hane/vendor/include/imgui"
-IncludeDir["glad"]    = "%{wks.location}/Hane/vendor/include"
-IncludeDir["KHR"]     = "%{wks.location}/Hane/vendor/include/KHR"
+
+IncludeDir["glad"]    = "%{wks.location}/Hane/vendor/glad/include"
+IncludeDir["KHR"]     = "%{wks.location}/Hane/vendor/KHR/include"
+
 IncludeDir["stb"]     = "%{wks.location}/Hane/vendor/include/stb"
-IncludeDir["glm"]     = "%{wks.location}/Hane/vendor/include/glm"
+IncludeDir["glm"]     = "%{wks.location}/Hane/vendor/include"
+
+-------------------------------------------------------------------------------------------
 
 LibraryDir = {}
 LibraryDir["glfw3"] = "%{wks.location}/Hane/vendor/GLFW/bin/%{cfg.architecture}/%{cfg.buildcfg}"
+LibraryDir["glad"] = "%{wks.location}/Hane/vendor/glad/bin/%{cfg.architecture}/%{cfg.buildcfg}"
 
 Library = {}
-Library["glfw3"] = "%{LibraryDir.glfw3}/glfw3_Debug.lib" -- ako je imamo u nasem solutionu onda dodajemo ovde,  u suprotnom kao sto je opengl32 onda samo navedemo u links
+Library["glfw3"] = "%{LibraryDir.glfw3}/glfw3.lib" -- ako je imamo u nasem solutionu onda dodajemo ovde,  u suprotnom kao sto je opengl32 onda samo navedemo u links
+Library["glad"] = "%{LibraryDir.glad}/glad.lib"
 
 ----------------------------------------------------------------------------------------
 
@@ -26,7 +31,6 @@ workspace "Hane"
 		"Release"
 	}
 
--- outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 outputdir = "%{cfg.architecture}-%{cfg.buildcfg}"
 
 group "Core"
@@ -35,6 +39,7 @@ group ""
 
 group "Dependencies"
 	project "GLFW"
+	project "GLAD"
 group ""
 
 group "Tools"
@@ -55,9 +60,8 @@ project "Hane"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files{
-		"%{prj.location}/*.h",
-		"%{prj.location}/*.cpp",
+	files{ -- Which files to be included in project filter VS
+		"%{prj.location}/main.cpp",
 
 		"%{prj.location}/src/**.h",
 		"%{prj.location}/src/**.cpp",
@@ -68,38 +72,34 @@ project "Hane"
 		"%{prj.location}/vendor/include/glm/glm/**.hpp",
 		"%{prj.location}/vendor/include/glm/**.inl",
 
-		"%{prj.location}/vendor/include/KHR/**.h",
-
 		"%{prj.location}/vendor/include/imgui/**.h",
-		"%{prj.location}/vendor/include/imgui/**.cpp",
-
-		"%{prj.location}/vendor/include/glad/**.h",
-		"%{prj.location}/vendor/include/glad/**.c",
+		"%{prj.location}/vendor/include/imgui/**.cpp"
 	}
-
-	--excludefrombuild {"%{prj.location}/vendor/include/imgui/backends/imgui_impl_glut.cpp"}
 
 	defines{
 		"_CRT_SECURE_NO_WARNINGS",
 	}
 
 	includedirs{
-		"src",
+		"%{prj.location}/src", -- Actualy Hane
+
 		"%{IncludeDir.GLFW}",
+
 		"%{IncludeDir.glad}",
+		"%{IncludeDir.KHR}",
+
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb}",
-		"%{IncludeDir.KHR}",
+		"%{IncludeDir.stb}"
 	}
 
 	libdirs{
-		"%{prj.location}/vendor/GLFW/bin/%{cfg.architecture}/%{cfg.buildcfg}"
+		"%{prj.location}/vendor/GLFW/bin/%{cfg.architecture}/%{cfg.buildcfg}",
+		"%{prj.location}/vendor/glad/bin/%{cfg.architecture}/%{cfg.buildcfg}"
 	}
 
-
 	removefiles{
-		"%{prj.location}/vendor/include/imgui/backends/imgui_impl_glut.cpp"
+		"%{prj.location}/vendor/include/imgui/backends/imgui_impl_glut.cpp" -- Kako resiti ovo malo je weird da uklanjam samo jedan fajl
 	}
 
 	filter "configurations:Debug"
@@ -108,9 +108,19 @@ project "Hane"
 		symbols "on"
 
 		links {
+			-- projects
 			"GLFW",         -- oznacavamo da Hane zavisi od GLFW tako da se prvo builda GLFW
+			"GLAD",
+			-- projects
+
+			-- system libraries
 			"opengl32",
-			"glfw3_Debug"
+			-- system libraries
+
+			-- builded
+			"glfw3_Debug",
+			"glad_Debug",
+			-- builded
 		}
 
 	filter "configurations:Release"
@@ -119,9 +129,19 @@ project "Hane"
 		optimize "on"
 
 		links {
+			-- projects
 			"GLFW",
+			"GLAD",
+			-- projects
+
+			-- system libraries
 			"opengl32",
-			"glfw3_Release"
+			-- system libraries
+
+			-- builded
+			"glfw3_Release",
+			"glad_Release"
+			-- builded
 		}
 
 	filter "system:windows"
@@ -140,8 +160,7 @@ project "GLFW"
 	targetdir ("%{prj.location}/bin/%{cfg.architecture}/%{cfg.buildcfg}"    )
 	objdir (   "%{prj.location}/bin-int/%{cfg.architecture}/%{cfg.buildcfg}")
 
-	files
-	{
+	files{
 		"%{prj.location}/include/GLFW/glfw3.h",
 		"%{prj.location}/include/GLFW/glfw3native.h",
 
@@ -152,11 +171,11 @@ project "GLFW"
 		"%{prj.location}/src/monitor.c",
 		"%{prj.location}/src/vulkan.c",
 		"%{prj.location}/src/window.c",
-		"%{prj.location}/src/*.c"
+
+		"%{prj.location}/src/*.c" -- think about this line, do i realy need to include all???
 	}
 
-	defines 
-	{ 
+	defines{ 
 		"_GLFW_WIN32",
 		"_CRT_SECURE_NO_WARNINGS"
 	}
@@ -169,6 +188,44 @@ project "GLFW"
 	filter "configurations:Release"
 		runtime "Release"
 		targetname "glfw3_Release"
+		optimize "on"
+
+	filter "system:windows"
+		systemversion "latest" -- Windows SDK Version
+
+----------------
+--    GLAD    --
+----------------
+
+project "GLAD"
+	location "../Hane/vendor/glad"
+	kind "StaticLib"
+	language "C"
+	staticruntime "On" -- Sets <RuntimeLibrary> to "MultiThreaded" -- Sets at command line "/MT" for Release and "/MTd" for Debug
+
+	targetdir ("%{prj.location}/bin/%{cfg.architecture}/%{cfg.buildcfg}"    )
+	objdir (   "%{prj.location}/bin-int/%{cfg.architecture}/%{cfg.buildcfg}")
+
+	files{
+		"%{prj.location}/include/glad/glad.h",
+		"%{prj.location}/include/glad/glad.c",
+
+		"%{prj.location}/KHR/khrplatform.h",
+	}
+
+	includedirs{
+		"%{IncludeDir.glad}",
+		"%{IncludeDir.KHR}"
+	}
+
+	filter "configurations:Debug"
+		runtime "Debug"
+		targetname "glad_Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		runtime "Release"
+		targetname "glad_Release"
 		optimize "on"
 
 	filter "system:windows"

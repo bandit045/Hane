@@ -16,10 +16,10 @@ GLuint& MenageShaders::getDefaultShaderID(DefaultShader _defaultShader)
 	{
 		return *m_defaultShaderForObjectsID;
 	}
-	else if (DefaultShader::FOR_LIGHT == _defaultShader)
-	{
+	//else if (DefaultShader::FOR_LIGHT == _defaultShader)
+	//{
 		return *m_defaultShaderForLightID;
-	}
+	//}
 #ifdef _DEBUG
 	throw std::runtime_error("Wrong parameter passed in static function getDefaultShaderID(DefaultShader defaultShader)");
 #else
