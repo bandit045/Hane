@@ -254,7 +254,7 @@ int main()
 	// In this case the viewport goes from x = 0, y = 0, to x = 1920, y = 1080
 	GLCall(glViewport(0,0, WINDOW_WIDTH, WINDOW_HEIGHT));
 
-	std::cout << glGetString(GL_VERSION) << std::endl;
+	std::cout << glGetString(GL_VERSION) << std::endl; // TODO Log to console with Loging library
 
 	// Generates Shader object using shaders defualt.vert and default.frag
 	Shader shaderProgramForObjects("shaders/default.vert", "shaders/default.frag");
@@ -292,6 +292,7 @@ int main()
 	// Normal buffer for storing EBO normals
 	std::vector<uint32_t> importCubeIndexNormal;
 
+	// TODO remove this approach and replace it with Assimp
 	// We import our vertex model cordinates, uv, normals inside variable that are passed by reference
 	Importer::loadOBJ("Resources/3D_Models/mesh.obj", importVerticesCube, importUvsCube, importNormalsCube, importCubeIndex, importCubeIndexNormal); // Cordinates, Texture-cords, Normals, EBO
 

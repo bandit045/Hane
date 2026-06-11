@@ -92,4 +92,5 @@ bool Importer::loadOBJ(const char* path, std::vector<glm::vec3>& _vertices, std:
 	_importCubeIndexNormal = normalIndices;
 
 	fclose(file);
+	return false;
 }

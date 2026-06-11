@@ -102,21 +102,27 @@ project "Hane"
 		"%{prj.location}/vendor/include/imgui/backends/imgui_impl_glut.cpp"
 	}
 
-	links {
-		"GLFW",         -- oznacavamo da Hane zavisi od GLFW tako da se prvo builda GLFW
-		"opengl32",
-		"glfw3_Debug"
-	}
-
 	filter "configurations:Debug"
 		runtime "Debug"
 		targetname "Hane_Debug"
 		symbols "on"
 
+		links {
+			"GLFW",         -- oznacavamo da Hane zavisi od GLFW tako da se prvo builda GLFW
+			"opengl32",
+			"glfw3_Debug"
+		}
+
 	filter "configurations:Release"
 		runtime "Release"
 		targetname "Hane_Release"
 		optimize "on"
+
+		links {
+			"GLFW",
+			"opengl32",
+			"glfw3_Release"
+		}
 
 	filter "system:windows"
 		systemversion "latest" -- Windows SDK Version

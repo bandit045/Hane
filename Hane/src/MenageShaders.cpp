@@ -10,22 +10,19 @@ void MenageShaders::setDefaultShadersForAllID(GLuint& _defaultShaderForObjectsID
 	m_defaultShaderForLightID = &_defaultShaderForLightsID;
 };
 
-GLuint& MenageShaders::getDefaultShaderID(DefaultShader defaultShader)
+GLuint& MenageShaders::getDefaultShaderID(DefaultShader _defaultShader)
 {
-	if (DefaultShader::FOR_OBJECTS == defaultShader)
+	if (DefaultShader::FOR_OBJECTS == _defaultShader)
 	{
 		return *m_defaultShaderForObjectsID;
 	}
-	else if (DefaultShader::FOR_LIGHT == defaultShader)
+	else if (DefaultShader::FOR_LIGHT == _defaultShader)
 	{
 		return *m_defaultShaderForLightID;
 	}
-	else
-	{
 #ifdef _DEBUG
-		throw std::runtime_error("Wrong parameter passed in static function getDefaultShaderID(DefaultShader defaultShader)");
+	throw std::runtime_error("Wrong parameter passed in static function getDefaultShaderID(DefaultShader defaultShader)");
 #else
-		std::cout << "Wrong parameter passed in static function getDefaultShaderID(DefaultShader defaultShader)" << "\n";
+	std::cout << "Wrong parameter passed in static function getDefaultShaderID(DefaultShader defaultShader)" << "\n";
 #endif // _DEBUG
-	}
 }

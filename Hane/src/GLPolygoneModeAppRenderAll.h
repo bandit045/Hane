@@ -1,9 +1,6 @@
 #ifndef GL_POLYGONE_MODE_APP_RENDER_ALL_H
 #define GL_POLYGONE_MODE_APP_RENDER_ALL_H
 
-#include <iostream>
-#include <glad/glad.h>
-
 // This is Singleton wraper class
 class GLPolygoneModeAppRenderAll
 {
@@ -26,7 +23,6 @@ public:
 		float lineWidth;
 
 	};
-
 	static Stats s_stat;
 
 	static Stats& IgetIsOnOrOff()

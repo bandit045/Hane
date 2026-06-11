@@ -137,110 +137,106 @@ void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
 void GUI::LightSource(Object& _lampObject, Material& _lampMaterial, Material& _globalMaterial, Light& _directionalLight, Light& _pointLight, RenderFlags& _renderFlags, Light& _spotLight)
 {
 	ImGui::Begin("Light source", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground);
+		if (ImGui::CollapsingHeader("Color and position of light source", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-	if (ImGui::CollapsingHeader("Color and position of light source", ImGuiTreeNodeFlags_DefaultOpen)) {
+			/*------------------------------------*/ImGui::SeparatorText("Color for light source:");/*--------------------------------------------*/
+			ImGui::SliderFloat3("Color", &_lampMaterial.getObjectColor().x, 0.0f, 1.0f);
+			ImGui::Separator(); //-----------------------------------------------------------------------------------------------------------------
 
-		/*------------------------------------*/ImGui::SeparatorText("Color for light source:");/*--------------------------------------------*/
-		ImGui::SliderFloat3("Color", &_lampMaterial.getObjectColor().x, 0.0f, 1.0f);
-		ImGui::Separator(); //-----------------------------------------------------------------------------------------------------------------
+			ImGui::DragFloat3("  Position for point light",       &_lampObject.m_transform->transformParams().m_objectPos.x,       0.1f          );
+			ImGui::SliderFloat3("Rotation vector of point light", &_lampObject.m_transform->transformParams().m_objectRotEuler.x, -180.0f, 180.0f);
+			ImGui::DragFloat4("  Quaternion orbit of lightource", &_lampObject.m_transform->transformParams().m_objectRotQuat.x,   0.1f         );
+			ImGui::DragFloat3("  Scale factor of light",          &_lampObject.m_transform->transformParams().m_objectScale.x,     0.1f         );
 
-		ImGui::DragFloat3("  Position for point light",       &_lampObject.m_transform->transformParams().m_objectPos.x,       0.1f          );
-		ImGui::SliderFloat3("Rotation vector of point light", &_lampObject.m_transform->transformParams().m_objectRotEuler.x, -180.0f, 180.0f);
-		ImGui::DragFloat4("  Quaternion orbit of lightource", &_lampObject.m_transform->transformParams().m_objectRotQuat.x,   0.1f         );
-		ImGui::DragFloat3("  Scale factor of light",          &_lampObject.m_transform->transformParams().m_objectScale.x,     0.1f         );
+			ImGui::Separator(); //-----------------------------------------------------------------------------------------------------------------
 
-		ImGui::Separator(); //-----------------------------------------------------------------------------------------------------------------
+			if (!_renderFlags.getSpecificValueReference("isDirectionalLight")) ImGui::BeginDisabled();
+			ImGui::SliderFloat3("Direction vector of light", &_directionalLight.setDirectionLightParams().lightDirection.x, -0.5f, 0.5f);
+			if (!_renderFlags.getSpecificValueReference("isDirectionalLight")) ImGui::EndDisabled();
 
-		if (!_renderFlags.getSpecificValueReference("isDirectionalLight")) ImGui::BeginDisabled();
-		ImGui::SliderFloat3("Direction vector of light", &_directionalLight.setDirectionLightParams().lightDirection.x, -0.5f, 0.5f);
-		if (!_renderFlags.getSpecificValueReference("isDirectionalLight")) ImGui::EndDisabled();
+			/*----------------------*/ImGui::SeparatorText("Position and color of light source:");/*----------------------------------------------*/
+			ImGui::TextWrapped("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff", _lampMaterial.getObjectColor().r, _lampMaterial.getObjectColor().g, _lampMaterial.getObjectColor().b);
+			ImGui::TextWrapped("Position of the point light source: %.2f, %.2f, %.2f",             _lampObject.m_transform->transformParams().m_objectPos.x,      _lampObject.m_transform->transformParams().m_objectPos.y,      _lampObject.m_transform->transformParams().m_objectPos.z);
+			ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f",             _lampObject.m_transform->transformParams().m_objectRotEuler.x, _lampObject.m_transform->transformParams().m_objectRotEuler.y, _lampObject.m_transform->transformParams().m_objectRotEuler.z);
+			ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f",           _lampObject.m_transform->transformParams().m_objectRotQuat.x,  _lampObject.m_transform->transformParams().m_objectRotQuat.y,  _lampObject.m_transform->transformParams().m_objectRotQuat.z, _lampObject.m_transform->transformParams().m_objectRotQuat.w);
+			ImGui::TextWrapped("Vector of the directional light source: %.2f, %.2f, %.2f",         _directionalLight.getDirectionLightParams().lightDirection.x,  _directionalLight.getDirectionLightParams().lightDirection.y,  _directionalLight.getDirectionLightParams().lightDirection.z);
+		}
+		if (ImGui::CollapsingHeader("Attenuation the light equation",     ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		/*----------------------*/ImGui::SeparatorText("Position and color of light source:");/*----------------------------------------------*/
-		ImGui::TextWrapped("Color of the light source in float: R: %.2ff, G: %.2ff, B: %.2ff", _lampMaterial.getObjectColor().r, _lampMaterial.getObjectColor().g, _lampMaterial.getObjectColor().b);
-		ImGui::TextWrapped("Position of the point light source: %.2f, %.2f, %.2f",             _lampObject.m_transform->transformParams().m_objectPos.x,      _lampObject.m_transform->transformParams().m_objectPos.y,      _lampObject.m_transform->transformParams().m_objectPos.z);
-		ImGui::TextWrapped("Rotation of the point light source: %.2f, %.2f, %.2f",             _lampObject.m_transform->transformParams().m_objectRotEuler.x, _lampObject.m_transform->transformParams().m_objectRotEuler.y, _lampObject.m_transform->transformParams().m_objectRotEuler.z);
-		ImGui::TextWrapped("Quaternion orbite light source: %.2f, %.2f, %.2f, %.2f",           _lampObject.m_transform->transformParams().m_objectRotQuat.x,  _lampObject.m_transform->transformParams().m_objectRotQuat.y,  _lampObject.m_transform->transformParams().m_objectRotQuat.z, _lampObject.m_transform->transformParams().m_objectRotQuat.w);
-		ImGui::TextWrapped("Vector of the directional light source: %.2f, %.2f, %.2f",         _directionalLight.getDirectionLightParams().lightDirection.x,  _directionalLight.getDirectionLightParams().lightDirection.y,  _directionalLight.getDirectionLightParams().lightDirection.z);
-	}
-	if (ImGui::CollapsingHeader("Attenuation the light equation",     ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		/*---------------------------------------------------*/ImGui::SeparatorText("State on/off:");/*----------------------------------------------------------------*/
+			/*---------------------------------------------------*/ImGui::SeparatorText("State on/off:");/*----------------------------------------------------------------*/
 		
-		if (ImGui::Checkbox("Is Point Light Reducing On Distance", &_renderFlags.getSpecificValueReference("isPointLightReducingOnDistance")) && (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
-		{
-			_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", false);
-		};
+			if (ImGui::Checkbox("Is Point Light Reducing On Distance", &_renderFlags.getSpecificValueReference("isPointLightReducingOnDistance")) && (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
+			{
+				_renderFlags.setValueToBoolRenderFlag("isPointLightReducingOnDistance", false);
+			};
 
-		/*---------------------------------------------------*/ImGui::SeparatorText("Control of variables MANUEL:");/*-------------------------------------------------*/
+			/*---------------------------------------------------*/ImGui::SeparatorText("Control of variables MANUEL:");/*-------------------------------------------------*/
 
-		ImGui::SliderFloat("Exponent for distance: ", &_pointLight.setPointLightParams().exponentForPointLight, -64, 256);        ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { _pointLight.setPointLightParams().exponentForPointLight = 2.0f; };
-		ImGui::SliderFloat("Linear Term Kl:        ", &_pointLight.setPointLightParams().linearTerm_Kl,         -2.683f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.7f")) { _pointLight.setPointLightParams().linearTerm_Kl = 0.7f; };
-		ImGui::SliderFloat("Quadratic Term Kq:     ", &_pointLight.setPointLightParams().quadraticTerm_Kq,      -64.0f, 64.0f);   ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.8f")) { _pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f; };
-		ImGui::SliderFloat("Constant Term Kc:      ", &_pointLight.setPointLightParams().constantTerm_Kc,        0.0f, 64.0f);    ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0f")) { _pointLight.setPointLightParams().constantTerm_Kc = 1.0f; };
+			ImGui::SliderFloat("Exponent for distance: ", &_pointLight.setPointLightParams().exponentForPointLight, -64, 256);        ImGui::SameLine(0, 0); if (ImGui::SmallButton("2.0f")) { _pointLight.setPointLightParams().exponentForPointLight = 2.0f; };
+			ImGui::SliderFloat("Linear Term Kl:        ", &_pointLight.setPointLightParams().linearTerm_Kl,         -2.683f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.7f")) { _pointLight.setPointLightParams().linearTerm_Kl = 0.7f; };
+			ImGui::SliderFloat("Quadratic Term Kq:     ", &_pointLight.setPointLightParams().quadraticTerm_Kq,      -64.0f, 64.0f);   ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.8f")) { _pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f; };
+			ImGui::SliderFloat("Constant Term Kc:      ", &_pointLight.setPointLightParams().constantTerm_Kc,        0.0f, 64.0f);    ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0f")) { _pointLight.setPointLightParams().constantTerm_Kc = 1.0f; };
 
-		if (ImGui::Button("RESET EQUATION", ImVec2(120, 40)))
-		{
-			_pointLight.setPointLightParams().exponentForPointLight = 2.0f;
-			_pointLight.setPointLightParams().linearTerm_Kl = 0.7f;
-			_pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f;
-			_pointLight.setPointLightParams().constantTerm_Kc = 1.0f;
-		};  ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set manuel active")) { _renderFlags.setValueToBoolRenderFlag("isManuelLuminosity", true); _renderFlags.setValueToBoolRenderFlag("isAutomaticLuminosity", false); };
+			if (ImGui::Button("RESET EQUATION", ImVec2(120, 40)))
+			{
+				_pointLight.setPointLightParams().exponentForPointLight = 2.0f;
+				_pointLight.setPointLightParams().linearTerm_Kl = 0.7f;
+				_pointLight.setPointLightParams().quadraticTerm_Kq = 1.8f;
+				_pointLight.setPointLightParams().constantTerm_Kc = 1.0f;
+			};  ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set manuel active")) { _renderFlags.setValueToBoolRenderFlag("isManuelLuminosity", true); _renderFlags.setValueToBoolRenderFlag("isAutomaticLuminosity", false); };
 
-		ImGui::SeparatorText("Control of variables AUTOMATIC:"); ImGui::Spacing();
-		ImGui::SliderFloat("Overall Light Brightness:", &_pointLight.setPointLightParams().overallLightBrightness, 0, 1); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0")) { _pointLight.setPointLightParams().overallLightBrightness = 1.0f; }; ImGui::Spacing();
-		ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set automatic active")) { _renderFlags.setValueToBoolRenderFlag("isManuelLuminosity", false); _renderFlags.setValueToBoolRenderFlag("isAutomaticLuminosity", true); };
+			ImGui::SeparatorText("Control of variables AUTOMATIC:"); ImGui::Spacing();
+			ImGui::SliderFloat("Overall Light Brightness:", &_pointLight.setPointLightParams().overallLightBrightness, 0, 1); ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.0")) { _pointLight.setPointLightParams().overallLightBrightness = 1.0f; }; ImGui::Spacing();
+			ImGui::SameLine(0, 0); if (ImGui::SmallButton("Set automatic active")) { _renderFlags.setValueToBoolRenderFlag("isManuelLuminosity", false); _renderFlags.setValueToBoolRenderFlag("isAutomaticLuminosity", true); };
 
-		/*---------------------------------------------------*/ImGui::SeparatorText("Bref explanation:");/*------------------------------------------------------------*/
-		ImGui::BulletText("To reduce the intensity of point light over the distance by doing algoritam.");
-		ImGui::BulletText("More about it: "); ImGui::SameLine(0, 4); ImGui::TextLinkOpenURL("https://learnopengl.com/Lighting/Light-casters");
-	}
-	if (ImGui::CollapsingHeader("Model of light reflection",          ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::SeparatorText("State of specular reflection on/off");
-
-		if (ImGui::Checkbox("Phong", &_renderFlags.getSpecificValueReference("isPhong")) || (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
-		{
-			_renderFlags.setValueToBoolRenderFlag("isPhong", true);
-			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong", false);
+			/*---------------------------------------------------*/ImGui::SeparatorText("Bref explanation:");/*------------------------------------------------------------*/
+			ImGui::BulletText("To reduce the intensity of point light over the distance by doing algoritam.");
+			ImGui::BulletText("More about it: "); ImGui::SameLine(0, 4); ImGui::TextLinkOpenURL("https://learnopengl.com/Lighting/Light-casters");
 		}
+		if (ImGui::CollapsingHeader("Model of light reflection",          ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		if (ImGui::Checkbox("Blinn-Phong", &_renderFlags.getSpecificValueReference("isBlinnPhong")) || (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
-		{
-			_renderFlags.setValueToBoolRenderFlag("isPhong", false);
-			_renderFlags.setValueToBoolRenderFlag("isBlinnPhong", true);
+			ImGui::SeparatorText("State of specular reflection on/off");
+
+			if (ImGui::Checkbox("Phong", &_renderFlags.getSpecificValueReference("isPhong")) || (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
+			{
+				_renderFlags.setValueToBoolRenderFlag("isPhong", true);
+				_renderFlags.setValueToBoolRenderFlag("isBlinnPhong", false);
+			}
+
+			if (ImGui::Checkbox("Blinn-Phong", &_renderFlags.getSpecificValueReference("isBlinnPhong")) || (_renderFlags.getSpecificValueReference("isDirectionalLight") || _renderFlags.getSpecificValueReference("isLightTurnOff")))
+			{
+				_renderFlags.setValueToBoolRenderFlag("isPhong", false);
+				_renderFlags.setValueToBoolRenderFlag("isBlinnPhong", true);
+			}
+			ImGui::Separator();//----------------------------------------------------------------------------------- 
+
+			ImGui::Checkbox("Specular Map", &_renderFlags.getSpecificValueReference("isSpecularMap"));
+
+			/*-------------------------*/ImGui::SeparatorText("Control of variables:");/*-----------------------------------------*/
+			ImGui::SliderFloat("Ambient Strenght:   ", &_globalMaterial.getAmbientStrenght(),   0.0f, 32.0f);  ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.6f"))  { _globalMaterial.setAmbientStrenght(0.6f); };    
+			ImGui::SliderFloat("Diffuse Strenght:   ", &_globalMaterial.getDiffuseStrenght(),   0.0f, 64.0f);  ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.9f"))  { _globalMaterial.setDiffuseStrenght(1.9f); };     
+			ImGui::SliderFloat("Specular Strength:  ", &_globalMaterial.getSpecularStrenght(),  0.0f, 64.0f);  ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.5f"))  { _globalMaterial.setSpecularStrenght(0.5f); };  
+			ImGui::SliderFloat("Shininess Strength: ", &_globalMaterial.getShininessStrenght(), 0.0f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("16.0f")) { _globalMaterial.setShininessStrenght(16.0f); }; 
+
+			if (ImGui::Button("RESET STRENGHT", ImVec2(160, 30)))
+			{
+				_globalMaterial.setAmbientStrenght(0.6f);
+				_globalMaterial.setDiffuseStrenght(1.9f);
+				_globalMaterial.setSpecularStrenght(0.5f);
+				_globalMaterial.setShininessStrenght(16.0f);
+			};
+			ImGui::Separator();//----------------------------------------------------------------------------
 		}
-		ImGui::Separator();//----------------------------------------------------------------------------------- 
-
-		ImGui::Checkbox("Specular Map", &_renderFlags.getSpecificValueReference("isSpecularMap"));
-
-		/*-------------------------*/ImGui::SeparatorText("Control of variables:");/*-----------------------------------------*/
-		ImGui::SliderFloat("Ambient Strenght:   ", &_globalMaterial.getAmbientStrenght(),   0.0f, 32.0f);  ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.6f"))  { _globalMaterial.setAmbientStrenght(0.6f); };    
-		ImGui::SliderFloat("Diffuse Strenght:   ", &_globalMaterial.getDiffuseStrenght(),   0.0f, 64.0f);  ImGui::SameLine(0, 0); if (ImGui::SmallButton("1.9f"))  { _globalMaterial.setDiffuseStrenght(1.9f); };     
-		ImGui::SliderFloat("Specular Strength:  ", &_globalMaterial.getSpecularStrenght(),  0.0f, 64.0f);  ImGui::SameLine(0, 0); if (ImGui::SmallButton("0.5f"))  { _globalMaterial.setSpecularStrenght(0.5f); };  
-		ImGui::SliderFloat("Shininess Strength: ", &_globalMaterial.getShininessStrenght(), 0.0f, 256.0f); ImGui::SameLine(0, 0); if (ImGui::SmallButton("16.0f")) { _globalMaterial.setShininessStrenght(16.0f); }; 
-
-		if (ImGui::Button("RESET STRENGHT", ImVec2(160, 30)))
-		{
-			_globalMaterial.setAmbientStrenght(0.6f);
-			_globalMaterial.setDiffuseStrenght(1.9f);
-			_globalMaterial.setSpecularStrenght(0.5f);
-			_globalMaterial.setShininessStrenght(16.0f);
-		};
-		ImGui::Separator();//----------------------------------------------------------------------------
-	}
-
 	ImGui::End();
 }
 void GUI::SpotLight(Light& _spotLight)
 {
 	ImGui::Begin("Spot Light", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove);
-
-	ImGui::SliderFloat3("Spot Direction", &_spotLight.setSpotLightParams().spotLightDirection.x,     -8.5f, 8.5f); ImGui::SameLine(); if (ImGui::SmallButton("R")) { _spotLight.setSpotLightParams().spotLightDirection.x = 0.0f; _spotLight.setSpotLightParams().spotLightDirection.y = -1.0f; _spotLight.setSpotLightParams().spotLightDirection.z = 0.0f; };
-	ImGui::SliderFloat("Inner Cutoff",    &_spotLight.setSpotLightParams(true).innerCutOff,           0.0f, 90.0f); 
-	ImGui::SliderFloat("Outer Cutoff",    &_spotLight.setSpotLightParams(true).outerCutOff,           0.0f, 90.0f);
-	ImGui::SliderFloat("Intesity",        &_spotLight.setSpotLightParams().intensityMultiplayer,     -10.0f, 10.0f); ImGui::SameLine(); if (ImGui::SmallButton("RR")) {_spotLight.setSpotLightParams().intensityMultiplayer = 1.0f; };
-	ImGui::SliderFloat("Tetha",           &_spotLight.setSpotLightParams().thetaMultiplayer,         -10.0f, 10.0f); ImGui::SameLine(); if (ImGui::SmallButton("RRR")) {_spotLight.setSpotLightParams().thetaMultiplayer = 1.0f; };
-
+		ImGui::SliderFloat3("Spot Direction", &_spotLight.setSpotLightParams().spotLightDirection.x,     -8.5f, 8.5f); ImGui::SameLine(); if (ImGui::SmallButton("R")) { _spotLight.setSpotLightParams().spotLightDirection.x = 0.0f; _spotLight.setSpotLightParams().spotLightDirection.y = -1.0f; _spotLight.setSpotLightParams().spotLightDirection.z = 0.0f; };
+		ImGui::SliderFloat("Inner Cutoff",    &_spotLight.setSpotLightParams(true).innerCutOff,           0.0f, 90.0f); 
+		ImGui::SliderFloat("Outer Cutoff",    &_spotLight.setSpotLightParams(true).outerCutOff,           0.0f, 90.0f);
+		ImGui::SliderFloat("Intesity",        &_spotLight.setSpotLightParams().intensityMultiplayer,     -10.0f, 10.0f); ImGui::SameLine(); if (ImGui::SmallButton("RR")) {_spotLight.setSpotLightParams().intensityMultiplayer = 1.0f; };
+		ImGui::SliderFloat("Tetha",           &_spotLight.setSpotLightParams().thetaMultiplayer,         -10.0f, 10.0f); ImGui::SameLine(); if (ImGui::SmallButton("RRR")) {_spotLight.setSpotLightParams().thetaMultiplayer = 1.0f; };
 	ImGui::End();
 }
 void GUI::TransformCube(Object& _cubeObject)
@@ -254,224 +250,202 @@ void GUI::TransformCube(Object& _cubeObject)
 void GUI::GlPolygonMode()
 {
 	ImGui::Begin("Mode render: ");
-
-	bool fillFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront;
-	bool pointFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront;
-	bool lineFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront;
-
-	bool fillBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack;
-	bool pointBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack;
-	bool lineBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack;
-
-	bool fillBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth;
-	bool pointBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth;
-	bool lineBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth;
-
 	
-	if (ImGui::SliderFloat("Size of Point: ", &GLPolygoneModeAppRenderAll::IgetIsOnOrOff().sizeOfPoint, 0, 64.0f))
-	{
-		glPointSize(GLPolygoneModeAppRenderAll::IgetIsOnOrOff().sizeOfPoint);
-	};
+		if (ImGui::SliderFloat("Size of Point: ", &GLPolygoneModeAppRenderAll::IgetIsOnOrOff().sizeOfPoint, 0, 64.0f))
+		{
+			glPointSize(GLPolygoneModeAppRenderAll::IgetIsOnOrOff().sizeOfPoint);
+		}
 
-	if (ImGui::SliderFloat("Line width: ", &GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineWidth, 0, 64.0f))
-	{
-		glLineWidth(GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineWidth);
-	};
+		if (ImGui::SliderFloat("Line width: ", &GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineWidth, 0, 64.0f))
+		{
+			glLineWidth(GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineWidth);
+		}
 
+		if (ImGui::RadioButton("Back GL_LINE - Front GL_FILL", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = true;
 
-	if (ImGui::RadioButton("Back GL_LINE - Front GL_FILL", lineBackSelected)) {
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonMode(GL_BACK, GL_LINE); // Adjust other states if necessary
+		}
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glPolygonMode(GL_BACK, GL_LINE); // Adjust other states if necessary
-	}
+	//----------------------------------------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------------------------------------
+		if (ImGui::RadioButton("Back GL_POINT - Front GL_FILL", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = true;
 
-	if (ImGui::RadioButton("Back GL_POINT - Front GL_FILL", pointBackSelected)) {
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonMode(GL_BACK, GL_POINT);
+		}
+	//----------------------------------------------------------------------------------------------------
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glPolygonMode(GL_BACK, GL_POINT);
-	}
-//----------------------------------------------------------------------------------------------------
+		if (ImGui::RadioButton("Back GL_FILL - Front GL_LINE", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = true;
 
-	if (ImGui::RadioButton("Back GL_FILL - Front GL_LINE", fillBackSelected)) {
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonMode(GL_BACK, GL_FILL);
+		}
+	//-------------------------------------------------------------------------------------------------------
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glPolygonMode(GL_BACK, GL_FILL);
-	}
-//-------------------------------------------------------------------------------------------------------
+		if (ImGui::RadioButton("Front GL_POINT - Back GL_FILL", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = true;
 
-	if (ImGui::RadioButton("Front GL_POINT - Back GL_FILL", pointFrontSelected)) {
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+			glPolygonMode(GL_BACK, GL_FILL);
+		}
+	//---------------------------------------------------------------------------------------------------------
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-		glPolygonMode(GL_BACK, GL_FILL);
-	}
-//---------------------------------------------------------------------------------------------------------
+		if (ImGui::RadioButton("Front GL_LINE - Back GL_POINT", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = true;
 
-	if (ImGui::RadioButton("Front GL_LINE - Back GL_POINT", lineFrontSelected)) {
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonMode(GL_BACK, GL_POINT);
+		}
+	//----------------------------------------------------------------------------------------------------------
+		if (ImGui::RadioButton("Front GL_FILL - Back GL_POINT", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = true;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glPolygonMode(GL_BACK, GL_POINT);
-	}
-//----------------------------------------------------------------------------------------------------------
-	if (ImGui::RadioButton("Front GL_FILL - Back GL_POINT", fillFrontSelected)) {
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonMode(GL_BACK, GL_POINT);
+		}
+	//---------------------------------------------------------------------------------------------------------
 
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
-		GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glPolygonMode(GL_BACK, GL_POINT);
-	}
-//---------------------------------------------------------------------------------------------------------
+		if (ImGui::RadioButton("Both: Front GL_POINT - Back GL_POINT", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = true;
 
-	if (ImGui::RadioButton("Both: Front GL_POINT - Back GL_POINT", pointBothSelected)) {
-		pointBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
 
-		fillFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
-		pointFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
-		lineFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
 
-		pointBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
-		lineBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
-		fillBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+			glPolygonMode(GL_BACK, GL_POINT);
+		}
+	//----------------------------------------------------------------------------------------------------------
+		if (ImGui::RadioButton("Both: Front GL_LINE - Back GL_LINE", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = true;
 
-		fillBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
-		lineBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-		glPolygonMode(GL_BACK, GL_POINT);
-	}
-//----------------------------------------------------------------------------------------------------------
-	if (ImGui::RadioButton("Both: Front GL_LINE - Back GL_LINE", lineBothSelected)) {
-		lineBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
 
-		lineFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
-		fillFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
-		pointFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
 
-		pointBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
-		lineBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
-		fillBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonMode(GL_BACK, GL_LINE);
+		}
+	//---------------------------------------------------------------------------------------------------------
+		if (ImGui::RadioButton("Both: Front GL_FILL - Back GL_FILL", GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth)) {
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = true;
 
-		fillBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = false;
-		pointBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glPolygonMode(GL_BACK, GL_LINE);
-	}
-//---------------------------------------------------------------------------------------------------------
-	if (ImGui::RadioButton("Both: Front GL_FILL - Back GL_FILL", fillBothSelected)) {
-		fillBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = true;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
 
-		fillFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillFront = false;
-		pointFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointFront = false;
-		lineFrontSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineFront = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
 
-		pointBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBack = false;
-		lineBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBack = false;
-		fillBackSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBack = false;
-
-		pointBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
-		lineBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
-	}
-	// OpenGL State Change Logic (outside of ImGui)
-	if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glPolygonMode(GL_BACK, GL_FILL);
-	}
-	
-/*	if (ImGui::Button("Front: GL_FILL")) {
-		glPolygonMode(GL_BACK, GL_FILL);
-		glPolygonMode(GL_FRONT, GL_FILL);
-
-		fillBothSelected = GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth = true;
-	}*/
-
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().pointBoth = false;
+			GLPolygoneModeAppRenderAll::IgetIsOnOrOff().lineBoth = false;
+		}
+		// OpenGL State Change Logic (outside of ImGui)
+		if (GLPolygoneModeAppRenderAll::IgetIsOnOrOff().fillBoth) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonMode(GL_BACK, GL_FILL);
+		}
 	ImGui::End();
 }
 
