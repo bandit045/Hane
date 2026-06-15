@@ -1,13 +1,15 @@
 IncludeDir = {}
 IncludeDir["GLFW"]          = "%{wks.location}/Hane/vendor/GLFW/include"
-IncludeDir["imgui"]         = "%{wks.location}/Hane/vendor/include/imgui"
 
 IncludeDir["glad"]          = "%{wks.location}/Hane/vendor/glad/include"
 IncludeDir["KHR"]           = "%{wks.location}/Hane/vendor/KHR/include"
 
+IncludeDir["imgui"]         = "%{wks.location}/Hane/vendor/include/imgui"
+
 IncludeDir["stb_image"]     = "%{wks.location}/Hane/vendor/stb_image/include"
 
-IncludeDir["glm"]           = "%{wks.location}/Hane/vendor/include"
+-- forked math library https://github.com/bandit045/glm from https://github.com/g-truc/glm
+IncludeDir["glm"]           = "%{wks.location}/Hane/vendor/glm" -- Using only as project, does not compile with core, bcs its header template library
 
 -------------------------------------------------------------------------------------------
 
@@ -15,13 +17,11 @@ LibraryDir = {}
 LibraryDir["glfw3"]     = "%{wks.location}/Hane/vendor/GLFW/bin/%{cfg.architecture}/%{cfg.buildcfg}"
 LibraryDir["glad"]      = "%{wks.location}/Hane/vendor/glad/bin/%{cfg.architecture}/%{cfg.buildcfg}"
 LibraryDir["stb_image"] = "%{wks.location}/Hane/vendor/stb_image/bin/%{cfg.architecture}/%{cfg.buildcfg}"
---LibraryDir["glm"]       = "%{wks.location}/Hane/vendor/glm/bin/%{cfg.architecture}/%{cfg.buildcfg}"
 
 Library = {}
 Library["glfw3"]     = "%{LibraryDir.glfw3}/glfw3.lib" -- ako je imamo u nasem solutionu onda dodajemo ovde,  u suprotnom kao sto je opengl32 onda samo navedemo u links
 Library["glad"]      = "%{LibraryDir.glad}/glad.lib"
 Library["stb_image"] = "%{LibraryDir.stb_image}/stb_image.lib"
---Library["glm"]       = "%{LibraryDir.glm}/glm.lib"
 
 ----------------------------------------------------------------------------------------
 
@@ -42,12 +42,12 @@ group "Core"
 	project "Hane"
 group ""
 
-group "Dependencies"
+group "Dependencies/StaticLib"
 	project "GLFW"
 	project "GLAD"
 	project "stb_image"
-	--project "glm"
-group ""
+group "Dependencies/TemplateLibrary"
+	project "glm"
 
 group "Tools"
 	project "premake5"
@@ -67,22 +67,20 @@ project "Hane"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files{ -- Which files to be included in project, filter VS
+	files{ -- Which files to be included in project, filter VisualStudio
 
-		"%{prj.location}/main.cpp", -- Hane files
-
-		"%{prj.location}/src/**.h", -- Hane files
+		"%{prj.location}/main.cpp",   -- Hane files
+									  
+		"%{prj.location}/src/**.h",   -- Hane files
 		"%{prj.location}/src/**.cpp", -- Hane files
-
-		"%{prj.location}/vendor/include/glm/**.hpp",
-		"%{prj.location}/vendor/include/glm/**.inl",
 
 		"%{prj.location}/vendor/include/imgui/**.h",
 		"%{prj.location}/vendor/include/imgui/**.cpp"
 	}
 
 	defines{
-		"_CRT_SECURE_NO_WARNINGS",
+		"_CRT_SECURE_NO_WARNINGS", -- #ifndef GLM_ENABLE_EXPERIMENTAL error "GLM: GLM_GTX_associated_min_max is an experimental extension and may change in the future. Use #define GLM_ENABLE_EXPERIMENTAL before including it, if you really want to use it."
+		"GLM_ENABLE_EXPERIMENTAL", -- for math library
 	}
 
 	includedirs{
@@ -100,8 +98,7 @@ project "Hane"
 	libdirs{
 		"%{prj.location}/vendor/GLFW/bin/%{cfg.architecture}/%{cfg.buildcfg}",
 		"%{prj.location}/vendor/glad/bin/%{cfg.architecture}/%{cfg.buildcfg}",
-		"%{prj.location}/vendor/stb_image/bin/%{cfg.architecture}/%{cfg.buildcfg}",
-		--"%{prj.location}/vendor/glm/bin/%{cfg.architecture}/%{cfg.buildcfg}",
+		"%{prj.location}/vendor/stb_image/bin/%{cfg.architecture}/%{cfg.buildcfg}"
 	}
 
 	removefiles{
@@ -117,7 +114,6 @@ project "Hane"
 			-- projects
 			"GLFW",         -- oznacavamo da Hane zavisi od GLFW tako da se prvo builda GLFW
 			"GLAD",
-			--"glm",
 			"stb_image",
 			-- projects
 
@@ -129,7 +125,6 @@ project "Hane"
 			"glfw3_Debug",
 			"glad_Debug",
 			"stb_image_Debug",
-			--"glm_Debug",
 			-- builded
 		}
 
@@ -142,7 +137,6 @@ project "Hane"
 			-- projects
 			"GLFW",
 			"GLAD",
-			--"glm",
 			"stb_image",
 			-- projects
 
@@ -154,7 +148,6 @@ project "Hane"
 			"glfw3_Release",
 			"glad_Release",
 			"stb_image_Release",
-			--"glm_Release",
 			-- builded
 		}
 
@@ -281,57 +274,30 @@ project "stb_image"
 		systemversion "latest" -- Windows SDK Version
 
 ---------------
---    glm    --
+--    glm    -- 
 ---------------
 
---project "glm"
-	--location "../Hane/vendor/glm"
-	--kind "StaticLib"
-	--language "C++"
-	--cppdialect "C++17"
-	--staticruntime "on"
+-- glm is template library cant be compiled as a staticLib or dynamicLib :TODO add it to prch-precompiled header
+project "glm"
+	location "../Hane/vendor/glm"
+	kind "None"
 
-	--targetdir ("%{prj.location}/bin/%{cfg.architecture}/%{cfg.buildcfg}"    )
-	--objdir (   "%{prj.location}/bin-int/%{cfg.architecture}/%{cfg.buildcfg}")
+	-- makro is defined inside Hane project GLM_ENABLE_EXPERIMENTAL
 
-	--defines{
-		--"GLM_ENABLE_EXPERIMENTAL",
-	--}
-
-	--files{
-		--"%{prj.location}/glm/**.hpp",
-		--"%{prj.location}/glm/**.inl",
-	--}
-
-	--includedirs{
-		--"%{IncludeDir.glm}",
-	--}
-
-	--filter "configurations:Debug"
-		--runtime "Debug"
-		--targetname "glm_Debug"
-		--symbols "on"
-
-	--filter "configurations:Release"
-		--runtime "Release"
-		--targetname "glm_Release"
-		--optimize "on"
-
-	--filter "system:windows"
-		--systemversion "latest" -- Windows SDK Version
+	files{
+		"%{prj.location}/**.hpp",
+		"%{prj.location}/**.inl",
+	}
 
 --------------------
 --    premake5    --
 --------------------
 
 project "premake5"
-	location ""
+	location "" -- where lives premake5.exe
 	kind "None" -- None or Utility https://premake.github.io/docs/kind/
-
-	targetdir ("")
-	objdir ("")
 
 	files{
 		"%{prj.location}/premake5.lua",
-		"../Start.bat" -- to build solution RUN
+		"../Start.bat" -- to build solution RUN, run it from Window Explorer
 	}
