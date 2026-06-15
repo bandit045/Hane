@@ -19,9 +19,9 @@ LibraryDir["glad"]      = "%{wks.location}/Hane/vendor/glad/bin/%{cfg.architectu
 LibraryDir["stb_image"] = "%{wks.location}/Hane/vendor/stb_image/bin/%{cfg.architecture}/%{cfg.buildcfg}"
 
 Library = {}
-Library["glfw3"]     = "%{LibraryDir.glfw3}/glfw3.lib" -- ako je imamo u nasem solutionu onda dodajemo ovde,  u suprotnom kao sto je opengl32 onda samo navedemo u links
-Library["glad"]      = "%{LibraryDir.glad}/glad.lib"
-Library["stb_image"] = "%{LibraryDir.stb_image}/stb_image.lib"
+Library["glfw3"]     = "%{LibraryDir.glfw3}/glfw3_%{cfg.buildcfg}.lib" -- ako je imamo u nasem solutionu onda dodajemo ovde,  u suprotnom kao sto je opengl32 onda samo navedemo u links
+Library["glad"]      = "%{LibraryDir.glad}/glad_%{cfg.buildcfg}.lib"
+Library["stb_image"] = "%{LibraryDir.stb_image}/stb_image_%{cfg.buildcfg}.lib"
 
 ----------------------------------------------------------------------------------------
 
@@ -95,12 +95,6 @@ project "Hane"
 		"%{IncludeDir.stb_image}",
 	}
 
-	libdirs{
-		"%{prj.location}/vendor/GLFW/bin/%{cfg.architecture}/%{cfg.buildcfg}",
-		"%{prj.location}/vendor/glad/bin/%{cfg.architecture}/%{cfg.buildcfg}",
-		"%{prj.location}/vendor/stb_image/bin/%{cfg.architecture}/%{cfg.buildcfg}"
-	}
-
 	removefiles{
 		"%{prj.location}/vendor/include/imgui/backends/imgui_impl_glut.cpp" -- Kako resiti ovo malo je weird da uklanjam samo jedan fajl
 	}
@@ -121,10 +115,10 @@ project "Hane"
 			"opengl32",
 			-- system libraries
 
-			-- builded
-			"glfw3_Debug",
-			"glad_Debug",
-			"stb_image_Debug",
+			-- builded -- obsolete can be removed but make my life much more easier in long time span, when is explicit here
+			"%{Library.glfw3}",
+			"%{Library.glad}",
+			"%{Library.stb_image}",
 			-- builded
 		}
 
@@ -145,9 +139,9 @@ project "Hane"
 			-- system libraries
 
 			-- builded
-			"glfw3_Release",
-			"glad_Release",
-			"stb_image_Release",
+			"%{Library.glfw3}",
+			"%{Library.glad}",
+			"%{Library.stb_image}",
 			-- builded
 		}
 
