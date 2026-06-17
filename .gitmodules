@@ -4,3 +4,7 @@
 [submodule "Hane/vendor/glm"]
 	path = Hane/vendor/glm
 	url = https://github.com/bandit045/glm
+[submodule "Hane/vendor/imgui_dockingBranch"]
+	path = Hane/vendor/imgui_dockingBranch
+	url = https://github.com/bandit045/imgui.git
+	branch = docking

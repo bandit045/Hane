@@ -1,27 +1,29 @@
 IncludeDir = {}
-IncludeDir["GLFW"]          = "%{wks.location}/Hane/vendor/GLFW/include"
+IncludeDir["GLFW"]                        = "%{wks.location}/Hane/vendor/GLFW/include"
+							              
+IncludeDir["glad"]                        = "%{wks.location}/Hane/vendor/glad/include"
+IncludeDir["KHR"]                         = "%{wks.location}/Hane/vendor/KHR/include"
 
-IncludeDir["glad"]          = "%{wks.location}/Hane/vendor/glad/include"
-IncludeDir["KHR"]           = "%{wks.location}/Hane/vendor/KHR/include"
+IncludeDir["imgui_dockingBranch"]         = "%{wks.location}/Hane/vendor/imgui_dockingBranch"
 
-IncludeDir["imgui"]         = "%{wks.location}/Hane/vendor/include/imgui"
-
-IncludeDir["stb_image"]     = "%{wks.location}/Hane/vendor/stb_image/include"
+IncludeDir["stb_image"]                   = "%{wks.location}/Hane/vendor/stb_image/include"
 
 -- forked math library https://github.com/bandit045/glm from https://github.com/g-truc/glm
-IncludeDir["glm"]           = "%{wks.location}/Hane/vendor/glm" -- Using only as project, does not compile with core, bcs its header template library
+IncludeDir["glm"] = "%{wks.location}/Hane/vendor/glm" -- Using only as project, does not compile with core, bcs its header template library
 
 -------------------------------------------------------------------------------------------
 
 LibraryDir = {}
-LibraryDir["glfw3"]     = "%{wks.location}/Hane/vendor/GLFW/bin/%{cfg.architecture}/%{cfg.buildcfg}"
-LibraryDir["glad"]      = "%{wks.location}/Hane/vendor/glad/bin/%{cfg.architecture}/%{cfg.buildcfg}"
-LibraryDir["stb_image"] = "%{wks.location}/Hane/vendor/stb_image/bin/%{cfg.architecture}/%{cfg.buildcfg}"
+LibraryDir["glfw3"]               = "%{wks.location}/Hane/vendor/GLFW/bin/%{cfg.architecture}/%{cfg.buildcfg}"
+LibraryDir["glad"]                = "%{wks.location}/Hane/vendor/glad/bin/%{cfg.architecture}/%{cfg.buildcfg}"
+LibraryDir["stb_image"]           = "%{wks.location}/Hane/vendor/stb_image/bin/%{cfg.architecture}/%{cfg.buildcfg}"
+LibraryDir["imgui_dockingBranch"] = "%{wks.location}/Hane/vendor/imgui_dockingBranch/bin/%{cfg.architecture}/%{cfg.buildcfg}"
 
 Library = {}
-Library["glfw3"]     = "%{LibraryDir.glfw3}/glfw3_%{cfg.buildcfg}.lib" -- ako je imamo u nasem solutionu onda dodajemo ovde,  u suprotnom kao sto je opengl32 onda samo navedemo u links
-Library["glad"]      = "%{LibraryDir.glad}/glad_%{cfg.buildcfg}.lib"
-Library["stb_image"] = "%{LibraryDir.stb_image}/stb_image_%{cfg.buildcfg}.lib"
+Library["glfw3"]                  = "%{LibraryDir.glfw3}/glfw3_%{cfg.buildcfg}.lib" -- ako je imamo u nasem solutionu onda dodajemo ovde,  u suprotnom kao sto je opengl32 onda samo navedemo u links
+Library["glad"]                   = "%{LibraryDir.glad}/glad_%{cfg.buildcfg}.lib"
+Library["stb_image"]              = "%{LibraryDir.stb_image}/stb_image_%{cfg.buildcfg}.lib"
+Library["imgui_dockingBranch"]    = "%{LibraryDir.imgui_dockingBranch}/imgui_dockingBranch_%{cfg.buildcfg}.lib"
 
 ----------------------------------------------------------------------------------------
 
@@ -46,6 +48,7 @@ group "Dependencies/StaticLib"
 	project "GLFW"
 	project "GLAD"
 	project "stb_image"
+	project "imgui_dockingBranch"
 group "Dependencies/TemplateLibrary"
 	project "glm"
 
@@ -73,9 +76,6 @@ project "Hane"
 									  
 		"%{prj.location}/src/**.h",   -- Hane files
 		"%{prj.location}/src/**.cpp", -- Hane files
-
-		"%{prj.location}/vendor/include/imgui/**.h",
-		"%{prj.location}/vendor/include/imgui/**.cpp"
 	}
 
 	defines{
@@ -84,7 +84,7 @@ project "Hane"
 	}
 
 	includedirs{
-		"%{IncludeDir.imgui}",
+		"%{IncludeDir.imgui_dockingBranch}",
 		"%{IncludeDir.GLFW}",
 
 		"%{IncludeDir.glad}",
@@ -95,9 +95,9 @@ project "Hane"
 		"%{IncludeDir.stb_image}",
 	}
 
-	removefiles{
-		"%{prj.location}/vendor/include/imgui/backends/imgui_impl_glut.cpp" -- Kako resiti ovo malo je weird da uklanjam samo jedan fajl
-	}
+	--removefiles{
+		--"%{prj.location}/vendor/include/imgui/backends/imgui_impl_glut.cpp" -- Kako resiti ovo malo je weird da uklanjam samo jedan fajl
+	--}
 
 	filter "configurations:Debug"
 		runtime "Debug"
@@ -109,6 +109,7 @@ project "Hane"
 			"GLFW",         -- oznacavamo da Hane zavisi od GLFW tako da se prvo builda GLFW
 			"GLAD",
 			"stb_image",
+			"imgui_dockingBranch",
 			-- projects
 
 			-- system libraries
@@ -119,6 +120,7 @@ project "Hane"
 			"%{Library.glfw3}",
 			"%{Library.glad}",
 			"%{Library.stb_image}",
+			"%{Library.imgui_dockingBranch}",
 			-- builded
 		}
 
@@ -132,6 +134,7 @@ project "Hane"
 			"GLFW",
 			"GLAD",
 			"stb_image",
+			"imgui_dockingBranch",
 			-- projects
 
 			-- system libraries
@@ -142,6 +145,7 @@ project "Hane"
 			"%{Library.glfw3}",
 			"%{Library.glad}",
 			"%{Library.stb_image}",
+			"%{Library.imgui_dockingBranch}",
 			-- builded
 		}
 
@@ -262,6 +266,53 @@ project "stb_image"
 	filter "configurations:Release"
 		runtime "Release"
 		targetname "stb_image_Release"
+		optimize "on"
+
+	filter "system:windows"
+		systemversion "latest" -- Windows SDK Version
+
+-------------------------------
+--    imgui_dockingBranch    -- 
+-------------------------------
+
+project "imgui_dockingBranch"
+	location "../Hane/vendor/imgui_dockingBranch"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "On" -- Sets <RuntimeLibrary> to "MultiThreaded" -- Sets at command line "/MT" for Release and "/MTd" for Debug
+
+	targetdir ("%{prj.location}/bin/%{cfg.architecture}/%{cfg.buildcfg}"    )
+	objdir (   "%{prj.location}/bin-int/%{cfg.architecture}/%{cfg.buildcfg}")
+
+	files{ -- Which files to be included in project, filter VisualStudio
+
+		"%{prj.location}/*.h",
+		"%{prj.location}/*.cpp",
+
+		"%{prj.location}/backends/imgui_impl_glfw.h",
+		"%{prj.location}/backends/imgui_impl_glfw.cpp",
+
+		"%{prj.location}/backends/imgui_impl_opengl2.cpp",
+		"%{prj.location}/backends/imgui_impl_opengl2.h",
+		"%{prj.location}/backends/imgui_impl_opengl3.cpp",
+		"%{prj.location}/backends/imgui_impl_opengl3.h",
+		"%{prj.location}/backends/imgui_impl_opengl3_loader.h",
+	}
+
+	includedirs{
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.imgui_dockingBranch}",
+	}
+
+	filter "configurations:Debug"
+		runtime "Debug"
+		targetname "imgui_dockingBranch_Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		runtime "Release"
+		targetname "imgui_dockingBranch_Release"
 		optimize "on"
 
 	filter "system:windows"

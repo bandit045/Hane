@@ -11,7 +11,8 @@ bin-int/
 
 # Visual Studio files and folder solution user filters - search help
 .vs/
-**.sln  
+**.sln
+**.slnx  #newer solution file format for vs2022+ 
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user

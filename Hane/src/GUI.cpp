@@ -5,7 +5,7 @@ void GUI::initGUI(GLFWwindow* window)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch TODO
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch TODO
 
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.Colors[ImGuiCol_Header] = ImVec4(0.52f, 0.06f, 0.63f, 1.0f);
@@ -67,7 +67,6 @@ void GUI::Stats(Camera& _camera, RenderFlags& _renderFlags)
 			_renderFlags.setValueToBoolRenderFlag("isLightTurnOff",                 false);
 			_renderFlags.setValueToBoolRenderFlag("isVisualiseNormal",              false);
 			_renderFlags.setValueToBoolRenderFlag("isVisualiseUVCordinate",         false);
-
 		}
 
 		if (ImGui::Checkbox("Spot Light", &_renderFlags.getSpecificValueReference("isSpotLight")))
