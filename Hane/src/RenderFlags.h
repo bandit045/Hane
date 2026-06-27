@@ -20,7 +20,7 @@ public:
 	bool& getSpecificValueReference(const std::string& nameToValueFromMap);
 
 	//This method serve as to get any value inside this class and edit it use it carefull!!
-	DataToReturn& getAllValue();
+	inline DataToReturn& getAllValue() { return renderFlagsWithOrder; }
 private:
 	DataToReturn renderFlagsWithOrder;
 };

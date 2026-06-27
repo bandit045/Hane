@@ -6,6 +6,7 @@
 #include <variant>
 
 enum class TypeOfLight {
+	ILLEGAL_LIGHT = -1,
 
 	POINT_LIGHT = 0,
 	DIRECTIONAL_LIGHT = 1,
@@ -21,7 +22,7 @@ private:
 		float quadraticTerm_Kq = 1.8f;
 		float constantTerm_Kc = 1.0f;
 
-		float overallLightBrightness = 1.0f; //  Lower the constant parameter towards 0.0 to increase overall brightness, but don’t make it negative since that would break the formula.
+		float overallLightBrightness = 1.0f; // Lower the constant parameter towards 0.0 to increase overall brightness, but don’t make it negative since that would break the formula.
 	};
 	PointLightParameters m_pointLightParameters;
 
@@ -42,15 +43,14 @@ private:
 	};
 	SpotLightParameters m_spotLightParameters;
 
+	TypeOfLight m_activeTypeOfLight = TypeOfLight::ILLEGAL_LIGHT; //WIP at start
 	std::variant<PointLightParameters, DirectionalLightParameters, SpotLightParameters> m_parameters;
 public:
-	int activeLight = -1;
 	Light(TypeOfLight typeOfLight);
 
 	PointLightParameters& setPointLightParams();
 	DirectionalLightParameters& setDirectionLightParams();
-	SpotLightParameters& setSpotLightParams();
-	SpotLightParameters& setSpotLightParams(bool _limitInnerCuttOffToBeSmaller);
+	SpotLightParameters& setSpotLightParams(bool _limitInnerCuttOffToBeSmaller = false);
 
 	const PointLightParameters& getPointLightParams() const; 
 	const DirectionalLightParameters& getDirectionLightParams() const;

@@ -1,6 +1,5 @@
 #include "RenderFlags.h"
 
-
 void RenderFlags::addRenderFlag(std::string nameOfRenderFlage, bool defaultFlagValue)
 {
 	renderFlagsWithOrder.flags.insert(std::pair<std::string, bool>(nameOfRenderFlage, defaultFlagValue));
@@ -15,9 +14,4 @@ void RenderFlags::setValueToBoolRenderFlag(const std::string& nameInMapToChange,
 bool& RenderFlags::getSpecificValueReference(const std::string& nameToValueFromMap)
 {
 	return renderFlagsWithOrder.flags[nameToValueFromMap];
-}
-
-RenderFlags::DataToReturn& RenderFlags::getAllValue()
-{
-	return renderFlagsWithOrder;
 }

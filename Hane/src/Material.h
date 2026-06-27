@@ -16,17 +16,17 @@ class Material
 {
 public:
 	Material();
-	void setObjectColor(glm::vec4 newMaterialColor);
-	void setAmbientStrenght(float newAmbientStrenght);
-	void setDiffuseStrenght(float newDiffuseStrenght);
-	void setSpecularStrenght(float newSpecularStrenght);
-	void setShininessStrenght(float newShininessStrenght);
+	inline void setObjectColor(glm::vec4 newObjectColor) { material.objectColor = newObjectColor; }
+	inline void setAmbientStrenght(float newAmbientStrenght) { material.ambientStrenght = newAmbientStrenght; }
+	inline void setDiffuseStrenght(float newDiffuseStrenght) { material.diffuseStrenght = newDiffuseStrenght; }
+	inline void setSpecularStrenght(float newSpecularStrenght) { material.specularStrength = newSpecularStrenght; }
+	inline void setShininessStrenght(float newShininessStrenght) { material.shininessStrenght = newShininessStrenght; }
 
-	glm::vec4& getObjectColor();
-	float& getAmbientStrenght();
-	float& getDiffuseStrenght();
-	float& getSpecularStrenght();
-	float& getShininessStrenght();
+	inline glm::vec4& getObjectColor() { return material.objectColor; }
+	inline float& getAmbientStrenght() { return material.ambientStrenght; }
+	inline float& getDiffuseStrenght() { return material.diffuseStrenght; }
+	inline float& getSpecularStrenght() { return material.specularStrength; }
+	inline float& getShininessStrenght() { return material.shininessStrenght; }
 private:
 	DefaultParametersForMaterial material;
 };

@@ -1,20 +1,20 @@
 #include "Light.h"
 
-Light::Light(TypeOfLight typeOfLight)
+Light::Light(TypeOfLight _typeOfLight)
 {
-	if (typeOfLight == TypeOfLight::POINT_LIGHT)
+	if (_typeOfLight == TypeOfLight::POINT_LIGHT)
 	{
-		activeLight = (int)TypeOfLight::POINT_LIGHT;       // 0 - Point Light, 1 - Directional Light, 2 - Spot Light
+		m_activeTypeOfLight = TypeOfLight::POINT_LIGHT;   // 0 - Point Light, 1 - Directional Light, 2 - Spot Light
 		m_parameters = m_pointLightParameters;
 	}
-	else if(typeOfLight == TypeOfLight::DIRECTIONAL_LIGHT)
+	else if(_typeOfLight == TypeOfLight::DIRECTIONAL_LIGHT)
 	{
-		activeLight = (int)TypeOfLight::DIRECTIONAL_LIGHT; // 0 - Point Light, 1 - Directional Light, 2 - Spot Light
+		m_activeTypeOfLight = TypeOfLight::DIRECTIONAL_LIGHT; // 0 - Point Light, 1 - Directional Light, 2 - Spot Light
 		m_parameters = m_directionalLightParameters;
 	}
-	else if (typeOfLight == TypeOfLight::SPOT_LIGHT)
+	else if (_typeOfLight == TypeOfLight::SPOT_LIGHT)
 	{
-		activeLight = (int)TypeOfLight::SPOT_LIGHT;        // 0 - Point Light, 1 - Directional Light, 2 - Spot Light
+		m_activeTypeOfLight = TypeOfLight::SPOT_LIGHT; // 0 - Point Light, 1 - Directional Light, 2 - Spot Light
 		m_parameters = m_spotLightParameters;
 	}
 	else
@@ -28,7 +28,7 @@ Light::Light(TypeOfLight typeOfLight)
 
 Light::DirectionalLightParameters& Light::setDirectionLightParams()
 {
-	if (activeLight == (int)TypeOfLight::DIRECTIONAL_LIGHT)
+	if (m_activeTypeOfLight == TypeOfLight::DIRECTIONAL_LIGHT)
 		return m_directionalLightParameters;
 
 	std::cout << "You can`t edit Directional Light Params, at object light that are not Directional Light Type!";
@@ -36,34 +36,38 @@ Light::DirectionalLightParameters& Light::setDirectionLightParams()
 }
 Light::PointLightParameters& Light::setPointLightParams() 
 {
-	if (activeLight == (int)TypeOfLight::POINT_LIGHT)
+	if (m_activeTypeOfLight == TypeOfLight::POINT_LIGHT)
 		return m_pointLightParameters;
 
 	std::cout << "You can`t edit Point Light Params, at object light that are not Point Light Type!";
 	throw std::runtime_error("You can`t edit Point Light Params, at object light that are not Point Light Type!");
 }
-Light::SpotLightParameters& Light::setSpotLightParams()
-{
-	if (activeLight == (int)TypeOfLight::SPOT_LIGHT)
-		return m_spotLightParameters;
+Light::SpotLightParameters& Light::setSpotLightParams(bool _limitInnerCuttOffToBeSmaller)
+{	
+	if (m_activeTypeOfLight == TypeOfLight::SPOT_LIGHT)
+	{
+		if (!_limitInnerCuttOffToBeSmaller)
+		{
+			return m_spotLightParameters;
+		}
+		else if (m_spotLightParameters.innerCutOff >= m_spotLightParameters.outerCutOff)
+		{
+			m_spotLightParameters.innerCutOff = m_spotLightParameters.outerCutOff;
+			return m_spotLightParameters;
+		}
+		else
+			return m_spotLightParameters;
 
+	}
 	std::cout << "You can`t edit Spot Light Params, at object light that are not Spot Light Type!";
 	throw std::runtime_error("You can`t edit Spot Light Params, at object light that are not Spot Light Type!");
-}
-Light::SpotLightParameters& Light::setSpotLightParams(bool _limitInnerCuttOffToBeSmaller)
-{
-	if (m_spotLightParameters.innerCutOff >= m_spotLightParameters.outerCutOff)
-	{
-		m_spotLightParameters.innerCutOff = m_spotLightParameters.outerCutOff;
-	}
-	return m_spotLightParameters;
 }
 
 
 // -------------------------GETERS-----------------------------------------------
 const Light::PointLightParameters& Light::getPointLightParams() const
 {
-	if (activeLight == (int)TypeOfLight::POINT_LIGHT)
+	if (m_activeTypeOfLight == TypeOfLight::POINT_LIGHT)
 		return m_pointLightParameters;
 
 	std::cout << "You can`t get Point Light Params, at object light that are not Point Light Type!";
@@ -71,7 +75,7 @@ const Light::PointLightParameters& Light::getPointLightParams() const
 };
 const Light::DirectionalLightParameters& Light::getDirectionLightParams() const
 {
-	if (activeLight == (int)TypeOfLight::DIRECTIONAL_LIGHT)
+	if (m_activeTypeOfLight == TypeOfLight::DIRECTIONAL_LIGHT)
 		return m_directionalLightParameters;
 
 	std::cout << "You can`t get Directional Light Params, at object light that are not Directional Light Type!";
@@ -79,7 +83,7 @@ const Light::DirectionalLightParameters& Light::getDirectionLightParams() const
 };
 const Light::SpotLightParameters& Light::getSpotLightParams() const
 {
-	if (activeLight == (int)TypeOfLight::SPOT_LIGHT)
+	if (m_activeTypeOfLight == TypeOfLight::SPOT_LIGHT)
 		return m_spotLightParameters;
 
 	std::cout << "You can`t get Spot Light Params, at object light that are not Spot Light Type!";

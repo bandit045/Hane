@@ -487,8 +487,8 @@ int main()
 
 	// Creating lamp transform
 	Transform lampTransform(MenageShaders::getDefaultShaderID(DefaultShader::FOR_LIGHT));
-	//lampTransform.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position when program start
-	lampTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f)); // Setting object position when program start
+	lampTransform.setPosition(glm::vec3(2.03f, 2.05f, 0.52f)); // Setting object position when program start
+	//lampTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f)); // Setting object position when program start
 
 	// Creating cube transform
 	Transform cubeTransform(MenageShaders::getDefaultShaderID(DefaultShader::FOR_OBJECTS));

@@ -95,10 +95,6 @@ project "Hane"
 		"%{IncludeDir.stb_image}",
 	}
 
-	--removefiles{
-		--"%{prj.location}/vendor/include/imgui/backends/imgui_impl_glut.cpp" -- Kako resiti ovo malo je weird da uklanjam samo jedan fajl
-	--}
-
 	filter "configurations:Debug"
 		runtime "Debug"
 		targetname "Hane_Debug"
@@ -177,7 +173,7 @@ project "GLFW"
 		"%{prj.location}/src/vulkan.c",
 		"%{prj.location}/src/window.c",
 
-		"%{prj.location}/src/*.c" -- think about this line, do i realy need to include all???
+		"%{prj.location}/src/*.c" -- think about this line, do i realy need to include all??? https://youtu.be/88dmtleVywk?si=j6nCAN44hA2OKnbr&t=534
 	}
 
 	defines{ 
